@@ -3,16 +3,22 @@ import { FileUploader } from './components/FileUploader'
 import { Output } from './components/Output'
 import './App.css';
 
+export type UpdateMessageCallback = (newMessage:string) => void;
+
 function App() {
   const [message, setMessage] = useState<string>("")
+
+  const updateMessage: UpdateMessageCallback = (newMessage:string) => {
+    setMessage((prev) => prev + newMessage);
+  }
 
   return (
     <div className="App">
       <form>
         <h1>File Transcriber</h1>
-        <FileUploader setMessageCallback={setMessage}/>
+        <FileUploader setMessageCallback={updateMessage}/>
       </form>
-      <Output children={"Teste"}></Output>
+      <Output>{message}</Output>
     </div>
   );
 }

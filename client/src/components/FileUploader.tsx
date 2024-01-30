@@ -2,9 +2,11 @@ import './FileUploader.css'
 import { processUpload } from '../utils/api-client'
 import { AxiosError } from 'axios';
 import {useState, ChangeEvent, useRef} from 'react'
+import {UpdateMessageCallback} from '../App'
+import {formatFileSize} from '../utils/utils'
 
 interface FileUploaderProps{
-  setMessageCallback: (message:string) => void
+  setMessageCallback: UpdateMessageCallback
 }
 
 export const FileUploader = ({setMessageCallback} : FileUploaderProps):JSX.Element => {
@@ -15,11 +17,13 @@ export const FileUploader = ({setMessageCallback} : FileUploaderProps):JSX.Eleme
     event.preventDefault()
     if (event.target.files) {
       console.log(event.target.files[0])
+      //TODO: Verificar tipo de ficheiro antes de enviar
+      console.log("Tipo de ficheiro: " + event.target.files[0].type)
       setFile(event.target.files[0])
     }
   }
 
-  const handleInput = () =>{
+  const handleInput = () => {
     fileInputRef.current?.click()
   }
 
@@ -29,12 +33,17 @@ export const FileUploader = ({setMessageCallback} : FileUploaderProps):JSX.Eleme
       console.error("No file selected")
       return
     }
+    
+    //TODO: Place these in python script
+    setMessageCallback("\nSaving the file")
+    setMessageCallback("\nStarting transcription")
+    setMessageCallback("\nThis might take awhile...")
 
     processUpload(file, 
-      (message:string) => {setMessageCallback(message)}, 
-      (error:AxiosError) => {setMessageCallback("Error: " + error)})
+      (message:string) => {setMessageCallback("\nTranscription:\n"+message)}, 
+      (error:AxiosError) => {setMessageCallback("\nError: " + error)})
   }
-      
+
   return (
     <>
       <div className="container">
@@ -42,7 +51,12 @@ export const FileUploader = ({setMessageCallback} : FileUploaderProps):JSX.Eleme
           <h3>Upload Files</h3>
           <div className="drop_box">
             <header>
-              {file ? (<h4>File: {file!.name}</h4>) : (<h4>Select File here</h4>)}
+              {file ? (
+                <>
+                  <h4>File: {file!.name}</h4>
+                  <h4>Size: {formatFileSize(file.size)}</h4>
+                </>
+              ) : (<h4>Select File here</h4>)}
             </header>
             <p>Files Supported: MP3</p>
             <input type="file" id="fileInput" style={{display:"none"}}onChange={handleFileChange}/>
@@ -50,7 +64,7 @@ export const FileUploader = ({setMessageCallback} : FileUploaderProps):JSX.Eleme
           </div>
         </div>
       </div>
-      <button type='submit' className='btn btn-upload' onClick={handleFileUpload}>Upload</button>
+      <button type='submit' className='btn btn-upload' onClick={handleFileUpload} disabled={file ? false : true}>Upload</button>
     </>
   );
 }
