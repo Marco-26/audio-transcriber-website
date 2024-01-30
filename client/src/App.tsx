@@ -1,16 +1,15 @@
-import React, { ChangeEvent,  useState } from 'react';
+import React, {   useState } from 'react';
 import { AxiosError } from 'axios';
 import { processUpload } from './utils/api-client'
+import { FileUploader } from './components/FileUploader'
 import './App.css';
 
 function App() {
   const [message, setMessage] = useState<string>("")
   const [file, setFile] = useState<File | null>(null);
-  
-  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files) {
-      setFile(event.target.files[0]);
-    }
+
+  const handleFileChange = (file:File) => {
+    setFile(file)
   }
 
   const handleFileUpload = async (event:React.FormEvent) => {
@@ -27,12 +26,12 @@ function App() {
 
   return (
     <div className="App">
-      Resposta do servidor: {message}
       <form>
         <h1>File Transcriber</h1>
-        <input type="file" onChange={handleFileChange}/>
-        <button type='submit' onClick={handleFileUpload}>Upload</button>
+        <FileUploader onFileChange={handleFileChange} onFileUpload={handleFileUpload}/>
       </form>
+      <p>Selected file: {file?.name}</p>
+      Resposta do servidor: {message}
     </div>
   );
 }
