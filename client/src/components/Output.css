@@ -1,6 +1,37 @@
 .output-container{
   width: 600px;
+  height: 350px;
   display: flex;
   margin:0 auto;
   margin-top:20px;
+}
+
+.output-text-subcontainer{
+  text-align: left;
+  width: inherit;
+  overflow: auto;
+}
+
+.output-text-title{
+  margin-bottom: 10px;
+}
+
+.output-text-title {
+  position: relative;
+  text-align: center;
+}
+
+.output-text-title:after {
+  content: "";
+  position: absolute;
+  bottom: -10px; 
+  left: 0;
+  width: 600px;
+  height: 2px; 
+  background-color: #005af0; 
+}
+
+.output-text{
+  font-family: 'Iosevka';
+  margin-top: 3px;
 }

@@ -73,13 +73,18 @@
   width: 600px;
 }
 
-.btn:hover{
+.btn-upload:disabled {
+  margin-top: 20px;
+  width: 600px;
+  background-color: #a3a3a3;
+}
+
+.btn:hover:not(:disabled){
   text-decoration: none;
-  background-color: #ffffff;
-  color: #005af0;
+  background-color: #0042b4;
   padding: 10px 20px;
   border: none;
-  outline: 1px solid #010101;
+  cursor: pointer;
 }
 .form input {
   margin: 10px 0;
