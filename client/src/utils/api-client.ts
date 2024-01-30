@@ -1,5 +1,5 @@
 import axios, { AxiosResponse, AxiosError } from 'axios';
- 
+
 type SuccessCallback = (message:string) => void
 type ErrorCallback = (error:AxiosError) => void
 
