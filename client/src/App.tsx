@@ -7,7 +7,7 @@ export type UpdateMessageCallback = (newMessage:string) => void;
 
 function App() {
   const [message, setMessage] = useState<string>("")
-
+  
   const updateMessage: UpdateMessageCallback = (newMessage:string) => {
     setMessage((prev) => prev + newMessage);
   }

@@ -9,9 +9,11 @@ type Props = {
 export const Output:React.FC<Props> = ({children}) =>{
   return(
     <div className="output-container">
-      <p className="output-text-title">Output</p>
-      <div className='output-text-subcontainer'>
-        <Pre>{children}</Pre>
+      <div>
+        <p className="output-text-title">Output</p>
+        <div className='output-text-subcontainer'>
+          <Pre>{children}</Pre>
+        </div>
       </div>
     </div>
   )

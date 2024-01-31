@@ -3,7 +3,9 @@ import { processUpload } from '../utils/api-client'
 import { AxiosError } from 'axios';
 import {useState, ChangeEvent, useRef} from 'react'
 import {UpdateMessageCallback} from '../App'
-import {formatFileSize} from '../utils/utils'
+import {formatFileSize, notifyError} from '../utils/utils'
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 interface FileUploaderProps{
   setMessageCallback: UpdateMessageCallback
@@ -12,19 +14,18 @@ interface FileUploaderProps{
 export const FileUploader = ({setMessageCallback} : FileUploaderProps):JSX.Element => {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [file, setFile] = useState<File | null>(null);
-
+  
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     event.preventDefault()
     if (event.target.files) {
-      console.log(event.target.files[0])
-      //TODO: Verificar tipo de ficheiro antes de enviar
-      console.log("Tipo de ficheiro: " + event.target.files[0].type)
+      const file:File = event.target.files[0];
+      if(file.type !== "audio/mpeg"){
+        console.error("File type not supported...");
+        notifyError("File type not supported...");
+        return;
+      }
       setFile(event.target.files[0])
     }
-  }
-
-  const handleInput = () => {
-    fileInputRef.current?.click()
   }
 
   const handleFileUpload = async (event:React.FormEvent) => {
@@ -39,7 +40,7 @@ export const FileUploader = ({setMessageCallback} : FileUploaderProps):JSX.Eleme
     setMessageCallback("\nStarting transcription")
     setMessageCallback("\nThis might take awhile...")
 
-    processUpload(file, 
+    await processUpload(file, 
       (message:string) => {setMessageCallback("\nTranscription:\n"+message)}, 
       (error:AxiosError) => {setMessageCallback("\nError: " + error)})
   }
@@ -60,11 +61,23 @@ export const FileUploader = ({setMessageCallback} : FileUploaderProps):JSX.Eleme
             </header>
             <p>Files Supported: MP3</p>
             <input type="file" id="fileInput" style={{display:"none"}}onChange={handleFileChange}/>
-            <label htmlFor="fileInput" className='btn' onClick={handleInput}>Choose File</label>
+            <label htmlFor="fileInput" className='btn' onClick={() => {fileInputRef.current?.click()}}>Choose File</label>
           </div>
         </div>
       </div>
       <button type='submit' className='btn btn-upload' onClick={handleFileUpload} disabled={file ? false : true}>Upload</button>
+      <ToastContainer
+        position="bottom-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
     </>
   );
 }
