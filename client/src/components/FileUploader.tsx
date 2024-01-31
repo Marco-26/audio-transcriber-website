@@ -20,7 +20,6 @@ export const FileUploader = ({setMessageCallback} : FileUploaderProps):JSX.Eleme
     if (event.target.files) {
       const file:File = event.target.files[0];
       if(file.type !== "audio/mpeg"){
-        console.error("File type not supported...");
         notifyError("File type not supported...");
         return;
       }
@@ -34,14 +33,9 @@ export const FileUploader = ({setMessageCallback} : FileUploaderProps):JSX.Eleme
       console.error("No file selected")
       return
     }
-    
-    //TODO: Place these in python script
-    setMessageCallback("\nSaving the file")
-    setMessageCallback("\nStarting transcription")
-    setMessageCallback("\nThis might take awhile...")
 
     await processUpload(file, 
-      (message:string) => {setMessageCallback("\nTranscription:\n"+message)}, 
+      (message:string) => {setMessageCallback("\n"+message)}, 
       (error:AxiosError) => {setMessageCallback("\nError: " + error)})
   }
 
