@@ -27,17 +27,23 @@ class Server:
 
         return jsonify(message="File uploaded sucessfuly")
 
-    def transcript_endpoint(self):
+    async def transcript_endpoint(self):
         data = request.get_json()
         filename = data.get('filename')
         file = os.path.join(self.data_folder_path, filename)
-        audio_to_transcribe = open(file, "rb")
-        print(audio_to_transcribe)
-        transcript = self.client.audio.transcriptions.create(
-            model="whisper-1", 
-            file=audio_to_transcribe,
-        )
+
+        transcript = await self.transcribe_audio(file)
+
+        os.remove(file)
         return transcript.text
+    
+    async def transcribe_audio(self, file):
+        with open(file, "rb") as audio_to_transcribe:
+            transcript = self.client.audio.transcriptions.create(
+                model="whisper-1", 
+                file=audio_to_transcribe,
+            )
+        return transcript
     
 if __name__ == '__main__':
     server = Server()
