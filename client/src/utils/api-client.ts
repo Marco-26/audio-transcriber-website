@@ -29,7 +29,7 @@ async function processTranscription(file:File, onSuccess:SuccessCallback, onErro
     
     await axios.post('api/transcript', data)
     .then((response: AxiosResponse<{ message: string }>) => {
-        onSuccess("Resposta: \n" + response.data.message);
+        onSuccess("Resposta: \n" + response.data);
     })
     .catch((error:AxiosError) => {
         onError(error);
