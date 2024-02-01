@@ -15,35 +15,35 @@ class Server:
         if self.client.api_key is None:
             raise OpenAIError("OpenAI API key is missing. Set it using OPENAI_API_KEY environment variable.")
 
-        self.app.route('/api/transcribe', methods=['POST'])(self.transcribe_endpoint)
+        self.app.route('/api/upload', methods=['POST'])(self.upload_endpoint)
+        self.app.route('/api/transcript', methods=['POST'])(self.transcript_endpoint)
     
-    def transcribe_endpoint(self):
+    def upload_endpoint(self):
         if 'file' not in request.files:
             return jsonify(error="No file provided"), 400
 
         file = request.files['file']
+        temp_save_file(self.data_folder_path, file.filename, file)
 
-        try:
-            transcript = self.transcribe_file(file)
-            return jsonify(message=transcript)
-        except OpenAIError as e:
-            return jsonify(error=f"OpenAI API error: {e}"), 500
-        except Exception as e:
-            return jsonify(error=f"Unexpected error: {e}"), 500
+        return jsonify(message="File uploaded sucessfuly")
 
-    def transcribe_file(self, audio_file):
-        temp_save_file(self.data_folder_path, audio_file.filename, audio_file)
-        
-        file = os.path.join(self.data_folder_path, 'audio.mp3')
-        audio_to_transcribe = open(file, "rb")
+    async def transcript_endpoint(self):
+        data = request.get_json()
+        filename = data.get('filename')
+        file = os.path.join(self.data_folder_path, filename)
 
-        transcript = self.client.audio.transcriptions.create(
-            model="whisper-1", 
-            file=audio_to_transcribe,
-        )
+        transcript = await self.transcribe_audio(file)
 
+        os.remove(file)
         return transcript.text
-
+    
+    async def transcribe_audio(self, file):
+        with open(file, "rb") as audio_to_transcribe:
+            transcript = self.client.audio.transcriptions.create(
+                model="whisper-1", 
+                file=audio_to_transcribe,
+            )
+        return transcript
     
 if __name__ == '__main__':
     server = Server()
