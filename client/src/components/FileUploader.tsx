@@ -2,46 +2,41 @@ import './FileUploader.css'
 import { processUpload } from '../utils/api-client'
 import { AxiosError } from 'axios';
 import {useState, ChangeEvent, useRef} from 'react'
-import {UpdateMessageCallback} from '../App'
 import {formatFileSize, notifyError} from '../utils/utils'
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-interface FileUploaderProps{
-  setMessageCallback: UpdateMessageCallback
-}
-
-export const FileUploader = ({setMessageCallback} : FileUploaderProps):JSX.Element => {
+export const FileUploader = ():JSX.Element => {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [file, setFile] = useState<File | null>(null);
   
-  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
-    event.preventDefault()
-    if (event.target.files) {
-      const file:File = event.target.files[0];
-      if(file.type !== "audio/mpeg"){
-        notifyError("File type not supported...");
-        return;
-      }
-      setFile(event.target.files[0])
-    }
-  }
+  // const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+  //   event.preventDefault()
+  //   if (event.target.files) {
+  //     const file:File = event.target.files[0];
+  //     if(file.type !== "audio/mpeg"){
+  //       notifyError("File type not supported...");
+  //       return;
+  //     }
+  //     setFile(event.target.files[0])
+  //   }
+  // }
 
-  const handleFileUpload = async (event:React.FormEvent) => {
-    event.preventDefault()
-    if(!file){
-      console.error("No file selected")
-      return
-    }
+  // const handleFileUpload = async (event:React.FormEvent) => {
+  //   event.preventDefault()
+  //   if(!file){
+  //     console.error("No file selected")
+  //     return
+  //   }
 
-    await processUpload(file, 
-      (message:string) => {setMessageCallback("\n"+message)}, 
-      (error:AxiosError) => {setMessageCallback("\nError: " + error)})
-  }
+  //   await processUpload(file, 
+  //     (message:string) => {setMessageCallback("\n"+message)}, 
+  //     (error:AxiosError) => {setMessageCallback("\nError: " + error)})
+  // }
 
   return (
     <>
-      <div className="container">
+      {/* <div className="container">
         <div className="card">
           <h3>Upload Files</h3>
           <div className="drop_box">
@@ -71,7 +66,7 @@ export const FileUploader = ({setMessageCallback} : FileUploaderProps):JSX.Eleme
         draggable
         pauseOnHover
         theme="colored"
-      />
+      /> */}
     </>
   );
 }
