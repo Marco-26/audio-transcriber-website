@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import { FileUploader } from './components/FileUploader'
-import { Output } from './components/Output'
+import { Header } from './components/header/Header'
+
 import './App.css';
+import './index.css'
+import { Table } from './components/table/Table';
 
 export type UpdateMessageCallback = (newMessage:string) => void;
 
@@ -13,12 +16,10 @@ function App() {
   }
 
   return (
-    <div className="App">
-      <form>
-        <h1>File Transcriber</h1>
-        <FileUploader setMessageCallback={updateMessage}/>
-      </form>
-      <Output>{message}</Output>
+    <div className="App p-7">
+      <Header/>
+      <Table/>
+      {/* <FileUploader setMessageCallback={updateMessage}/> */}
     </div>
   );
 }
