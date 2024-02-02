@@ -1,17 +1,19 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
 
-p,h1 {
+p,h1,button,th {
   font-family: "Inter", sans-serif;
   font-optical-sizing: auto;
   font-weight: 400;
   font-style: normal;
+  color:#7C7C8A;
   font-variation-settings:
     "slnt" 0;
 }
 
 .App {
   text-align: center;
-  background-color: #fcfcfc;
+  background-color: #1e293b;
+  height: 100vh;
 }
 
 .App-logo {
