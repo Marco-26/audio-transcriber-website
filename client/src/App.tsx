@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Header } from './components/Header'
-
 import './App.css';
 import './index.css'
-import { Table } from './components/Table';
 import { FileToTranscribe } from './shared/FileType';
-import { TableHeader } from './components/TableHeader';
+import { Index } from './pages/Index'
+import { Upload } from './pages/Upload'
+import { Header } from './components/Header';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 export type UpdateFileCallback = () => void;
 
@@ -23,12 +23,14 @@ function App() {
   }
 
   return (
-    <div className="App">
+    <div className='bg-gray-900 h-screen'>
+      <Router> 
         <Header/>
-      <div className='px-7 py-3'>
-        <TableHeader callback={setFileCallback}/>
-        <Table file={file}/>
-      </div>
+          <Routes>
+            <Route path="/" element={<Index/>} />
+            <Route path="/upload" element={<Upload/>} />
+          </Routes>
+      </Router>
     </div>
   );
 }

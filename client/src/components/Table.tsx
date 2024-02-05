@@ -7,10 +7,10 @@ type TableProps = {
 
 export const Table:React.FC<TableProps> = ({file}):JSX.Element => {
   return (
-    <div className='mt-5 dark'>
+    <div className='px-7'>
       <div className="relative overflow-x-auto mt-5">
       <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 border border-gray-700">
-        <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-slate-800 dark:text-gray-400 border border-gray-700 ">
+        <thead className="text-xs text-gray-700 uppercase bg-gray-50 bg-slate-800 text-gray-400 border border-gray-700">
           <tr>
             <th scope="col" className="px-6 py-3">
               File
@@ -30,10 +30,10 @@ export const Table:React.FC<TableProps> = ({file}):JSX.Element => {
           </tr>
         </thead>
         <tbody>
-          <tr className="bg-white border-b dark:bg-slate-800 dark:border-gray-700">
+          <tr className="border-b border-gray-700">
             {file ?
               <>
-                <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                <th scope="row" className="px-6 py-4 font-medium whitespace-nowrap text-white">
                   {file.name}
                 </th>
                 <td className="px-6 py-4">{file.duration}</td>
@@ -49,5 +49,5 @@ export const Table:React.FC<TableProps> = ({file}):JSX.Element => {
       </table>
     </div>
     </div>
-  )
+  );
 }
