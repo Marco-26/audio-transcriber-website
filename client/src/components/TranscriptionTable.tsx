@@ -5,7 +5,7 @@ type TableProps = {
   file?:FileToTranscribe
 }
 
-export const Table:React.FC<TableProps> = ({file}):JSX.Element => {
+export const TranscriptionTable:React.FC<TableProps> = ({file}):JSX.Element => {
   return (
     <div className='px-7'>
       <div className="relative overflow-x-auto mt-5">
