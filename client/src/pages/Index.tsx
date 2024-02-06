@@ -1,6 +1,5 @@
 import { TableHeader } from "../components/TableHeader"
-import { Table } from "../components/Table"
-
+import { TranscriptionTable as Table } from "../components/TranscriptionTable"
 
 export const Index = ():JSX.Element => {
   return (
