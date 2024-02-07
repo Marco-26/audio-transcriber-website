@@ -1,24 +1,22 @@
-import React, { useState } from 'react';
-import { FileUploader } from './components/FileUploader'
-import { Output } from './components/Output'
+import React, { useEffect, useState } from 'react';
 import './App.css';
-
-export type UpdateMessageCallback = (newMessage:string) => void;
+import './index.css'
+import { Index } from './pages/Index'
+import { Upload } from './pages/Upload'
+import { Header } from './components/Header';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 function App() {
-  const [message, setMessage] = useState<string>("")
-  
-  const updateMessage: UpdateMessageCallback = (newMessage:string) => {
-    setMessage((prev) => prev + newMessage);
-  }
-
+  const [file, setFile] = useState<File>()
   return (
-    <div className="App">
-      <form>
-        <h1>File Transcriber</h1>
-        <FileUploader setMessageCallback={updateMessage}/>
-      </form>
-      <Output>{message}</Output>
+    <div className='bg-gray-900 h-screen'>
+      <Router>
+        <Header />
+        <Routes>
+          <Route path="/" element={<Index />} />
+          <Route path="/upload" element={<Upload setFile={setFile} />} />
+        </Routes>
+      </Router>
     </div>
   );
 }
