@@ -36,7 +36,7 @@ export const UploadTable:React.FC<TableProps> = ({file}):JSX.Element => {
                 </th>
                 <td className="px-6 py-4">{file.duration}</td>
                 <td className="px-6 py-4">{formatFileSize(file.size)}</td>
-                <td className="px-6 py-4">Uploaded</td>
+                <td className="px-6 py-4">{file.uploadStatus}</td>
               </>
             :
               <div className='p-3'>No file uploaded</div>

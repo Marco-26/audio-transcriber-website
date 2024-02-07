@@ -35,7 +35,8 @@ export const generateFileInfo = (file:File) => {
     name:file.name,
     duration:"12:05",//TODO: CHANGE
     size:file.size,
-    status:"Processing"
+    transcriptionStatus:"Processing",
+    uploadStatus: "Processing"
   }
   return fileInfo
 }
