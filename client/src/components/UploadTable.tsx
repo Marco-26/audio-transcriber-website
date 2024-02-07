@@ -1,9 +1,9 @@
 import '../index.css'
-import { FileToTranscribe } from '../shared/FileType'
+import { FileInfo } from '../shared/FileType'
 import { formatFileSize } from '../utils/utils'
 
 type TableProps = {
-  file?:FileToTranscribe
+  file?:FileInfo
 }
 
 export const UploadTable:React.FC<TableProps> = ({file}):JSX.Element => {
@@ -15,9 +15,6 @@ export const UploadTable:React.FC<TableProps> = ({file}):JSX.Element => {
           <tr>
             <th scope="col" className="px-6 py-3">
               File
-            </th>
-            <th scope="col" className="px-6 py-3">
-              Duration
             </th>
             <th scope="col" className="px-6 py-3">
               Size
@@ -34,7 +31,6 @@ export const UploadTable:React.FC<TableProps> = ({file}):JSX.Element => {
                 <th scope="row" className="px-6 py-4 font-medium whitespace-nowrap text-white">
                   {file.name}
                 </th>
-                <td className="px-6 py-4">{file.duration}</td>
                 <td className="px-6 py-4">{formatFileSize(file.size)}</td>
                 <td className="px-6 py-4">{file.uploadStatus}</td>
               </>

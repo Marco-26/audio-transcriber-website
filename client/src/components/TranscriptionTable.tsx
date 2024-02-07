@@ -1,8 +1,7 @@
 import '../index.css'
-import { FileToTranscribe } from '../shared/FileType'
 
 type TableProps = {
-  file?:FileToTranscribe
+  file?:File
 }
 
 export const TranscriptionTable:React.FC<TableProps> = ({file}):JSX.Element => {
@@ -14,9 +13,6 @@ export const TranscriptionTable:React.FC<TableProps> = ({file}):JSX.Element => {
           <tr>
             <th scope="col" className="px-6 py-3">
               File
-            </th>
-            <th scope="col" className="px-6 py-3">
-              Duration
             </th>
             <th scope="col" className="px-6 py-3">
               Size
@@ -36,9 +32,8 @@ export const TranscriptionTable:React.FC<TableProps> = ({file}):JSX.Element => {
                 <th scope="row" className="px-6 py-4 font-medium whitespace-nowrap text-white">
                   {file.name}
                 </th>
-                <td className="px-6 py-4">{file.duration}</td>
                 <td className="px-6 py-4">{file.size} MB</td>
-                <td className="px-6 py-4">{file.transcriptionStatus === "Processing" ? "Processing" : "Ready"}</td>
+                <td className="px-6 py-4">Processing</td>
                 <td className="">Send</td>
               </>
             :
