@@ -1,4 +1,5 @@
 import { toast } from 'react-toastify';
+import { FileToTranscribe } from '../shared/FileType';
 
 export const formatFileSize = (sizeInBytes: number): string => {
   const kilobyte = 1024;
@@ -26,4 +27,16 @@ export const notifyError = (error:string) => toast(
     draggable: true,
     progress: undefined,
     theme: "colored",
-  }));
+  })
+);
+
+export const generateFileInfo = (file:File) => {
+  const fileInfo:FileToTranscribe = {
+    name:file.name,
+    duration:"12:05",//TODO: CHANGE
+    size:file.size,
+    transcriptionStatus:"Processing",
+    uploadStatus: "Processing"
+  }
+  return fileInfo
+}
