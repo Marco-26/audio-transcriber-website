@@ -38,7 +38,7 @@ export const TranscriptionTable:React.FC<TableProps> = ({file}):JSX.Element => {
                 </th>
                 <td className="px-6 py-4">{file.duration}</td>
                 <td className="px-6 py-4">{file.size} MB</td>
-                <td className="px-6 py-4">{file.status === "Processing" ? "Processing" : "Ready"}</td>
+                <td className="px-6 py-4">{file.transcriptionStatus === "Processing" ? "Processing" : "Ready"}</td>
                 <td className="">Send</td>
               </>
             :
