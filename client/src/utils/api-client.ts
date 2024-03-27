@@ -6,8 +6,8 @@ type ErrorCallback = (error: AxiosError) => void
 export async function processUpload(file: File, onSuccess: SuccessCallback, onError: ErrorCallback) {
   const formData = new FormData()
   formData.append('file', file)
-
-  onSuccess("Uploading the file...")
+  
+  console.log("Uploading the file...")
 
   await axios.post('api/upload', formData)
     .then((response: AxiosResponse<{ message: string }>) => {
@@ -23,8 +23,8 @@ export async function processTranscription(file: File, onSuccess: SuccessCallbac
     filename: file.name,
   };
 
-  onSuccess("Starting transcription...")
-  onSuccess("This might take awhile")
+  console.log("Starting transcription...")
+  console.log("This might take awhile")
 
   await axios.post('api/transcript', data)
     .then((response: AxiosResponse<{ message: string }>) => {

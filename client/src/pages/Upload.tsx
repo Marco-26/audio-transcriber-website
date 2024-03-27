@@ -1,8 +1,7 @@
 import { ChangeEvent, useRef } from "react"
 import { ToastContainer } from 'react-toastify';
-import { generateFileInfo, notifyError } from "../utils/utils";
+import { UploadStatus, generateFileInfo, notifyError } from "../utils/utils";
 import { Dispatch, SetStateAction } from "react"
-import { FileTable as Table } from "../components/FileTable";
 import { FileInfo } from "../shared/FileType";
 import { AxiosError } from "axios";
 import { processUpload } from "../utils/api-client";
@@ -12,9 +11,10 @@ interface UploadProps {
   setFile: Dispatch<SetStateAction<File | undefined>>;
   fileInfo:FileInfo | undefined;
   setFileInfo: Dispatch<SetStateAction<FileInfo | undefined>>;
+  setUploadStatus: Dispatch<SetStateAction<UploadStatus | undefined>>;
 }
 
-export const Upload: React.FC<UploadProps> = ({ file, setFile, fileInfo, setFileInfo }): JSX.Element => {
+export const Upload: React.FC<UploadProps> = ({ file, setFile, fileInfo, setFileInfo, setUploadStatus}): JSX.Element => {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -39,6 +39,7 @@ export const Upload: React.FC<UploadProps> = ({ file, setFile, fileInfo, setFile
           if (prevFileInfo) {
             return { ...prevFileInfo, uploadStatus: "Uploaded" };
           }
+          setUploadStatus(UploadStatus.OK)
           return prevFileInfo;
         });
       },
@@ -48,6 +49,7 @@ export const Upload: React.FC<UploadProps> = ({ file, setFile, fileInfo, setFile
           if (prevFileInfo) {
             return { ...prevFileInfo, uploadStatus: "Error" };
           }
+          setUploadStatus(UploadStatus.ERROR)
           return prevFileInfo;
         });
       })
@@ -64,7 +66,7 @@ export const Upload: React.FC<UploadProps> = ({ file, setFile, fileInfo, setFile
         <p className="text-xs">Files supported: MP3</p>
       </button>
       <input type="file" id="file" className="invisible" ref={inputRef} onChange={handleFileChange} />
-      <Table fileInfo={fileInfo} file={file!} />
+      
       <ToastContainer
         position="bottom-right"
         autoClose={5000}
