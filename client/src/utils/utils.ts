@@ -1,6 +1,11 @@
 import { toast } from 'react-toastify';
 import { FileInfo } from '../shared/FileType';
 
+export enum UploadStatus {
+  OK,
+  ERROR
+}
+
 export const formatFileSize = (sizeInBytes: number): string => {
   const kilobyte = 1024;
   const megabyte = kilobyte * 1024;
@@ -33,10 +38,22 @@ export const notifyError = (error:string) => toast(
 export const generateFileInfo = (file:File) => {
   const info:FileInfo = {
     name:file.name,
-    duration:"12:05",//TODO: CHANGE
+    duration:"12:05", //TODO: CHANGE
     size:file.size,
     transcriptionStatus:"Processing",
-    uploadStatus: "Processing"
   }
   return info
+}
+
+export const generateTXT = (transcription:string) => {
+  const blob = new Blob([transcription], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'transcription.txt';
+
+  a.click();
+
+  URL.revokeObjectURL(url);
 }

@@ -1,21 +1,26 @@
 import '../index.css'
 import React, { useState } from 'react';
 import { processTranscription } from '../utils/api-client';
-import { error } from 'console';
 import { FileInfo } from '../shared/FileType';
-import { formatFileSize } from '../utils/utils';
+import { UploadStatus, formatFileSize, generateTXT } from '../utils/utils';
 
 type TableProps = {
-  fileInfo?:FileInfo,
+  fileInfo?:FileInfo
   file:File
+  uploadStatus: UploadStatus
 }
 
-export const FileTable:React.FC<TableProps> = ({fileInfo,file}):JSX.Element => {
+export const Table:React.FC<TableProps> = ({fileInfo,file,uploadStatus}):JSX.Element => {
   const [startedTranscription, setStartedTranscription] = useState<Boolean>(false)
   const [finishedTranscription, setFinishedTranscription] = useState<Boolean>(false)
   const [transcription, setTranscription] = useState<string>()
   
   const handleTranscription = async () => {
+    if(uploadStatus === UploadStatus.ERROR){
+      console.error("No file uploaded")
+      return
+    }
+
     setStartedTranscription(true)
 
     await processTranscription(file!, 
@@ -27,22 +32,7 @@ export const FileTable:React.FC<TableProps> = ({fileInfo,file}):JSX.Element => {
 
   const handleDownload = () => {
     if (transcription) {
-      // Create a new Blob with the transcription content
-      const blob = new Blob([transcription], { type: 'text/plain' });
-      
-      // Create a temporary URL for the Blob
-      const url = URL.createObjectURL(blob);
-  
-      // Create an anchor element
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'transcription.txt'; // Set the filename here
-  
-      // Trigger a click on the anchor element to start the download
-      a.click();
-  
-      // Clean up the temporary URL
-      URL.revokeObjectURL(url);
+      generateTXT(transcription)
     } else {
       console.error('No transcription available');
     }
@@ -79,7 +69,7 @@ export const FileTable:React.FC<TableProps> = ({fileInfo,file}):JSX.Element => {
                   {fileInfo.name}
                 </th>
                 <td className="px-6 py-4">{formatFileSize(fileInfo.size)}</td>
-                <td className="px-6 py-4">{fileInfo.uploadStatus}</td>
+                <td className="px-6 py-4">{uploadStatus.toString()}</td>
                 {finishedTranscription ? (
                   <td className="px-6 py-4">Finished</td>
                 ) : (
