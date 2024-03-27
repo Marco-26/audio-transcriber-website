@@ -12,14 +12,13 @@ export async function processUpload(file: File, onSuccess: SuccessCallback, onEr
   await axios.post('api/upload', formData)
     .then((response: AxiosResponse<{ message: string }>) => {
       onSuccess(response.data.message);
-      //return processTranscription(file, onSuccess, onError);
     })
     .catch((error: AxiosError) => {
       onError(error);
     });
 }
 
-async function processTranscription(file: File, onSuccess: SuccessCallback, onError: ErrorCallback) {
+export async function processTranscription(file: File, onSuccess: SuccessCallback, onError: ErrorCallback) {
   const data = {
     filename: file.name,
   };
@@ -29,7 +28,7 @@ async function processTranscription(file: File, onSuccess: SuccessCallback, onEr
 
   await axios.post('api/transcript', data)
     .then((response: AxiosResponse<{ message: string }>) => {
-      onSuccess("Resposta: \n" + response.data);
+      onSuccess("" + response.data);
     })
     .catch((error: AxiosError) => {
       onError(error);
