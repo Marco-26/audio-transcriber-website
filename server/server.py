@@ -4,7 +4,6 @@ from openai import OpenAI, OpenAIError
 import os
 from utils import temp_save_file
 import subprocess
-import base64
 
 from transcribe import transcribe_single_chunk, split_audio, get_file_size, generate_chunk_files, transcribe_multiple_chunks
 
