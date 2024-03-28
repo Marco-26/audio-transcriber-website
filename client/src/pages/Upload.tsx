@@ -5,6 +5,7 @@ import { Dispatch, SetStateAction } from "react"
 import { FileInfo } from "../shared/FileType";
 import { AxiosError } from "axios";
 import { processUpload } from "../utils/api-client";
+import 'react-toastify/dist/ReactToastify.css';
 
 interface UploadProps {
   file:File | undefined;
@@ -34,22 +35,22 @@ export const Upload: React.FC<UploadProps> = ({ file, setFile, fileInfo, setFile
   const handleFileUpload = async (file: File) => {
     await processUpload(file,
       (message: string) => {
-        console.log("\n" + message)
+        console.log(message)
+        setUploadStatus(UploadStatus.OK)
         setFileInfo((prevFileInfo) => {
           if (prevFileInfo) {
             return { ...prevFileInfo, uploadStatus: "Uploaded" };
           }
-          setUploadStatus(UploadStatus.OK)
           return prevFileInfo;
         });
       },
       (error: AxiosError) => {
         console.error("\nError: " + error)
+        setUploadStatus(UploadStatus.ERROR)
         setFileInfo((prevFileInfo) => {
           if (prevFileInfo) {
             return { ...prevFileInfo, uploadStatus: "Error" };
           }
-          setUploadStatus(UploadStatus.ERROR)
           return prevFileInfo;
         });
       })
