@@ -39,7 +39,7 @@ export const Table:React.FC<TableProps> = ({fileInfo,file,uploadStatus}):JSX.Ele
   };
 
   return (
-    <div>
+    <div className='px-7 mt-4'>
       <div className="relative overflow-x-auto mt-5">
       <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 border border-gray-700">
         <thead className="text-xs text-gray-700 uppercase bg-gray-50 bg-slate-800 text-gray-400 border border-gray-700">
@@ -69,7 +69,7 @@ export const Table:React.FC<TableProps> = ({fileInfo,file,uploadStatus}):JSX.Ele
                   {fileInfo.name}
                 </th>
                 <td className="px-6 py-4">{formatFileSize(fileInfo.size)}</td>
-                <td className="px-6 py-4">{uploadStatus.toString()}</td>
+                <td className="px-6 py-4">{UploadStatus[uploadStatus]}</td>
                 {finishedTranscription ? (
                   <td className="px-6 py-4">Finished</td>
                 ) : (

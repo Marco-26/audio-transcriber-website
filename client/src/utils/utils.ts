@@ -22,7 +22,7 @@ export const formatFileSize = (sizeInBytes: number): string => {
   }
 }
 
-export const notifyError = (error:string) => toast(
+export const notifyError = (error:string) => 
   toast.error(error, {
     position: "bottom-right",
     autoClose: 5000,
@@ -32,8 +32,8 @@ export const notifyError = (error:string) => toast(
     draggable: true,
     progress: undefined,
     theme: "colored",
-  })
-);
+  }
+)
 
 export const generateFileInfo = (file:File) => {
   const info:FileInfo = {
