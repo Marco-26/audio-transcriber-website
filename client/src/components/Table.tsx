@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { processTranscription } from '../utils/api-client';
 import { FileInfo } from '../shared/FileType';
 import { UploadStatus, formatFileSize, generateTXT } from '../utils/utils';
-
+import './Table.css'
 type TableProps = {
   fileInfo?:FileInfo
   file:File
@@ -16,7 +16,7 @@ export const Table:React.FC<TableProps> = ({fileInfo,file,uploadStatus}):JSX.Ele
   const [transcription, setTranscription] = useState<string>()
   
   const handleTranscription = async () => {
-    if(uploadStatus === UploadStatus.ERROR){
+    if(uploadStatus === UploadStatus.ERROR || uploadStatus == null){
       console.error("No file uploaded")
       return
     }
@@ -74,12 +74,16 @@ export const Table:React.FC<TableProps> = ({fileInfo,file,uploadStatus}):JSX.Ele
                   <td className="px-6 py-4">Finished</td>
                 ) : (
                   startedTranscription ? (
-                    <td className="px-6 py-4">Processing</td>
+                    <td className="px-6 py-4">
+                      Processing<span className="dots">...</span>
+                    </td>
                   ) : (
                     <td className="px-6 py-4">
                       <button 
-                        className="bg-white hover:bg-gray-100 text-gray-800 font-semibold border border-gray-400 rounded shadow text-xs h-8 w-20" 
+                        className="hover:bg-gray-100 text-gray-800 font-semibold border border-gray-400 rounded shadow text-xs h-8 w-20" 
                         onClick={handleTranscription}
+                        disabled={uploadStatus !== UploadStatus.OK}
+                        style={uploadStatus !== UploadStatus.OK ? {backgroundColor:"#939393"} : {backgroundColor:"white"}}
                       >
                         Start
                       </button>

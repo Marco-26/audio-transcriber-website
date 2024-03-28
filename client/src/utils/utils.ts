@@ -38,7 +38,6 @@ export const notifyError = (error:string) =>
 export const generateFileInfo = (file:File) => {
   const info:FileInfo = {
     name:file.name,
-    duration:"12:05", //TODO: CHANGE
     size:file.size,
     transcriptionStatus:"Processing",
   }

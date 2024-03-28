@@ -3,6 +3,10 @@ from flask_cors import CORS
 from openai import OpenAI, OpenAIError
 import os
 from utils import temp_save_file
+import subprocess
+import base64
+
+from transcribe import transcribe_single_chunk, split_audio, get_file_size, generate_chunk_files, transcribe_multiple_chunks
 
 class Server:
     def __init__(self):
@@ -35,15 +39,23 @@ class Server:
         transcript = await self.transcribe_audio(file)
 
         os.remove(file)
-        return transcript.text
+        return transcript
     
     async def transcribe_audio(self, file):
-        with open(file, "rb") as audio_to_transcribe:
-            transcript = self.client.audio.transcriptions.create(
-                model="whisper-1", 
-                file=audio_to_transcribe,
-            )
-        return transcript
+        try:
+            process = subprocess.Popen(['python', 'transcribe.py', file], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            stdout, stderr = process.communicate()
+            
+            if process.returncode == 0:
+                #TODO: FIND A BETTER WAY TO DO THIS
+                output = stdout.decode().strip()
+                return output
+            else:
+                error_message = stderr.decode().strip()
+                return jsonify({'error': error_message}), 500
+
+        except Exception as e:
+            return jsonify({'error': str(e)}), 500
     
 if __name__ == '__main__':
     server = Server()
