@@ -44,10 +44,10 @@ export const TranscriptionsTable:React.FC<TableProps> = ({fileInfo,file,uploadSt
     <div className='border rounded'>
         <Table>
           <TableHeader>        
-            <TableHead>Nome</TableHead>
+            <TableHead>Name</TableHead>
             <TableHead>Metadata</TableHead>
             <TableHead>Upload</TableHead>
-            <TableHead>Transcrição</TableHead>
+            <TableHead>Transcription Status</TableHead>
             <TableHead className=''>Download</TableHead>
           </TableHeader>
           <TableBody>

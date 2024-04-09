@@ -49,7 +49,7 @@ export const Header = ():JSX.Element => {
             to="#"
             className="text-muted-foreground transition-colors hover:text-foreground"
           >
-            Sobre
+            About
           </Link>
           <Link
             to="#"
@@ -87,19 +87,7 @@ export const Header = ():JSX.Element => {
                 to="#"
                 className="text-muted-foreground hover:text-foreground"
               >
-                Orders
-              </Link>
-              <Link
-                to="#"
-                className="text-muted-foreground hover:text-foreground"
-              >
-                Products
-              </Link>
-              <Link
-                to="#"
-                className="text-muted-foreground hover:text-foreground"
-              >
-                Customers
+                About
               </Link>
               <Link to="#" className="hover:text-foreground">
                 Settings
@@ -112,7 +100,7 @@ export const Header = ():JSX.Element => {
             <div className="relative">
               <Button>
                 <PlusCircle className='w-4 h-4 mr-2'/>
-                Nova transcrição
+                New Transcription
               </Button>
             </div>
           </form>
