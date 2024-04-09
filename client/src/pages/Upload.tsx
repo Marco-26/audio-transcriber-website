@@ -6,6 +6,7 @@ import { FileInfo } from "../shared/FileType";
 import { AxiosError } from "axios";
 import { processUpload } from "../utils/api-client";
 import 'react-toastify/dist/ReactToastify.css';
+import { Button } from "../components/UI/Button";
 
 interface UploadProps {
   file:File | undefined;
@@ -58,6 +59,7 @@ export const Upload: React.FC<UploadProps> = ({ file, setFile, fileInfo, setFile
 
   return (
     <div className='px-7 mt-4'>
+      <Button>Test</Button>
       <div className="flex justify-between">
         <h1 className='font-bold text text-slate-300 text-2xl'>Upload</h1>
       </div>
