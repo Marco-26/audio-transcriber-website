@@ -1,36 +1,41 @@
 import React, { useEffect, useState } from 'react';
-import './App.css';
-import './index.css'
-import { Upload } from './pages/Upload'
-import { Header } from './components/Header';
+import './styles/globals.css'
+
 import { FileInfo } from './shared/FileType';
 import { UploadStatus } from './utils/utils';
-import { Table } from "./components/Table";
+
+import { TranscriptionsTable } from './components/TranscriptionsTable';
+import TableHeader from './components/TableHeader';
+import { Header } from './components/Header';
+import { Dashboard } from './components/UI/Block';
 
 function App() {
-  const [file, setFile] = useState<File>()
-  const [fileInfo, setFileInfo] = useState<FileInfo>()
-  const [uploadStatus, setUploadStatus] = useState<UploadStatus>()
+  const [file, setFile] = useState<File>();
+  const [fileInfo, setFileInfo] = useState<FileInfo>();
+  const [uploadStatus, setUploadStatus] = useState<UploadStatus>();
 
-  useEffect(() => {
-    const handleBeforeUnload = (event:any) => {
-      event.preventDefault();
-      event.returnValue = '';
-    };
+  // useEffect(() => {
+  //   const handleBeforeUnload = (event:any) => {
+  //     event.preventDefault();
+  //     event.returnValue = '';
+  //   };
 
-    window.addEventListener('beforeunload', handleBeforeUnload);
+  //   window.addEventListener('beforeunload', handleBeforeUnload);
 
-    return () => {
-      window.removeEventListener('beforeunload', handleBeforeUnload);
-    };
-  }, []);
+  //   return () => {
+  //     window.removeEventListener('beforeunload', handleBeforeUnload);
+  //   };
+  // }, []);
 
   return (
-    <div className='bg-gray-900 h-screen'>
-      <Header />
-      <Upload file={file!} setFile={setFile} fileInfo={fileInfo!} setFileInfo={setFileInfo} setUploadStatus={setUploadStatus}/>
-      <Table fileInfo={fileInfo} file={file!} uploadStatus={uploadStatus!}/>
+    <div>
+      <Header/>
+      <div className="px-6 py-5 ">
+        <TableHeader/>
+        <TranscriptionsTable fileInfo={fileInfo} file={file!} uploadStatus={uploadStatus!}/>
+      </div>
     </div>
+
   );
 }
 
