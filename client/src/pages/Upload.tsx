@@ -19,47 +19,47 @@ interface UploadProps {
 export const Upload: React.FC<UploadProps> = ({ file, setFile, fileInfo, setFileInfo, setUploadStatus}): JSX.Element => {
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
-    event.preventDefault()
-    if (event.target.files) {
-      const temp:File = event.target.files[0];
-      if (temp.type !== "audio/mpeg") {
-        notifyError("File type not supported...");
-        return;
-      }
-      setFile(temp)
-      setFileInfo(generateFileInfo(temp))
-      handleFileUpload(temp)
-    }
-  }
+  // const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+  //   event.preventDefault()
+  //   if (event.target.files) {
+  //     const temp:File = event.target.files[0];
+  //     if (temp.type !== "audio/mpeg") {
+  //       notifyError("File type not supported...");
+  //       return;
+  //     }
+  //     setFile(temp)
+  //     setFileInfo(generateFileInfo(temp))
+  //     handleFileUpload(temp)
+  //   }
+  // }
 
-  const handleFileUpload = async (file: File) => {
-    await processUpload(file,
-      (message: string) => {
-        console.log(message)
-        setUploadStatus(UploadStatus.OK)
-        setFileInfo((prevFileInfo) => {
-          if (prevFileInfo) {
-            return { ...prevFileInfo, uploadStatus: "Uploaded" };
-          }
-          return prevFileInfo;
-        });
-      },
-      (error: AxiosError) => {
-        console.error("\nError: " + error)
-        setUploadStatus(UploadStatus.ERROR)
-        setFileInfo((prevFileInfo) => {
-          if (prevFileInfo) {
-            return { ...prevFileInfo, uploadStatus: "Error" };
-          }
-          return prevFileInfo;
-        });
-      })
-  }
+  // const handleFileUpload = async (file: File) => {
+  //   await processUpload(file,
+  //     (message: string) => {
+  //       console.log(message)
+  //       setUploadStatus(UploadStatus.OK)
+  //       setFileInfo((prevFileInfo) => {
+  //         if (prevFileInfo) {
+  //           return { ...prevFileInfo, uploadStatus: "Uploaded" };
+  //         }
+  //         return prevFileInfo;
+  //       });
+  //     },
+  //     (error: AxiosError) => {
+  //       console.error("\nError: " + error)
+  //       setUploadStatus(UploadStatus.ERROR)
+  //       setFileInfo((prevFileInfo) => {
+  //         if (prevFileInfo) {
+  //           return { ...prevFileInfo, uploadStatus: "Error" };
+  //         }
+  //         return prevFileInfo;
+  //       });
+  //     })
+  // }
 
   return (
     <div className='px-7 mt-4'>
-      <Button>Test</Button>
+      {/* <Button>Test</Button>
       <div className="flex justify-between">
         <h1 className='font-bold text text-slate-300 text-2xl'>Upload</h1>
       </div>
@@ -81,7 +81,7 @@ export const Upload: React.FC<UploadProps> = ({ file, setFile, fileInfo, setFile
         draggable
         pauseOnHover
         theme="colored"
-      />
+      /> */}
     </div>
   )
 }

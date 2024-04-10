@@ -7,29 +7,28 @@ import { UploadStatus } from './utils/utils';
 import { TranscriptionsTable } from './components/TranscriptionsTable';
 import TableHeader from './components/TableHeader';
 import { Header } from './components/Header';
-import { Dashboard } from './components/UI/Block';
 
 function App() {
   const [file, setFile] = useState<File>();
   const [fileInfo, setFileInfo] = useState<FileInfo>();
   const [uploadStatus, setUploadStatus] = useState<UploadStatus>();
 
-  // useEffect(() => {
-  //   const handleBeforeUnload = (event:any) => {
-  //     event.preventDefault();
-  //     event.returnValue = '';
-  //   };
+  useEffect(() => {
+    const handleBeforeUnload = (event:any) => {
+      event.preventDefault();
+      event.returnValue = '';
+    };
 
-  //   window.addEventListener('beforeunload', handleBeforeUnload);
+    window.addEventListener('beforeunload', handleBeforeUnload);
 
-  //   return () => {
-  //     window.removeEventListener('beforeunload', handleBeforeUnload);
-  //   };
-  // }, []);
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, []);
 
   return (
     <div>
-      <Header/>
+      <Header file={file} setFile={setFile} fileInfo={fileInfo} setFileInfo={setFileInfo} setUploadStatus={setUploadStatus}/>
       <div className="px-6 py-5 ">
         <TableHeader/>
         <TranscriptionsTable fileInfo={fileInfo} file={file!} uploadStatus={uploadStatus!}/>

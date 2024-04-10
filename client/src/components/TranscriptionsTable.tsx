@@ -34,7 +34,7 @@ export const TranscriptionsTable:React.FC<TableProps> = ({fileInfo,file,uploadSt
 
   const handleDownload = () => {
     if (transcription) {
-      generateTXT(transcription)
+      generateTXT(transcription, fileInfo?.transcriptionFileName!)
     } else {
       console.error('No transcription available');
     }
@@ -52,14 +52,6 @@ export const TranscriptionsTable:React.FC<TableProps> = ({fileInfo,file,uploadSt
           </TableHeader>
           <TableBody>
             <TableRow>
-              <TableCell>video2.mp3</TableCell>
-              <TableCell>19.62 MB - 3:02</TableCell>
-              <TableCell>OK</TableCell>
-              <TableCell><Button variant={"link"} className='pl-0'><Play className='w-4 h-4 mr-2'/>Começar</Button></TableCell>
-              <TableCell><Button variant={"link"} className='pl-0'><Download className='w-4 h-4 mr-2'/>Download</Button></TableCell>
-              <TableCell><Button className='bg-rose-700	'><Trash className='w-4 h-4 mr-2'/>Delete</Button></TableCell>
-            </TableRow>
-            <TableRow>
             {fileInfo ?
             <>
               <TableCell>
@@ -76,19 +68,25 @@ export const TranscriptionsTable:React.FC<TableProps> = ({fileInfo,file,uploadSt
                   </TableCell>
                 ) : (
                   <TableCell>
-                    <Button 
+                    <Button
+                      variant={"link"}
+                      className='pl-0'
                       onClick={handleTranscription}
                       disabled={uploadStatus !== UploadStatus.OK}
-                      style={uploadStatus !== UploadStatus.OK ? {backgroundColor:"#939393"} : {backgroundColor:"white"}}
                     >
+                      <Play className='w-4 h-4 mr-2'/>
                       Start
                     </Button>
                   </TableCell>
                 )
               )}
-              <TableCell className="px-6 py-4">
-                <Button style={!finishedTranscription ? {backgroundColor:"#939393"} : {backgroundColor:"white"}} onClick={handleDownload} disabled={!finishedTranscription}>Download</Button>
+              <TableCell>
+                <Button variant={"link"}  onClick={handleDownload} disabled={!finishedTranscription} className='pl-0'>
+                  <Download className='w-4 h-4 mr-2'/>
+                  Download
+                </Button>
               </TableCell>
+              <TableCell><Button className='bg-rose-700	'><Trash className='w-4 h-4 mr-2'/>Delete</Button></TableCell>
             </>
           :
             <TableCell className='p-3'>No file uploaded</TableCell>
