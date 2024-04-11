@@ -24,6 +24,7 @@ import { UploadStatus, generateFileInfo, notifyError } from "../utils/utils";
 import { FileInfo } from "../shared/FileType";
 import { processUpload } from "../utils/api-client";
 import { AxiosError } from "axios";
+import { UploadFileButton } from "./UploadFileButton";
 
 interface HeaderProps {
   file:File | undefined;
@@ -141,7 +142,8 @@ export const Header: React.FC<HeaderProps> = ({file, setFile, fileInfo, setFileI
         <div className="flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
           <form className="ml-auto flex-1 sm:flex-initial">
             <div className="relative">
-            <Popover>
+              <UploadFileButton/>
+            {/* <Popover>
               <PopoverTrigger asChild>
                 <Button variant="outline">
                   <PlusCircle className='w-4 h-4 mr-2'/>
@@ -175,7 +177,7 @@ export const Header: React.FC<HeaderProps> = ({file, setFile, fileInfo, setFileI
                   </Button>
                 </div>
               </PopoverContent>
-            </Popover>
+            </Popover> */}
             </div>
           </form>
           <DropdownMenu>
