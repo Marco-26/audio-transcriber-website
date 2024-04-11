@@ -1,11 +1,6 @@
 import { toast } from 'react-toastify';
 import { FileInfo } from '../shared/FileType';
 
-export enum UploadStatus {
-  OK,
-  ERROR
-}
-
 export const formatFileSize = (sizeInBytes: number): string => {
   const kilobyte = 1024;
   const megabyte = kilobyte * 1024;
@@ -22,35 +17,37 @@ export const formatFileSize = (sizeInBytes: number): string => {
   }
 }
 
-export const notifyError = (error:string) => 
-  toast.error(error, {
-    position: "bottom-right",
-    autoClose: 5000,
-    hideProgressBar: false,
-    closeOnClick: true,
-    pauseOnHover: true,
-    draggable: true,
-    progress: undefined,
-    theme: "colored",
-  }
-)
+export const notifyError = (error:string) => {
+    toast.error(error, {
+      position: "bottom-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "colored",
+    }
+  )
+}
 
-export const generateFileInfo = (file:File) => {
+export const generateFileInfo = (file:File, fileName:string) => {
   const info:FileInfo = {
     name:file.name,
     size:file.size,
-    transcriptionStatus:"Processing",
+    transcriptionStatus: "On Wait",
+    transcriptionFileName: fileName
   }
   return info
 }
 
-export const generateTXT = (transcription:string) => {
+export const generateTXT = (transcription:string,fileName:string) => {
   const blob = new Blob([transcription], { type: 'text/plain' });
   const url = URL.createObjectURL(blob);
 
   const a = document.createElement('a');
   a.href = url;
-  a.download = 'transcription.txt';
+  a.download = fileName+'.txt';
 
   a.click();
 
