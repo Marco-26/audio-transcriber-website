@@ -4,9 +4,3 @@ export type FileInfo = {
   transcriptionStatus: "On Wait" | "Processing" | "Ready",
   transcriptionFileName:string
 }
-
-export type Transcription = {
-  file:File,
-  info:FileInfo,
-  transcription:string
-}
