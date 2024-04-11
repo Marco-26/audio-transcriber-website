@@ -1,6 +1,4 @@
 import React from 'react'
-import { PlusCircle } from 'lucide-react';
-import { Button } from './UI/Button';
 import { Tabs, TabsList, TabsTrigger } from './UI/Tabs';
 const TableHeader = () =>  {
   return (
