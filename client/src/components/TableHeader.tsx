@@ -1,23 +1,34 @@
-import React from 'react'
+import React, { Dispatch, SetStateAction } from 'react'
 import { Tabs, TabsList, TabsTrigger } from './UI/Tabs';
-const TableHeader = () =>  {
+import { UploadFileButton } from './UploadFileButton';
+import { FileInfo } from '../shared/FileType';
+import { ToastContainer } from 'react-toastify';
+
+interface TableHeaderProps{
+  setFile: Dispatch<SetStateAction<File | undefined>>;
+  setFileInfo: Dispatch<SetStateAction<FileInfo | undefined>>;
+}
+
+const TableHeader:React.FC<TableHeaderProps> = ({setFile, setFileInfo}) =>  {
   return (
-    <div className='flex items-center justify-between mb-5'>
+    <div >
       
-      <div>
-        <h1 className='text-3xl'>Transcriptions</h1>
+      <div className='mb-7'>
+        <h1 className='text-3xl'>Dashboard</h1>
         <p>All your transcriptions in one place</p>
       </div>
-      <Tabs defaultValue="all">
-        <div className="flex items-center">
-          <TabsList>
-            <TabsTrigger value="all">All</TabsTrigger>
-            <TabsTrigger value="active">Processing</TabsTrigger>
-            <TabsTrigger value="draft">Done</TabsTrigger>
-          </TabsList>
-        </div>
-      </Tabs>
-      
+      <div className='flex items-center justify-between mb-5'>
+        <Tabs defaultValue="all">
+          <div className="flex items-center">
+            <TabsList>
+              <TabsTrigger value="all">All</TabsTrigger>
+              <TabsTrigger value="active">Processing</TabsTrigger>
+              <TabsTrigger value="draft">Done</TabsTrigger>
+            </TabsList>
+          </div>
+        </Tabs>
+        <UploadFileButton setFile={setFile} setFileInfo={setFileInfo}/>
+      </div>
     </div>
   )
 }

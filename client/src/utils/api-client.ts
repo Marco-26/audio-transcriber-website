@@ -6,7 +6,6 @@ type ErrorCallback = (error: AxiosError) => void
 export async function processUpload(file: File, onSuccess: SuccessCallback, onError: ErrorCallback) {
   const formData = new FormData()
   formData.append('file', file)
-  
   console.log("Uploading the file...")
 
   await axios.post('api/upload', formData)
