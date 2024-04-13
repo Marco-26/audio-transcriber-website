@@ -3,7 +3,7 @@ import { Tabs, TabsList, TabsTrigger } from './UI/Tabs';
 import { UploadFileButton } from './UploadFileButton';
 import { FileInfo } from '../shared/FileType';
 import { ToastContainer } from 'react-toastify';
-
+  
 interface TableHeaderProps{
   setFile: Dispatch<SetStateAction<File | undefined>>;
   setFileInfo: Dispatch<SetStateAction<FileInfo | undefined>>;
