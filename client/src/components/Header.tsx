@@ -1,4 +1,3 @@
-import { Dispatch, SetStateAction, useState } from "react"
 import { BrowserRouter as Router,  Link } from 'react-router-dom';
 import {
   DropdownMenu,
@@ -11,31 +10,11 @@ import {
 import {
   CircleUser,
   Package2,
-  PlusCircle,
-  Upload,
 } from "lucide-react"
 import { Sheet, SheetContent, SheetTrigger } from "./UI/Sheet";
 import { Button } from "./UI/Button";
-import { ChangeEvent, useRef } from "react";
-import { generateFileInfo, notifyError } from "../utils/utils";
-import { FileInfo } from "../shared/FileType";
-import { processUpload } from "../utils/api-client";
-import { AxiosError } from "axios";
-import { UploadFileButton } from "./UploadFileButton";
 
 export const Header = () => {
-  // const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
-  //   event.preventDefault()
-  //   if (event.target.files) {
-  //     const temp:File = event.target.files[0];
-  //     if (temp.type !== "audio/mpeg") {
-  //       notifyError("File type not supported...");
-  //       return;
-  //     }
-  //     setTempFile(temp)
-  //   }
-  // }
-
   return (
     <nav>
       <Router>

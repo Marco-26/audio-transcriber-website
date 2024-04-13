@@ -2,3 +2,4 @@ openai
 flask
 flask_cors
 pydub
+flask[async]
