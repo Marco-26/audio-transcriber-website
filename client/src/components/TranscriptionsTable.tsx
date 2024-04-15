@@ -7,28 +7,27 @@ import { Button } from './UI/Button';
 import { Play, Trash, Download } from 'lucide-react';
 
 type TableProps = {
-  fileInfo?:FileInfo
-  file:File
+  files:FileInfo[]
 }
 
-export const TranscriptionsTable:React.FC<TableProps> = ({fileInfo,file}):JSX.Element => {
+export const TranscriptionsTable:React.FC<TableProps> = ({files}):JSX.Element => {
   const [startedTranscription, setStartedTranscription] = useState<Boolean>(false)
   const [finishedTranscription, setFinishedTranscription] = useState<Boolean>(false)
   const [transcription, setTranscription] = useState<string>()
   
-  const handleTranscription = async () => {
+  const handleTranscription = async (file:FileInfo) => {
     setStartedTranscription(true)
 
-    await processTranscription(file!, 
+    await processTranscription(file, 
       (message) => setTranscription(message), 
       (error) => console.error(error))
       
     setFinishedTranscription(true)
   }
 
-  const handleDownload = () => {
+  const handleDownload = (file:FileInfo) => {
     if (transcription) {
-      generateTXT(transcription, fileInfo?.transcriptionFileName!)
+      generateTXT(transcription, file.transcriptionFileName!)
     } else {
       console.error('No transcription available');
     }
@@ -44,45 +43,47 @@ export const TranscriptionsTable:React.FC<TableProps> = ({fileInfo,file}):JSX.El
             <TableHead>Download</TableHead>
           </TableHeader>
           <TableBody>
-            <TableRow>
-            {fileInfo ?
-            <>
-              <TableCell>
-                {fileInfo.name}
-              </TableCell>
-              <TableCell>{formatFileSize(fileInfo.size)}</TableCell>
-              {finishedTranscription ? (
-                <TableCell>Finished</TableCell>
-              ) : (
-                startedTranscription ? (
-                  <TableCell>
-                    Processing<span className="dots">...</span>
-                  </TableCell>
+            {files.map((file,index) => (
+              <TableRow>
+              {files ?
+              <>
+                <TableCell>
+                  {file.name}
+                </TableCell>
+                <TableCell>{formatFileSize(file.size)}</TableCell>
+                {finishedTranscription ? (
+                  <TableCell>Finished</TableCell>
                 ) : (
-                  <TableCell>
-                    <Button
-                      variant={"link"}
-                      className='pl-0'
-                      onClick={handleTranscription}
-                    >
-                      <Play className='w-4 h-4 mr-2'/>
-                      Start
-                    </Button>
-                  </TableCell>
-                )
-              )}
-              <TableCell>
-                <Button variant={"link"}  onClick={handleDownload} disabled={!finishedTranscription} className='pl-0'>
-                  <Download className='w-4 h-4 mr-2'/>
-                  Download
-                </Button>
-              </TableCell>
-              <TableCell><Button className='bg-rose-700	'><Trash className='w-4 h-4 mr-2'/>Delete</Button></TableCell>
-            </>
-          :
-            <TableCell className='p-3'>No file uploaded</TableCell>
-          }
-            </TableRow>
+                  startedTranscription ? (
+                    <TableCell>
+                      Processing<span className="dots">...</span>
+                    </TableCell>
+                  ) : (
+                    <TableCell>
+                      <Button
+                        variant={"link"}
+                        className='pl-0'
+                        onClick={() => handleTranscription(file)}
+                      >
+                        <Play className='w-4 h-4 mr-2'/>
+                        Start
+                      </Button>
+                    </TableCell>
+                  )
+                )}
+                <TableCell>
+                  <Button variant={"link"}  onClick={() => handleDownload(file)} disabled={!finishedTranscription} className='pl-0'>
+                    <Download className='w-4 h-4 mr-2'/>
+                    Download
+                  </Button>
+                </TableCell>
+                <TableCell><Button className='bg-rose-700	'><Trash className='w-4 h-4 mr-2'/>Delete</Button></TableCell>
+              </>
+            :
+              <TableCell className='p-3'>No file uploaded</TableCell>
+            }
+              </TableRow>
+            ))}
           </TableBody>
         </Table>
       </div>

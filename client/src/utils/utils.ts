@@ -33,6 +33,7 @@ export const notifyError = (error:string) => {
 
 export const generateFileInfo = (file:File, fileName:string) => {
   const info:FileInfo = {
+    file:file,
     name:file.name,
     size:file.size,
     transcriptionStatus: "On Wait",

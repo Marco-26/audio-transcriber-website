@@ -7,8 +7,7 @@ import TableHeader from './components/TableHeader';
 import { Header } from './components/Header';
 
 function App() {
-  const [file, setFile] = useState<File>();
-  const [fileInfo, setFileInfo] = useState<FileInfo>();
+  const [files, setFile] = useState<FileInfo[] | undefined>([]);
 
   // useEffect(() => {
   //   const handleBeforeUnload = (event:any) => {
@@ -27,8 +26,8 @@ function App() {
     <div>
       <Header/>
       <div className="px-6 py-5 ">
-        <TableHeader setFile={setFile} setFileInfo={setFileInfo}/>
-        <TranscriptionsTable fileInfo={fileInfo} file={file!} />
+        <TableHeader files={files} setFile={setFile}/>
+        <TranscriptionsTable files={files!} />
       </div>
     </div>
 

@@ -2,14 +2,13 @@ import React, { Dispatch, SetStateAction } from 'react'
 import { Tabs, TabsList, TabsTrigger } from './UI/Tabs';
 import { UploadFileButton } from './UploadFileButton';
 import { FileInfo } from '../shared/FileType';
-import { ToastContainer } from 'react-toastify';
   
 interface TableHeaderProps{
-  setFile: Dispatch<SetStateAction<File | undefined>>;
-  setFileInfo: Dispatch<SetStateAction<FileInfo | undefined>>;
+  files: FileInfo[] | undefined;
+  setFile: Dispatch<SetStateAction<FileInfo[] | undefined>>;
 }
 
-const TableHeader:React.FC<TableHeaderProps> = ({setFile, setFileInfo}) =>  {
+const TableHeader:React.FC<TableHeaderProps> = ({files,setFile}) =>  {
   return (
     <div >
       
@@ -27,7 +26,7 @@ const TableHeader:React.FC<TableHeaderProps> = ({setFile, setFileInfo}) =>  {
             </TabsList>
           </div>
         </Tabs>
-        <UploadFileButton setFile={setFile} setFileInfo={setFileInfo}/>
+        <UploadFileButton files={files} setFile={setFile}  />
       </div>
     </div>
   )
