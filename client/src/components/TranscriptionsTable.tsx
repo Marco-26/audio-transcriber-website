@@ -11,18 +11,22 @@ type TableProps = {
 }
 
 export const TranscriptionsTable:React.FC<TableProps> = ({files}):JSX.Element => {
-  const [startedTranscription, setStartedTranscription] = useState<Boolean>(false)
+  const [startedTranscription, setStartedTranscription] = useState<boolean>(false)
   const [finishedTranscription, setFinishedTranscription] = useState<Boolean>(false)
   const [transcription, setTranscription] = useState<string>()
   
   const handleTranscription = async (file:FileInfo) => {
-    setStartedTranscription(true)
-
-    await processTranscription(file, 
+    setFinishedTranscription(false);
+    setStartedTranscription(true);
+    file.transcriptionStatus = "Processing...";
+    
+    await processTranscription(file.file, 
       (message) => setTranscription(message), 
       (error) => console.error(error))
-      
+    
+    setStartedTranscription(false)
     setFinishedTranscription(true)
+    file.transcriptionStatus="Finished"
   }
 
   const handleDownload = (file:FileInfo) => {
@@ -51,28 +55,29 @@ export const TranscriptionsTable:React.FC<TableProps> = ({files}):JSX.Element =>
                   {file.name}
                 </TableCell>
                 <TableCell>{formatFileSize(file.size)}</TableCell>
-                {finishedTranscription ? (
-                  <TableCell>Finished</TableCell>
-                ) : (
-                  startedTranscription ? (
-                    <TableCell>
-                      Processing<span className="dots">...</span>
-                    </TableCell>
-                  ) : (
-                    <TableCell>
-                      <Button
-                        variant={"link"}
-                        className='pl-0'
-                        onClick={() => handleTranscription(file)}
-                      >
-                        <Play className='w-4 h-4 mr-2'/>
-                        Start
-                      </Button>
-                    </TableCell>
-                  )
-                )}
+                {file.transcriptionStatus==="On Wait" ? 
+                  <TableCell> 
+                    <Button
+                      variant={"link"}
+                      className='pl-0'
+                      onClick={() => handleTranscription(file)}
+                      disabled={startedTranscription}
+                    >
+                      <Play className='w-4 h-4 mr-2'/>
+                      Start
+                    </Button> 
+                  </TableCell>
+                    :
+                  <TableCell>{file.transcriptionStatus}</TableCell>
+                  }
                 <TableCell>
-                  <Button variant={"link"}  onClick={() => handleDownload(file)} disabled={!finishedTranscription} className='pl-0'>
+                  <Button variant={"link"}  
+                    onClick={() => handleDownload(file)} 
+                    disabled={
+                      !finishedTranscription || 
+                      file.transcriptionStatus !== "Finished"
+                    } 
+                    className='pl-0'>
                     <Download className='w-4 h-4 mr-2'/>
                     Download
                   </Button>
