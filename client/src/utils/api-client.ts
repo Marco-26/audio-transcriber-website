@@ -20,19 +20,19 @@ export async function processUpload(file: File, onSuccess: SuccessCallback, onEr
     });
 }
 
-export async function processTranscription(file: FileInfo, onSuccess: SuccessCallback, onError: ErrorCallback) {
-  // const data = {
-  //   filename: file.name,
-  // };
+export async function processTranscription(file: File, onSuccess: SuccessCallback, onError: ErrorCallback) {
+  const data = {
+    filename: file.name,
+  };
 
-  // console.log("Starting transcription...")
-  // console.log("This might take awhile")
-
-  // await axios.post('api/transcript', data)
-  //   .then((response: AxiosResponse<{ message: string }>) => {
-  //     onSuccess("" + response.data);
-  //   })
-  //   .catch((error: AxiosError) => {
-  //     onError(error);
-  //   });
+  console.log("Starting transcription...")
+  console.log("This might take awhile")
+  
+  await axios.post('api/transcript', data)
+    .then((response: AxiosResponse<{ message: string }>) => {
+      onSuccess("" + response.data);
+    })
+    .catch((error: AxiosError) => {
+      onError(error);
+    });
 }
