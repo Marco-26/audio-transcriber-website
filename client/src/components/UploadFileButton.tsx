@@ -11,7 +11,7 @@ import { processUpload } from '../utils/api-client';
 import { AxiosError } from 'axios';
 import { Dispatch, SetStateAction } from 'react';
 import { FileInfo } from '../shared/FileType';
-import { generateFileInfo } from '../utils/utils';
+import { generateFileInfo, notifyError } from '../utils/utils';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
 
@@ -50,18 +50,26 @@ export const UploadFileButton: React.FC<UploadFileButtonProps> = ({ files, setFi
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     const fileTemp = values.file[0];
     console.log("Submitting");
-    await processUpload(
-      fileTemp,
-      (message: string) => {
-        console.log(message);
-      },
-      (error: AxiosError) => {
-        console.error('Error uploading files:', error);
-        return
-      }
-    );
-    const file = generateFileInfo(fileTemp, "test")
-    addNewFileEntry(file);
+    try {
+      await processUpload(
+        fileTemp,
+        (message: string) => {
+          console.log(message);
+        },
+        (error: AxiosError) => {
+          console.error('Error uploading file:', error);
+          throw error;
+        }
+      );
+  
+      const file = generateFileInfo(fileTemp, "test");
+      addNewFileEntry(file);
+      console.log("File entry added successfully");
+    } catch (error) {
+      console.error('Error during file upload or processing:', error);
+      notifyError("Error uploading the file...")
+      return;
+    }
   };
 
   return (
