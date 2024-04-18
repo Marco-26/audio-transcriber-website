@@ -20,6 +20,7 @@ class Server:
 
         self.app.route('/api/upload', methods=['POST'])(self.upload_endpoint)
         self.app.route('/api/transcript', methods=['POST'])(self.transcript_endpoint)
+        self.app.route('/api/delete/<filename>', methods=['DELETE'])(self.delete_endpoint)
     
     def upload_endpoint(self):
         if 'file' not in request.files:
@@ -40,6 +41,15 @@ class Server:
         os.remove(file)
         return transcript
     
+    def delete_endpoint(self, filename):
+        print("Nome do ficheiro: " + filename)
+        try:
+            os.remove(self.data_folder_path+"/"+filename)
+        except Exception as e:
+            return jsonify(error="There was an error deleting the file...")
+
+        return jsonify(message="Sucessfully deleted the file")
+        
     async def transcribe_audio(self, file):
         try:
             process = subprocess.Popen(['python', 'transcribe.py', file], stdout=subprocess.PIPE, stderr=subprocess.PIPE)

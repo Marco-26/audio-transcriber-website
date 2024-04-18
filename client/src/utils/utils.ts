@@ -54,3 +54,10 @@ export const generateTXT = (transcription:string,fileName:string) => {
 
   URL.revokeObjectURL(url);
 }
+
+export const removeFile = (fileToRemove: File,files:FileInfo[]) => {
+  if (files) {
+    const updatedFiles = files.filter(file => file.file !== fileToRemove);
+    return updatedFiles;
+  }
+};

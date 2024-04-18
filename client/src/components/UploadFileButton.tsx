@@ -23,12 +23,12 @@ const formSchema = z.object({
 
 interface UploadFileButtonProps {
   files:FileInfo[] | undefined; 
-  setFile: Dispatch<SetStateAction<FileInfo[] | undefined>>;
+  setFiles: Dispatch<SetStateAction<FileInfo[] | undefined>>;
 }
 
-export const UploadFileButton: React.FC<UploadFileButtonProps> = ({ files, setFile }): JSX.Element => {
+export const UploadFileButton: React.FC<UploadFileButtonProps> = ({ files, setFiles }): JSX.Element => {
   const addNewFileEntry = (file: FileInfo,) => {
-    setFile((prevFiles) => {
+    setFiles((prevFiles) => {
       if (!prevFiles) {
         return [file];
       } else {
