@@ -5,10 +5,10 @@ import { FileInfo } from '../shared/FileType';
   
 interface TableHeaderProps{
   files: FileInfo[] | undefined;
-  setFile: Dispatch<SetStateAction<FileInfo[] | undefined>>;
+  setFiles: Dispatch<SetStateAction<FileInfo[] | undefined>>;
 }
 
-const TableHeader:React.FC<TableHeaderProps> = ({files,setFile}) =>  {
+const TableHeader:React.FC<TableHeaderProps> = ({files,setFiles}) =>  {
   return (
     <div >
       
@@ -26,7 +26,7 @@ const TableHeader:React.FC<TableHeaderProps> = ({files,setFile}) =>  {
             </TabsList>
           </div>
         </Tabs>
-        <UploadFileButton files={files} setFile={setFile}  />
+        <UploadFileButton files={files} setFiles={setFiles}  />
       </div>
     </div>
   )

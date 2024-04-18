@@ -1,16 +1,18 @@
-import React, { useState } from 'react';
-import { processTranscription } from '../utils/api-client';
+import React, { Dispatch, SetStateAction, useState } from 'react';
+import { processDelete, processTranscription } from '../utils/api-client';
 import { FileInfo } from '../shared/FileType';
 import { formatFileSize, generateTXT } from '../utils/utils';
 import { Table,TableBody, TableCell, TableHead, TableHeader, TableRow } from './UI/Table';
 import { Button } from './UI/Button';
 import { Play, Trash, Download } from 'lucide-react';
+import {removeFile} from '../utils/utils'
 
 type TableProps = {
   files:FileInfo[]
+  setFiles: Dispatch<SetStateAction<FileInfo[] | undefined>>;
 }
 
-export const TranscriptionsTable:React.FC<TableProps> = ({files}):JSX.Element => {
+export const TranscriptionsTable:React.FC<TableProps> = ({files,setFiles}):JSX.Element => {
   const [startedTranscription, setStartedTranscription] = useState<boolean>(false)
   const [finishedTranscription, setFinishedTranscription] = useState<Boolean>(false)
   const [transcription, setTranscription] = useState<string>()
@@ -36,6 +38,19 @@ export const TranscriptionsTable:React.FC<TableProps> = ({files}):JSX.Element =>
       console.error('No transcription available');
     }
   };
+
+  const handleDelete = async (file:FileInfo) => {
+    if(!file){
+      return;
+    }
+
+    await processDelete(file.name, 
+      (message) => {
+        const updatedFiles= removeFile(file.file,files)
+        setFiles(updatedFiles)
+      }, 
+      (error) => console.error(error))
+  } 
 
   return (
     <div className='border rounded'>
@@ -82,7 +97,7 @@ export const TranscriptionsTable:React.FC<TableProps> = ({files}):JSX.Element =>
                     Download
                   </Button>
                 </TableCell>
-                <TableCell><Button className='bg-rose-700	'><Trash className='w-4 h-4 mr-2'/>Delete</Button></TableCell>
+                <TableCell><Button className='bg-rose-700' onClick={()=> handleDelete(file)}><Trash className='w-4 h-4 mr-2'/>Delete</Button></TableCell>
               </>
             :
               <TableCell className='p-3'>No file uploaded</TableCell>
