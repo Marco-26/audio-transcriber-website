@@ -1,11 +1,13 @@
-import axios, { AxiosResponse, AxiosError } from 'axios';
+ import axios, { AxiosResponse, AxiosError } from 'axios';
 
 type SuccessCallback = (message: string) => void
 type ErrorCallback = (error: AxiosError) => void
 
 export async function processUpload(file: File, onSuccess: SuccessCallback, onError: ErrorCallback) {
   const formData = new FormData()
-  formData.append('file', file)
+  // Append each file to formData
+  formData.append("file", file);
+  
   console.log("Uploading the file...")
 
   await axios.post('api/upload', formData)
@@ -24,8 +26,20 @@ export async function processTranscription(file: File, onSuccess: SuccessCallbac
 
   console.log("Starting transcription...")
   console.log("This might take awhile")
-
+  
   await axios.post('api/transcript', data)
+    .then((response: AxiosResponse<{ message: string }>) => {
+      onSuccess("" + response.data);
+    })
+    .catch((error: AxiosError) => {
+      onError(error);
+    });
+}
+
+export async function processDelete(filename: string, onSuccess: SuccessCallback, onError: ErrorCallback) {
+  console.log("Deleting file...")
+
+  await axios.delete('api/delete/'+filename)
     .then((response: AxiosResponse<{ message: string }>) => {
       onSuccess("" + response.data);
     })

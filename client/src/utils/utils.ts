@@ -33,6 +33,7 @@ export const notifyError = (error:string) => {
 
 export const generateFileInfo = (file:File, fileName:string) => {
   const info:FileInfo = {
+    file:file,
     name:file.name,
     size:file.size,
     transcriptionStatus: "On Wait",
@@ -53,3 +54,10 @@ export const generateTXT = (transcription:string,fileName:string) => {
 
   URL.revokeObjectURL(url);
 }
+
+export const removeFile = (fileToRemove: File,files:FileInfo[]) => {
+  if (files) {
+    const updatedFiles = files.filter(file => file.file !== fileToRemove);
+    return updatedFiles;
+  }
+};

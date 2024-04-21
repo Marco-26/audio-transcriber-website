@@ -1,38 +1,56 @@
-import React, { useState } from 'react';
-import { processTranscription } from '../utils/api-client';
+import React, { Dispatch, SetStateAction, useState } from 'react';
+import { processDelete, processTranscription } from '../utils/api-client';
 import { FileInfo } from '../shared/FileType';
 import { formatFileSize, generateTXT } from '../utils/utils';
 import { Table,TableBody, TableCell, TableHead, TableHeader, TableRow } from './UI/Table';
 import { Button } from './UI/Button';
 import { Play, Trash, Download } from 'lucide-react';
+import {removeFile} from '../utils/utils'
 
 type TableProps = {
-  fileInfo?:FileInfo
-  file:File
+  files:FileInfo[]
+  setFiles: Dispatch<SetStateAction<FileInfo[] | undefined>>;
 }
 
-export const TranscriptionsTable:React.FC<TableProps> = ({fileInfo,file}):JSX.Element => {
-  const [startedTranscription, setStartedTranscription] = useState<Boolean>(false)
+export const TranscriptionsTable:React.FC<TableProps> = ({files,setFiles}):JSX.Element => {
+  const [startedTranscription, setStartedTranscription] = useState<boolean>(false)
   const [finishedTranscription, setFinishedTranscription] = useState<Boolean>(false)
   const [transcription, setTranscription] = useState<string>()
   
-  const handleTranscription = async () => {
-    setStartedTranscription(true)
-
-    await processTranscription(file!, 
+  const handleTranscription = async (file:FileInfo) => {
+    setFinishedTranscription(false);
+    setStartedTranscription(true);
+    file.transcriptionStatus = "Processing...";
+    
+    await processTranscription(file.file, 
       (message) => setTranscription(message), 
       (error) => console.error(error))
-      
+    
+    setStartedTranscription(false)
     setFinishedTranscription(true)
+    file.transcriptionStatus="Finished"
   }
 
-  const handleDownload = () => {
+  const handleDownload = (file:FileInfo) => {
     if (transcription) {
-      generateTXT(transcription, fileInfo?.transcriptionFileName!)
+      generateTXT(transcription, file.transcriptionFileName!)
     } else {
       console.error('No transcription available');
     }
   };
+
+  const handleDelete = async (file:FileInfo) => {
+    if(!file){
+      return;
+    }
+
+    await processDelete(file.name, 
+      (message) => {
+        const updatedFiles= removeFile(file.file,files)
+        setFiles(updatedFiles)
+      }, 
+      (error) => console.error(error))
+  } 
 
   return (
     <div className='border rounded'>
@@ -44,45 +62,48 @@ export const TranscriptionsTable:React.FC<TableProps> = ({fileInfo,file}):JSX.El
             <TableHead>Download</TableHead>
           </TableHeader>
           <TableBody>
-            <TableRow>
-            {fileInfo ?
-            <>
-              <TableCell>
-                {fileInfo.name}
-              </TableCell>
-              <TableCell>{formatFileSize(fileInfo.size)}</TableCell>
-              {finishedTranscription ? (
-                <TableCell>Finished</TableCell>
-              ) : (
-                startedTranscription ? (
-                  <TableCell>
-                    Processing<span className="dots">...</span>
-                  </TableCell>
-                ) : (
-                  <TableCell>
+            {files.map((file,index) => (
+              <TableRow>
+              {files ?
+              <>
+                <TableCell>
+                  {file.name}
+                </TableCell>
+                <TableCell>{formatFileSize(file.size)}</TableCell>
+                {file.transcriptionStatus==="On Wait" ? 
+                  <TableCell> 
                     <Button
                       variant={"link"}
                       className='pl-0'
-                      onClick={handleTranscription}
+                      onClick={() => handleTranscription(file)}
+                      disabled={startedTranscription}
                     >
                       <Play className='w-4 h-4 mr-2'/>
                       Start
-                    </Button>
+                    </Button> 
                   </TableCell>
-                )
-              )}
-              <TableCell>
-                <Button variant={"link"}  onClick={handleDownload} disabled={!finishedTranscription} className='pl-0'>
-                  <Download className='w-4 h-4 mr-2'/>
-                  Download
-                </Button>
-              </TableCell>
-              <TableCell><Button className='bg-rose-700	'><Trash className='w-4 h-4 mr-2'/>Delete</Button></TableCell>
-            </>
-          :
-            <TableCell className='p-3'>No file uploaded</TableCell>
-          }
-            </TableRow>
+                    :
+                  <TableCell>{file.transcriptionStatus}</TableCell>
+                  }
+                <TableCell>
+                  <Button variant={"link"}  
+                    onClick={() => handleDownload(file)} 
+                    disabled={
+                      !finishedTranscription || 
+                      file.transcriptionStatus !== "Finished"
+                    } 
+                    className='pl-0'>
+                    <Download className='w-4 h-4 mr-2'/>
+                    Download
+                  </Button>
+                </TableCell>
+                <TableCell><Button className='bg-rose-700' onClick={()=> handleDelete(file)}><Trash className='w-4 h-4 mr-2'/>Delete</Button></TableCell>
+              </>
+            :
+              <TableCell className='p-3'>No file uploaded</TableCell>
+            }
+              </TableRow>
+            ))}
           </TableBody>
         </Table>
       </div>
