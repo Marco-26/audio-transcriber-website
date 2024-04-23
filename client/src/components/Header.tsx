@@ -14,6 +14,7 @@ import {
 import { Sheet, SheetContent, SheetTrigger } from "./UI/Sheet";
 import { Button } from "./UI/Button";
 import { User } from '../shared/User';
+import LoginButton from './LoginButton';
 
 type HeaderProps={
   user:User | undefined
@@ -109,11 +110,7 @@ export const Header:React.FC<HeaderProps>= ({user}):JSX.Element => {
             </DropdownMenuContent>
           </DropdownMenu>
             : 
-            <Link to={"login"}>
-              <Button>
-                Login  
-              </Button>
-            </Link>
+            <LoginButton/>
           }
         </div>
       </header>
