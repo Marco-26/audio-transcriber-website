@@ -3,7 +3,6 @@ import './styles/globals.css'
 
 import { Header } from './components/Header';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import Login from './components/Pages/Login';
 import Home from './components/Pages/Home';
 import { User } from './shared/User';
 
@@ -24,15 +23,8 @@ function App() {
 
   return (
     <div>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Header  user={user}/>}>
-            <Route index element={<Home />} />
-            <Route path='login' element={<Login />} />
-          </Route>
-        </Routes>
-    </BrowserRouter>
-      
+      <Header user={user}/>
+      <Home user={user}/>
     </div>
   );
 }
