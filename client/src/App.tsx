@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import './styles/globals.css'
-import { FileInfo } from './shared/FileType';
 
-import { TranscriptionsTable } from './components/TranscriptionsTable';
-import TableHeader from './components/TableHeader';
 import { Header } from './components/Header';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import Login from './components/Pages/Login';
+import Home from './components/Pages/Home';
+import { User } from './shared/User';
 
 function App() {
-  const [files, setFiles] = useState<FileInfo[] | undefined>([]);
-
+  const [user, setUser] = useState<User | undefined>(undefined);
   // useEffect(() => {
   //   const handleBeforeUnload = (event:any) => {
   //     event.preventDefault();
@@ -24,13 +24,16 @@ function App() {
 
   return (
     <div>
-      <Header/>
-      <div className="px-6 py-5 ">
-        <TableHeader files={files} setFiles={setFiles}/>
-        <TranscriptionsTable files={files!} setFiles={setFiles}/>
-      </div>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Header  user={user}/>}>
+            <Route index element={<Home />} />
+            <Route path='login' element={<Login />} />
+          </Route>
+        </Routes>
+    </BrowserRouter>
+      
     </div>
-
   );
 }
 
