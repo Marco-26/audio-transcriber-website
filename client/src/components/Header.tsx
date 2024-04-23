@@ -13,8 +13,13 @@ import {
 } from "lucide-react"
 import { Sheet, SheetContent, SheetTrigger } from "./UI/Sheet";
 import { Button } from "./UI/Button";
+import { User } from '../shared/User';
 
-export const Header = () => {
+type HeaderProps={
+  user:User | undefined
+}
+
+export const Header:React.FC<HeaderProps>= ({user}):JSX.Element => {
   return (
     <nav>
       <Router>
@@ -86,6 +91,7 @@ export const Header = () => {
         <div className="flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
           <form className="ml-auto flex-1 sm:flex-initial">
           </form>
+          {user!=null ?
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="secondary" size="icon" className="rounded-full">
@@ -102,6 +108,13 @@ export const Header = () => {
               <DropdownMenuItem>Logout</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+            : 
+            <Link to={"login"}>
+              <Button>
+                Login  
+              </Button>
+            </Link>
+          }
         </div>
       </header>
       </Router>
