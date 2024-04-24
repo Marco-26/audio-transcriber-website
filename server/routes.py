@@ -12,11 +12,14 @@ def register_routes(app, db):
         password = request.json['password']
 
         if not email or not password:
-            return jsonify(error="Please insert your email and password")
+            return jsonify(error="Please insert your email and password"),400
 
         user = User.query.filter_by(email=email).first()
         if not user:
-            return jsonify(error="Unathorized")
+            return jsonify(error="Unathorized"), 401
+
+        if user.password != password:
+            return jsonify(error="Unathorized"), 401
 
         return jsonify({
             "id":user.id,

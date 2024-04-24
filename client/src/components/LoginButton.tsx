@@ -22,6 +22,7 @@ import { processLogin } from '../utils/api-client';
 import { AxiosError, AxiosResponse } from 'axios';
 import { Dispatch, SetStateAction } from 'react';
 import { User } from '../shared/User';
+import { Label } from './UI/Label';
 
 const loginFormSchema = z.object({
   email: z.string().email('Invalid email format'),
@@ -34,6 +35,7 @@ interface LoginButtonProps{
 }
 
 const LoginButton:React.FC<LoginButtonProps> = ({user,setUser}) => {
+  const [errorLogginIn, setErrorLogginIn] = useState<Boolean>(false);
   const form = useForm<z.infer<typeof loginFormSchema>>({
     resolver: zodResolver(loginFormSchema),
   })
@@ -43,14 +45,17 @@ const LoginButton:React.FC<LoginButtonProps> = ({user,setUser}) => {
       values.email,
       values.password,
       (response:AxiosResponse) =>{
-        setUser({
-          id: response.data["id"],
-          name:response.data["name"],
-          email: response.data["email"]
-        })
+        if(response.status >= 200 && response.status < 300){
+          setUser({
+            id: response.data["id"],
+            name:response.data["name"],
+            email: response.data["email"]
+          })
+        }
       },
       (error: AxiosError) => {
-        console.error('Error logging in:', error);
+        setErrorLogginIn(true);
+        console.log(error)
       }
     );
   }
@@ -99,6 +104,8 @@ const LoginButton:React.FC<LoginButtonProps> = ({user,setUser}) => {
                     </FormItem>
                   )}
                 />
+                <Button variant={"link"} className='p-0 m-0'>Sign Up</Button>
+                {errorLogginIn && <Label className='text-red-600	'>The e-mail address and/or password you specified are not correct.</Label> }
                 <Button type="submit" disabled={form.formState.isSubmitting} className="flex gap-1">
                   {form.formState.isSubmitting && <Loader2 className="h-4 w-4 animate-spin" />}
                   Submit
