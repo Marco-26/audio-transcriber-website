@@ -8,6 +8,7 @@ import { User } from './shared/User';
 
 function App() {
   const [user, setUser] = useState<User | undefined>(undefined);
+  
   // useEffect(() => {
   //   const handleBeforeUnload = (event:any) => {
   //     event.preventDefault();
@@ -23,7 +24,7 @@ function App() {
 
   return (
     <div>
-      <Header user={user}/>
+      <Header user={user} setUser={setUser}/>
       <Home user={user}/>
     </div>
   );

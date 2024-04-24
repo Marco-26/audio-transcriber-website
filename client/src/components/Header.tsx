@@ -15,12 +15,14 @@ import { Sheet, SheetContent, SheetTrigger } from "./UI/Sheet";
 import { Button } from "./UI/Button";
 import { User } from '../shared/User';
 import LoginButton from './LoginButton';
+import { Dispatch, SetStateAction } from 'react';
 
 type HeaderProps={
-  user:User | undefined
+  user:User | undefined;
+  setUser: Dispatch<SetStateAction<User | undefined>>;
 }
 
-export const Header:React.FC<HeaderProps>= ({user}):JSX.Element => {
+export const Header:React.FC<HeaderProps>= ({user,setUser}):JSX.Element => {
   return (
     <nav>
       <Router>
@@ -95,22 +97,22 @@ export const Header:React.FC<HeaderProps>= ({user}):JSX.Element => {
           {user!=null ?
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="secondary" size="icon" className="rounded-full">
-                <CircleUser className="h-5 w-5" />
-                <span className="sr-only">Toggle user menu</span>
-              </Button>
+              <div className='flex items-center'>
+                <Button variant="secondary" size="icon" className="rounded-full mr-3">
+                  <CircleUser className="h-5 w-5" />
+                  <span className="sr-only">Toggle user menu</span>
+                </Button>
+                <p>{user.name}</p>
+              </div>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>Settings</DropdownMenuItem>
-              <DropdownMenuItem>Support</DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem>Logout</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
             : 
-            <LoginButton/>
+            <LoginButton user={user} setUser={setUser}/>
           }
         </div>
       </header>
