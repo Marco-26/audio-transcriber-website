@@ -2,34 +2,50 @@ from flask import  jsonify, request
 from models import User
 import os
 from utils import temp_save_file
+from app import data_folder_path 
+
 
 def register_routes(app, db):
+    @app.route("/login", methods=['POST'])
+    def login():
+        email = request.json['email']
+        password = request.json['password']
+
+        if not email or not password:
+            return jsonify(error="Please insert your email and password")
+
+        user = User.query.filter_by(email=email).first()
+        if not user:
+            return jsonify(error="Unathorized")
+
+        return jsonify(message="Hello")
+
     @app.route("/api/upload", methods=['POST'])
-    def upload_endpoint(self):
+    def upload_endpoint():
         if 'file' not in request.files:
             return jsonify(error="No file provided"), 400
 
         file = request.files['file']
-        temp_save_file(self.data_folder_path, file.filename, file)
+        temp_save_file(data_folder_path, file.filename, file)
 
         return jsonify(message="File uploaded sucessfuly")
     
     @app.route("/api/transcript", methods=['POST'])
-    async def transcript_endpoint(self):
+    async def transcript_endpoint():
         data = request.get_json()
         filename = data.get('filename')
-        file = os.path.join(self.data_folder_path, filename)
+        file = os.path.join(data_folder_path, filename)
 
-        transcript = await self.transcribe_audio(file)
+        #transcript = await transcribe_audio(file)
 
         os.remove(file)
         return transcript
     
     @app.route("/api/delete/<filename>", methods=['DELETE'])
-    def delete_endpoint(self, filename):
+    def delete_endpoint(filename):
         print("Nome do ficheiro: " + filename)
         try:
-            os.remove(self.data_folder_path+"/"+filename)
+            os.remove(data_folder_path+"/"+filename)
         except Exception as e:
             return jsonify(error="There was an error deleting the file...")
 
