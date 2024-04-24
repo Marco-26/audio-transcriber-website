@@ -6,12 +6,12 @@ import os
 from flask_cors import CORS
 
 db = SQLAlchemy()
+data_folder_path = os.path.join(os.path.dirname(__file__), 'data')
 
 def create_app():
   app = Flask(__name__)
   app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
   client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-  data_folder_path = os.path.join(os.path.dirname(__file__), 'data')
   if client.api_key is None:
     raise OpenAIError("OpenAI API key is missing. Set it using OPENAI_API_KEY environment variable.")
 
