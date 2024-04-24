@@ -1,9 +1,8 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Button } from "./UI/Button"
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -17,21 +16,43 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from 'react-hook-form';
 import { ToastContainer } from 'react-toastify';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from './UI/Dialog';
-import { PlusCircle, Loader2, UserRound } from 'lucide-react';
+import { Loader2, UserRound } from 'lucide-react';
 import { DialogDescription } from '@radix-ui/react-dialog';
+import { processLogin } from '../utils/api-client';
+import { AxiosError, AxiosResponse } from 'axios';
+import { Dispatch, SetStateAction } from 'react';
+import { User } from '../shared/User';
 
 const loginFormSchema = z.object({
   email: z.string().email('Invalid email format'),
   password: z.string().min(6, 'Password must be at least 6 characters long')
 })
 
-const LoginButton = () => {
+interface LoginButtonProps{
+  user:User | undefined;
+  setUser: Dispatch<SetStateAction<User | undefined>>;
+}
+
+const LoginButton:React.FC<LoginButtonProps> = ({user,setUser}) => {
   const form = useForm<z.infer<typeof loginFormSchema>>({
     resolver: zodResolver(loginFormSchema),
   })
   
-  const onSubmit = (values: z.infer<typeof loginFormSchema>) => {
-    console.log(values)
+  const onSubmit = async (values: z.infer<typeof loginFormSchema>) => {
+    await processLogin(
+      values.email,
+      values.password,
+      (response:AxiosResponse) =>{
+        setUser({
+          id: response.data["id"],
+          name:response.data["name"],
+          email: response.data["email"]
+        })
+      },
+      (error: AxiosError) => {
+        console.error('Error logging in:', error);
+      }
+    );
   }
 
   return (

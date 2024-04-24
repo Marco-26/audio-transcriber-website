@@ -18,7 +18,11 @@ def register_routes(app, db):
         if not user:
             return jsonify(error="Unathorized")
 
-        return jsonify(message="Hello")
+        return jsonify({
+            "id":user.id,
+            "name":user.name,
+            "email":user.email
+        })
 
     @app.route("/api/upload", methods=['POST'])
     def upload_endpoint():
