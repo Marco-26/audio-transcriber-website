@@ -63,3 +63,20 @@ export async function processLogin(email: string, password:string, onResponse: R
       onError(error);
     });
 }
+
+export async function processSignup(email: string, password:string, confirmPassword:string,name:string, onResponse: ResponseCallback,onError: ErrorCallback) {
+  const data = {
+    "email": email,
+    "password": password,
+    "confirmPassword":confirmPassword,
+    "name":name
+  };
+
+  await axios.post('/signup', data)
+    .then((response: AxiosResponse<{ message: string }>) => {
+      onResponse(response)
+    })
+    .catch((error: AxiosError) => {
+      onError(error);
+    });
+}
