@@ -14,6 +14,9 @@ import { DialogHeader } from './UI/Dialog';
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from './UI/Form';
 import { Input } from './UI/Input';
 import SignupForm from './SignupForm';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from './UI/Card';
+import { Label } from './UI/Label';
+import { Link } from 'react-router-dom';
 
 interface LoginButtonProps{
   user:User | undefined;
@@ -55,42 +58,66 @@ const LoginForm:React.FC<LoginButtonProps> = ({user,setUser}) => {
 
   return (
     <>
-     <ToastContainer />
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          <FormField
-              control={form.control}
-              name="email"
-              render={() => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input type="email" placeholder='Type here your email...' {...form.register("email")}/>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="password"
-              render={() => (
-                <FormItem>
-                  <FormLabel>Password</FormLabel>
-                  <FormControl>
-                    <Input type="password" placeholder='Type here your password...' {...form.register("password")}/>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <SignupForm setUser={setUser}/>
-            <Button type="submit" disabled={form.formState.isSubmitting} className="flex gap-1">
+      <ToastContainer />
+      <div className="flex justify-center items-center h-screen">
+        <Card className="w-full max-w-sm">
+          <CardHeader>
+            <CardTitle className="text-2xl">Login</CardTitle>
+            <CardDescription>
+              Enter your email below to login to your account.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="grid gap-4">
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                <div className="grid gap-2">
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={() => (
+                      <FormItem>
+                        <FormLabel>Email</FormLabel>
+                        <FormControl>
+                          <Input id="email" type="email" placeholder="m@example.com" required {...form.register("email")}/>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <FormField
+                    control={form.control}
+                    name="password"
+                    render={() => (
+                      <FormItem>
+                        <FormLabel>Password</FormLabel>
+                        <FormControl>
+                          <Input id="password" type="password" required {...form.register("password")}/>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </form>
+          </Form>
+          </CardContent>
+          <CardFooter className='flex flex-col'>
+            <Button type="submit" disabled={form.formState.isSubmitting} className="flex gap-1 w-full mb-2">
               {form.formState.isSubmitting && <Loader2 className="h-4 w-4 animate-spin" />}
               Submit
             </Button>
-        </form>
-      </Form>
+            <div>
+              <Label className='mr-2'>Don't have an account?</Label>
+              <Link to="/signup">
+                Signup
+              </Link>
+            </div>
+            
+          </CardFooter>
+        </Card>
+        </div>
     </>
   )
 }

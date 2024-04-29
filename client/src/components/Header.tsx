@@ -10,12 +10,12 @@ import {
 import {
   CircleUser,
   Package2,
+  User as UserIcon,
 } from "lucide-react"
-import { Sheet, SheetContent, SheetTrigger } from "./UI/Sheet";
 import { Button } from "./UI/Button";
 import { User } from '../shared/User';
 import { Dispatch, SetStateAction } from 'react';
-import LoginForm from './LoginForm';
+
 
 type HeaderProps={
   user:User | undefined;
@@ -42,11 +42,14 @@ export const Header:React.FC<HeaderProps>= ({user,setUser}):JSX.Element => {
             >
               About
             </Link>
-
+          
           {!user ? 
-          <Link to="login">
-            <Button>LogIn</Button>
-          </Link>
+            <Link to="login">
+              <Button>
+                <UserIcon className='mr-2'/>
+                Login
+              </Button>
+            </Link>
           : 
             <div className="flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
                 <DropdownMenu>
