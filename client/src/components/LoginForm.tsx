@@ -25,7 +25,6 @@ interface LoginButtonProps{
 const loginFormSchema = z.object({
   email: z.string().email("This is not a valid email."),
   password: z.string().min(6,"Password needs to be atleast 6 characters long"),
-  name:z.string()
 })
 
 const LoginForm:React.FC<LoginButtonProps> = ({setUser}) => {
@@ -60,6 +59,8 @@ const LoginForm:React.FC<LoginButtonProps> = ({setUser}) => {
       <ToastContainer />
       <div className="flex justify-center items-center h-93">
         <Card className="w-full max-w-sm">
+        <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <CardHeader>
             <CardTitle className="text-2xl">Login</CardTitle>
             <CardDescription>
@@ -67,8 +68,7 @@ const LoginForm:React.FC<LoginButtonProps> = ({setUser}) => {
             </CardDescription>
           </CardHeader>
           <CardContent className="grid gap-4">
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            
                 <div className="grid gap-2">
                   <FormField
                     control={form.control}
@@ -99,8 +99,7 @@ const LoginForm:React.FC<LoginButtonProps> = ({setUser}) => {
                     )}
                   />
                 </div>
-              </form>
-          </Form>
+             
           </CardContent>
           <CardFooter className='flex flex-col'>
             <Button type="submit" disabled={form.formState.isSubmitting} className="flex gap-1 w-full mb-2">
@@ -114,6 +113,8 @@ const LoginForm:React.FC<LoginButtonProps> = ({setUser}) => {
                 </Link>
             </div>
           </CardFooter>
+            </form>
+          </Form>
         </Card>
         </div>
     </>

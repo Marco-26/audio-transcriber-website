@@ -5,3 +5,5 @@ pydub
 flask[async]
 flask-sqlalchemy
 flask_migrate
+flask_login
+flask_bcrypt
