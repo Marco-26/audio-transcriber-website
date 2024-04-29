@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './styles/globals.css'
 
 import Home from './components/Pages/Home';
@@ -6,7 +6,7 @@ import { User } from './shared/User';
 import { RouterProvider,  createBrowserRouter } from 'react-router-dom';
 import LoginForm from './components/LoginForm';
 import SignupForm from './components/SignupForm';
-import BaseLayout from './components/BaseLayout';
+import BaseLayout from './components/Pages/BaseLayout';
 import ErrorPage from './components/Pages/ErrorPage';
 
 function App() {
@@ -28,8 +28,8 @@ function App() {
   const router = createBrowserRouter([
     {
       path:'/',
+      element:<BaseLayout user={user}/>,
       errorElement:<ErrorPage />,
-      element:<BaseLayout user={user} setUser={setUser}/>,
       children:[
         {
           path:'/',
@@ -37,7 +37,7 @@ function App() {
         },
         {
           path:'/login',
-          element:<LoginForm user={user} setUser={setUser}/>
+          element:<LoginForm setUser={setUser}/>
         },
         {
           path:'/signup',

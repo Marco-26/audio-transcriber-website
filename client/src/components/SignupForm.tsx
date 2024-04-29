@@ -39,7 +39,7 @@ const SignupForm:React.FC<SignupFormProps> = ({setUser}) => {
   return (
     <>
       <ToastContainer />
-      <div className="flex justify-center items-center h-screen">
+      <div className="flex justify-center items-center">
         <Card className="mx-auto max-w-sm ">
         <CardHeader>
           <CardTitle className="text-xl">Sign Up</CardTitle>
