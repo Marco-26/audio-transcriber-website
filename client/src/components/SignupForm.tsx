@@ -12,6 +12,8 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { User } from '../shared/User'
 import LoginForm from './LoginForm'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './UI/Card'
+import { Link } from 'react-router-dom'
 
 const signupFormSchema = z.object({
   email: z.string().email("This is not a valid email."),
@@ -37,7 +39,95 @@ const SignupForm:React.FC<SignupFormProps> = ({setUser}) => {
   return (
     <>
       <ToastContainer />
-      <Dialog>
+      <div className="flex justify-center items-center h-screen">
+        <Card className="mx-auto max-w-sm ">
+        <CardHeader>
+          <CardTitle className="text-xl">Sign Up</CardTitle>
+          <CardDescription>
+            Enter your information to create an account
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            <div className="grid gap-4">
+              <div >
+                  <FormField
+                    control={form.control}
+                    name="name"
+                    render={() => (
+                      <FormItem>
+                        <FormLabel>Name</FormLabel>
+                        <FormControl>
+                          <Input id="name" type="text" placeholder="Max" required {...form.register("name")}/>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+              </div>
+              <div className="grid gap-2">
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={() => (
+                    <FormItem>
+                      <FormLabel>Email</FormLabel>
+                      <FormControl>
+                        <Input id="email" type="email" placeholder="m@example.com" required {...form.register("email")}/>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <div className="grid gap-2">
+                <FormField
+                  control={form.control}
+                  name="password"
+                  render={() => (
+                    <FormItem>
+                      <FormLabel>Password</FormLabel>
+                      <FormControl>
+                        <Input id="password" type="password" required {...form.register("password")}/>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <div className="grid gap-2">
+                <FormField
+                  control={form.control}
+                  name="password"
+                  render={() => (
+                    <FormItem>
+                      <FormLabel>Confirm Password</FormLabel>
+                      <FormControl>
+                        <Input id="password" type="password" required {...form.register("confirmPassword")}/>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <Button type="submit" disabled={form.formState.isSubmitting} className="flex gap-1">
+                  {form.formState.isSubmitting && <Loader2 className="h-4 w-4 animate-spin" />}
+                  Create an account
+               </Button>
+            </div>
+            </form>
+          </Form>
+          <div className="mt-4 text-center text-sm">
+            Already have an account?{" "}
+            <Link to="/login" className="underline">
+              Sign in
+            </Link>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+      {/* <Dialog>
         <DialogTrigger asChild>
           <Button variant={"link"}>
             Sign Up
@@ -114,7 +204,7 @@ const SignupForm:React.FC<SignupFormProps> = ({setUser}) => {
             </form>
           </Form>
         </DialogContent>
-      </Dialog>
+      </Dialog> */}
     </>
   )
 }

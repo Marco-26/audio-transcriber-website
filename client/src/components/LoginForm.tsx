@@ -106,15 +106,14 @@ const LoginForm:React.FC<LoginButtonProps> = ({user,setUser}) => {
           <CardFooter className='flex flex-col'>
             <Button type="submit" disabled={form.formState.isSubmitting} className="flex gap-1 w-full mb-2">
               {form.formState.isSubmitting && <Loader2 className="h-4 w-4 animate-spin" />}
-              Submit
+              Login
             </Button>
-            <div>
-              <Label className='mr-2'>Don't have an account?</Label>
-              <Link to="/signup">
-                Signup
-              </Link>
+            <div className="mt-2 text-center text-sm">
+                Don&apos;t have an account?{" "}
+                <Link to="/signup" className="underline">
+                  Sign up
+                </Link>
             </div>
-            
           </CardFooter>
         </Card>
         </div>
