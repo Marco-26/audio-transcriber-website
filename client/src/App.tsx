@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import './styles/globals.css'
 
-import { Header } from './components/Header';
 import Home from './components/Pages/Home';
 import { User } from './shared/User';
 import { RouterProvider,  createBrowserRouter } from 'react-router-dom';
 import LoginForm from './components/LoginForm';
 import SignupForm from './components/SignupForm';
-import path from 'path';
+import BaseLayout from './components/BaseLayout';
+import ErrorPage from './components/Pages/ErrorPage';
 
 function App() {
   const [user, setUser] = useState<User | undefined>(undefined);
@@ -24,14 +24,26 @@ function App() {
   //     window.removeEventListener('beforeunload', handleBeforeUnload);
   //   };
   // }, []);
+
   const router = createBrowserRouter([
     {
       path:'/',
-      element:<Home user={user}/>,
-    },
-    {
-      path:'/login',
-      element:<LoginForm user={user} setUser={setUser}/>
+      errorElement:<ErrorPage />,
+      element:<BaseLayout user={user} setUser={setUser}/>,
+      children:[
+        {
+          path:'/',
+          element:<Home user={user}/>
+        },
+        {
+          path:'/login',
+          element:<LoginForm user={user} setUser={setUser}/>
+        },
+        {
+          path:'/signup',
+          element:<SignupForm setUser={setUser}/>
+        }
+      ]
     }
   ]);
   
