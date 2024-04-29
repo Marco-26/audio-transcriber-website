@@ -19,7 +19,6 @@ import { Label } from './UI/Label';
 import { Link } from 'react-router-dom';
 
 interface LoginButtonProps{
-  user:User | undefined;
   setUser: Dispatch<SetStateAction<User | undefined>>;
 }
 
@@ -29,7 +28,7 @@ const loginFormSchema = z.object({
   name:z.string()
 })
 
-const LoginForm:React.FC<LoginButtonProps> = ({user,setUser}) => {
+const LoginForm:React.FC<LoginButtonProps> = ({setUser}) => {
   const [errorLogginIn, setErrorLogginIn] = useState<Boolean>(false);
 
   const form = useForm<z.infer<typeof loginFormSchema>>({
@@ -59,7 +58,7 @@ const LoginForm:React.FC<LoginButtonProps> = ({user,setUser}) => {
   return (
     <>
       <ToastContainer />
-      <div className="flex justify-center items-center h-screen">
+      <div className="flex justify-center items-center h-93">
         <Card className="w-full max-w-sm">
           <CardHeader>
             <CardTitle className="text-2xl">Login</CardTitle>
