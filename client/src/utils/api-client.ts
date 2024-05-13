@@ -50,12 +50,12 @@ export async function processDelete(filename: string, onSuccess: SuccessCallback
 }
 
 export async function processLogin(email: string, password:string, onResponse: ResponseCallback,onError: ErrorCallback) {
-  const data = {
-    "email": email,
-    "password": password
-  };
+  // const data = {
+  //   "email": email,
+  //   "password": password
+  // };
 
-  await axios.post('/login', data)
+  await axios.post('/login')
     .then((response: AxiosResponse<{ message: string }>) => {
       onResponse(response)
     })
