@@ -1,9 +1,11 @@
 openai
 flask
-flask_cors
+flask-cors
 pydub
 flask[async]
 flask-sqlalchemy
 flask_migrate
 flask_login
 flask_bcrypt
+oauthlib
+requests

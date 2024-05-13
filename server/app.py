@@ -6,9 +6,12 @@ from flask_bcrypt import Bcrypt
 from openai import OpenAI, OpenAIError
 import os
 from flask_cors import CORS
+from oauthlib.oauth2 import WebApplicationClient
 
 db = SQLAlchemy()
 data_folder_path = os.path.join(os.path.dirname(__file__), 'data')
+GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
+auth_client = WebApplicationClient(GOOGLE_CLIENT_ID)
 
 def create_app():
   app = Flask(__name__)
@@ -16,6 +19,7 @@ def create_app():
   app.secret_key = "TEST" #TODO: CHANGE THIS LATER ON
 
   client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+  
   if client.api_key is None:
     raise OpenAIError("OpenAI API key is missing. Set it using OPENAI_API_KEY environment variable.")
 

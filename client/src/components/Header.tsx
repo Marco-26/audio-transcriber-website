@@ -21,6 +21,16 @@ type HeaderProps={
 }
 
 export const Header:React.FC<HeaderProps> = ({user}):JSX.Element => {
+  
+  const handleLogin = async () => {
+    console.log("TEST")
+    const response = await fetch('http://127.0.0.1:5000/login'); // Assuming your Flask server is running on the same host
+      if (response.ok) {
+        window.location.href = response.url;
+      }
+  }
+
+
   return (
     <header className="sticky flex justify-between top-0 h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
       <div className="hidden gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
@@ -43,12 +53,12 @@ export const Header:React.FC<HeaderProps> = ({user}):JSX.Element => {
       </div>
       <div className="ml-auto">
           {!user ? 
-            <Link to="login">
-              <Button>
+            // <Link to="login">
+              <Button onClick={handleLogin}>
                 <UserIcon className='mr-2'/>
                 Login
               </Button>
-            </Link>
+            // </Link>
           : 
             <div className="flex w-full items-center gap-4 md:gap-2 lg:gap-4">
               <DropdownMenu>

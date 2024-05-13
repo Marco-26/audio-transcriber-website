@@ -1,34 +1,26 @@
-from flask import  jsonify, request
+from flask import  jsonify, request,redirect
 from models import User
 import os
 from utils import temp_save_file
-from app import data_folder_path 
+from app import data_folder_path, auth_client 
 from flask_login import login_user,logout_user, current_user,login_required
+import requests
 
 def register_routes(app, db, bcrypt):
-    @app.route("/login", methods=['POST'])
+    @app.route("/login", methods=['GET', 'POST'])
     def login():
-        email = request.json['email']
-        password = request.json['password']
+        # Find out what URL to hit for Google login
+        google_provider_cfg = get_google_provider_cfg()
+        authorization_endpoint = google_provider_cfg["authorization_endpoint"]
 
-        if not email or not password:
-            return jsonify(error="Please insert your email and password"),400
-
-        user = User.query.filter(User.email==email).first()
-
-        if not user:
-            return jsonify(error="Unathorized"), 401
-
-        if not bcrypt.check_password_hash(user.password, password):
-            return jsonify(error="Passwords don't match"), 401
- 
-        login_user(user)
-
-        return jsonify({
-            "id":user.id,
-            "name":user.name,
-            "email":user.email
-        })
+        # Use library to construct the request for Google login and provide
+        # scopes that let you retrieve user's profile from Google
+        request_uri = auth_client.prepare_request_uri(
+            authorization_endpoint,
+            redirect_uri=request.base_url + "/callback",
+            scope=["openid", "email", "profile"],
+        )
+        return redirect(request_uri)
     
     @app.route("/signup", methods=['POST'])
     def signup():
@@ -100,3 +92,10 @@ def register_routes(app, db, bcrypt):
             return jsonify(error="There was an error deleting the file...")
 
         return jsonify(message="Sucessfully deleted the file")
+    
+
+def get_google_provider_cfg():
+    GOOGLE_DISCOVERY_URL = (
+        "https://accounts.google.com/.well-known/openid-configuration"
+    )
+    return requests.get(GOOGLE_DISCOVERY_URL).json()
