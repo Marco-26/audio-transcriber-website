@@ -9,3 +9,4 @@ flask_login
 flask_bcrypt
 oauthlib
 requests
+PyOpenSSL

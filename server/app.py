@@ -11,6 +11,7 @@ from oauthlib.oauth2 import WebApplicationClient
 db = SQLAlchemy()
 data_folder_path = os.path.join(os.path.dirname(__file__), 'data')
 GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
+GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
 auth_client = WebApplicationClient(GOOGLE_CLIENT_ID)
 
 def create_app():
@@ -18,10 +19,10 @@ def create_app():
   app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
   app.secret_key = "TEST" #TODO: CHANGE THIS LATER ON
 
-  client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+  # client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
   
-  if client.api_key is None:
-    raise OpenAIError("OpenAI API key is missing. Set it using OPENAI_API_KEY environment variable.")
+  # if client.api_key is None:
+  #   raise OpenAIError("OpenAI API key is missing. Set it using OPENAI_API_KEY environment variable.")
 
   CORS(app, origins='http://localhost:3000')
 
