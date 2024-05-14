@@ -65,24 +65,25 @@ def register_routes(app, db, bcrypt):
         # app, and now you've verified their email through Google!
         if userinfo_response.json().get("email_verified"):
             unique_id = userinfo_response.json()["sub"]
-            users_email = userinfo_response.json()["email"]
+            user_email = userinfo_response.json()["email"]
             picture = userinfo_response.json()["picture"]
-            users_name = userinfo_response.json()["given_name"]
+            user_name = userinfo_response.json()["given_name"]
         else:
             return "User email not available or not verified by Google.", 400
         
         # Create a user in your db with the information provided
         # by Google
         user = User(
-            id_=unique_id, name=users_name, email=users_email, profile_pic=picture
+            name=user_name, email=user_email
         )
 
         # Doesn't exist? Add it to the database.
-        if not User.get(unique_id):
-            User.create(unique_id, users_name, users_email, picture)
+        if not User.query.filter_by(email=user_email).first():
+            db.session.add(user)
+            db.session.commit()
 
         # Begin user session by logging the user in
-        login_user(user)
+        login_user(user, remember = True)
 
         # Send user back to homepage
         return jsonify(message = "Worked")
