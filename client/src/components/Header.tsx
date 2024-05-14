@@ -14,7 +14,7 @@ import {
 } from "lucide-react"
 import { Button } from "./UI/Button";
 import { User } from '../shared/User';
-import { Dispatch, SetStateAction } from 'react';
+import axios, { AxiosResponse, AxiosError } from 'axios';
 
 type HeaderProps={
   user:User | undefined;
@@ -24,10 +24,12 @@ export const Header:React.FC<HeaderProps> = ({user}):JSX.Element => {
   
   const handleLogin = async () => {
     console.log("TEST")
-    const response = await fetch('http://127.0.0.1:5000/login'); // Assuming your Flask server is running on the same host
-      if (response.ok) {
-        window.location.href = response.url;
-      }
+    
+    axios.get('https://127.0.0.1:5000/login')
+      .then((res:AxiosResponse) => {
+        window.location.assign(res.data.request_uri);
+      })
+      .catch((err: AxiosError) => console.log(err));
   }
 
 
@@ -53,12 +55,10 @@ export const Header:React.FC<HeaderProps> = ({user}):JSX.Element => {
       </div>
       <div className="ml-auto">
           {!user ? 
-            // <Link to="login">
               <Button onClick={handleLogin}>
                 <UserIcon className='mr-2'/>
                 Login
               </Button>
-            // </Link>
           : 
             <div className="flex w-full items-center gap-4 md:gap-2 lg:gap-4">
               <DropdownMenu>
