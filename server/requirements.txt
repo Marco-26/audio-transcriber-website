@@ -10,3 +10,6 @@ flask_bcrypt
 oauthlib
 requests
 PyOpenSSL
+pyjwt
+google-auth-oauthlib
+google-auth
