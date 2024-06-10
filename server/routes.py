@@ -3,14 +3,8 @@ from flask import  abort, jsonify, request,redirect, url_for
 from models import User
 import os
 from utils import temp_save_file
-from app import data_folder_path, auth_client, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, secret_key,client_secrets_file
-from flask_login import login_user,logout_user, current_user,login_required
-from flask.globals import session
+from app import data_folder_path, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET
 import requests
-import jwt
-from flask.wrappers import Response
-from datetime import datetime, timedelta
-import google
 from flask_jwt_extended import create_access_token
 
 BACKEND_URL = "https://127.0.0.1:5000"
@@ -25,7 +19,7 @@ def login_required(function):
             return function()
     return wrapper
 
-def register_routes(app, db, bcrypt):
+def register_routes(app, db):
     @app.route('/google_login', methods=['POST'])
     def login():
         auth_code = request.get_json()['code']
@@ -85,9 +79,3 @@ def register_routes(app, db, bcrypt):
 
         return jsonify(message="Sucessfully deleted the file")
     
-
-def get_google_provider_cfg():
-    GOOGLE_DISCOVERY_URL = (
-        "https://accounts.google.com/.well-known/openid-configuration"
-    )
-    return requests.get(GOOGLE_DISCOVERY_URL).json()

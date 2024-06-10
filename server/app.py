@@ -11,9 +11,10 @@ from flask_jwt_extended import create_access_token, JWTManager, jwt_required, ge
 
 db = SQLAlchemy()
 data_folder_path = os.path.join(os.path.dirname(__file__), 'data')
+
 GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
 GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
-auth_client = WebApplicationClient(GOOGLE_CLIENT_ID)
+
 secret_key = "TEST" #TODO: CHANGE THIS LATER ON
 
 client_secrets_file = os.path.join(pathlib.Path(__file__).parent, "client-secret.json")
@@ -21,11 +22,6 @@ client_secrets_file = os.path.join(pathlib.Path(__file__).parent, "client-secret
 def create_app():
   app = Flask(__name__)
   app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
-  # app.config['Access-Control-Allow-Origin'] = '*'
-  # app.config["Access-Control-Allow-Headers"]="Content-Type"
- 
-  app.config['JWT_SECRET_KEY'] = 'your-secret-key'  # Replace with your own secret key
-  app.config['JWT_TOKEN_LOCATION'] = ['cookies']
  
   app.secret_key=secret_key
 
@@ -48,10 +44,8 @@ def create_app():
   def load_user(id):
     return User.query.get(id)
 
-  bcrypt = Bcrypt(app)
-
   from routes import register_routes
-  register_routes(app,db,bcrypt)
+  register_routes(app,db)
 
   migrate = Migrate(app,db)
   return app
