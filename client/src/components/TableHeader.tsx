@@ -12,7 +12,7 @@ interface TableHeaderProps{
 
 const TableHeader:React.FC<TableHeaderProps> = ({user,files,setFiles}) =>  {
   return (
-    <div >
+    <div>
       <div className='mb-7'>
         <h1 className='text-3xl'>Dashboard</h1>
         <p>All your transcriptions in one place</p>
