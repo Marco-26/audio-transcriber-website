@@ -27,7 +27,7 @@ def register_routes(app, db):
         data = {
             'code': auth_code,
             'client_id': GOOGLE_CLIENT_ID,  # client ID from the credential at google developer console
-            'client_secret': GOOGLE_CLIENT_SECRET,  # client secret from the credential at google developer console
+            'client_secret': GOOGLE_SECRET_KEY,  # client secret from the credential at google developer console
             'redirect_uri': 'postmessage',
             'grant_type': 'authorization_code'
         }
