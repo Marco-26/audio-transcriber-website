@@ -1,2 +1,5 @@
-server/__pycache__
-server/venv
+server/venv/
+server/__pycache__/
+server/migrations/
+server/instance/
+server/client-secret.json
