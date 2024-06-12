@@ -27,7 +27,7 @@ def register_routes(app, db):
         data = {
             'code': auth_code,
             'client_id': GOOGLE_CLIENT_ID,  # client ID from the credential at google developer console
-            'client_secret': GOOGLE_SECRET_KEY,  # client secret from the credential at google developer console
+            'client_secret': GOOGLE_CLIENT_SECRET,  # client secret from the credential at google developer console
             'redirect_uri': 'postmessage',
             'grant_type': 'authorization_code'
         }
@@ -37,10 +37,16 @@ def register_routes(app, db):
             'Authorization': f'Bearer {response["access_token"]}'
         }
         user_info = requests.get('https://www.googleapis.com/oauth2/v3/userinfo', headers=headers).json()
-
+        print(user_info)
         """
             check here if user exists in database, if not, add him
         """
+        user = User.query.filter_by(email = user_info["email"]).first()
+        if not user:
+            print("Added new user to the database")
+            user = User(user_info["name"], user_info["email"])
+            db.session.add(user)
+            db.session.commit()
 
         jwt_token = create_access_token(identity=user_info['email'])  # create jwt token
         response = jsonify(user=user_info)
