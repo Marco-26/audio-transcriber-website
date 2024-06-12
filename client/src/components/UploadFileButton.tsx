@@ -54,9 +54,11 @@ export const UploadFileButton: React.FC<UploadFileButtonProps> = ({ user,files, 
       notifyError("Please login to proceed...")
       return;
     }
+    const user_id = user["id"];
     const fileTemp = values.file[0];
     try {
       await processUpload(
+        user_id,
         fileTemp,
         (message: string) => {
           console.log(message);

@@ -1,18 +1,20 @@
-import React, { Dispatch, SetStateAction, useState } from 'react';
-import { processDelete, processTranscription } from '../utils/api-client';
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { getTranscriptionsEntries, processDelete, processTranscription } from '../utils/api-client';
 import { FileInfo } from '../shared/FileType';
 import { formatFileSize, generateTXT } from '../utils/utils';
 import { Table,TableBody, TableCell, TableHead, TableHeader, TableRow } from './UI/Table';
 import { Button } from './UI/Button';
 import { Play, Trash, Download } from 'lucide-react';
 import {removeFile} from '../utils/utils'
+import { User } from '../shared/User';
 
 type TableProps = {
-  files:FileInfo[]
+  user:User|undefined;
+  files:FileInfo[];
   setFiles: Dispatch<SetStateAction<FileInfo[] | undefined>>;
 }
 
-export const TranscriptionsTable:React.FC<TableProps> = ({files,setFiles}):JSX.Element => {
+export const TranscriptionsTable:React.FC<TableProps> = ({user,files,setFiles}):JSX.Element => {
   const [startedTranscription, setStartedTranscription] = useState<boolean>(false)
   const [finishedTranscription, setFinishedTranscription] = useState<Boolean>(false)
   const [transcription, setTranscription] = useState<string>()
@@ -51,6 +53,19 @@ export const TranscriptionsTable:React.FC<TableProps> = ({files,setFiles}):JSX.E
       }, 
       (error) => console.error(error))
   } 
+
+  useEffect(() => {
+    const fetchTranscriptions = async () => {
+      if(user){
+        const response = await getTranscriptionsEntries(
+          user["id"],
+          (message) => console.log(message), 
+          (error) => console.error(error));
+      };
+    }
+      
+    fetchTranscriptions();
+  }, [user]);
 
   return (
     <div className='border rounded'>

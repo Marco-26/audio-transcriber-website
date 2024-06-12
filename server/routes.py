@@ -1,6 +1,6 @@
 import json
 from flask import  abort, jsonify, request,redirect, url_for
-from models import User
+from models import User, Transcription
 import os
 from utils import temp_save_file
 from app import data_folder_path, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET
@@ -37,14 +37,11 @@ def register_routes(app, db):
             'Authorization': f'Bearer {response["access_token"]}'
         }
         user_info = requests.get('https://www.googleapis.com/oauth2/v3/userinfo', headers=headers).json()
-        print(user_info)
-        """
-            check here if user exists in database, if not, add him
-        """
+        
         user = User.query.filter_by(email = user_info["email"]).first()
         if not user:
             print("Added new user to the database")
-            user = User(user_info["name"], user_info["email"])
+            user = User(user_info["name"], user_info["email"], user_info["sub"])
             db.session.add(user)
             db.session.commit()
 
@@ -54,12 +51,36 @@ def register_routes(app, db):
 
         return response, 200
     
+    @app.route("/api/entries", methods=['POST'])
+    def get_transcription_entries():
+        if 'user_id' not in request.form:
+            return jsonify(error="No user_id provided"), 400
+
+        user_id = request.form["user_id"]
+        transcriptions = Transcription.query.filter_by(user_id=user_id)
+
+        transcription_list = [{
+            'id': t.id,
+            'user_id': t.user_id,
+            'filenmae': t.filename
+        } for t in transcriptions]
+
+        return jsonify(transcriptions=transcription_list, message="File uploaded sucessfuly")
+
     @app.route("/api/upload", methods=['POST'])
     def upload_endpoint():
         if 'file' not in request.files:
             return jsonify(error="No file provided"), 400
+        elif 'user_id' not in request.form:
+            return jsonify(error="No user_id provided"), 400
 
         file = request.files['file']
+        user_id = request.form["user_id"]
+        
+        transcription_entry = Transcription(user_id=user_id, filename="test_filename")
+        db.session.add(transcription_entry)
+        db.session.commit()
+
         temp_save_file(data_folder_path, file.filename, file)
 
         return jsonify(message="File uploaded sucessfuly")

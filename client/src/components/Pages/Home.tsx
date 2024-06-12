@@ -17,7 +17,7 @@ const Home:React.FC<HomeProps> = ({user,setUser}) => {
       <Header user={user} setUser={setUser}/>
       <div className="px-6 py-5">
         <TableHeader user={user} files={files} setFiles={setFiles}/>
-        <TranscriptionsTable files={files!} setFiles={setFiles}/>
+        <TranscriptionsTable user={user} files={files!} setFiles={setFiles}/>
       </div>
     </>
   )
