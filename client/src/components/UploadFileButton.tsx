@@ -14,6 +14,7 @@ import { FileInfo } from '../shared/FileType';
 import { generateFileInfo, notifyError } from '../utils/utils';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
+import { User } from '../shared/User';
 
 const formSchema = z.object({
   file: z
@@ -22,11 +23,12 @@ const formSchema = z.object({
 });
 
 interface UploadFileButtonProps {
+  user:User |undefined;
   files:FileInfo[] | undefined; 
   setFiles: Dispatch<SetStateAction<FileInfo[] | undefined>>;
 }
 
-export const UploadFileButton: React.FC<UploadFileButtonProps> = ({ files, setFiles }): JSX.Element => {
+export const UploadFileButton: React.FC<UploadFileButtonProps> = ({ user,files, setFiles }): JSX.Element => {
   const addNewFileEntry = (file: FileInfo,) => {
     setFiles((prevFiles) => {
       if (!prevFiles) {
@@ -48,8 +50,11 @@ export const UploadFileButton: React.FC<UploadFileButtonProps> = ({ files, setFi
   const fileRef = form.register("file");
   
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    if(!user){
+      notifyError("Please login to proceed...")
+      return;
+    }
     const fileTemp = values.file[0];
-    console.log("Submitting");
     try {
       await processUpload(
         fileTemp,
@@ -77,7 +82,7 @@ export const UploadFileButton: React.FC<UploadFileButtonProps> = ({ files, setFi
       <ToastContainer />
       <Dialog>
         <DialogTrigger asChild>
-          <Button>
+          <Button disabled={!user}>
             <PlusCircle className="mr-2" />
             New Transcription
           </Button>

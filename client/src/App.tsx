@@ -1,36 +1,27 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './styles/globals.css'
-import { FileInfo } from './shared/FileType';
 
-import { TranscriptionsTable } from './components/TranscriptionsTable';
-import TableHeader from './components/TableHeader';
-import { Header } from './components/Header';
+import Home from './components/Pages/Home';
+import { User } from './shared/User';
 
 function App() {
-  const [files, setFiles] = useState<FileInfo[] | undefined>([]);
+  const [user, setUser] = useState<User | undefined>(undefined);
+  
+  useEffect(() => {
+    const handleBeforeUnload = (event:any) => {
+      event.preventDefault();
+      event.returnValue = '';
+    };
 
-  // useEffect(() => {
-  //   const handleBeforeUnload = (event:any) => {
-  //     event.preventDefault();
-  //     event.returnValue = '';
-  //   };
+    window.addEventListener('beforeunload', handleBeforeUnload);
 
-  //   window.addEventListener('beforeunload', handleBeforeUnload);
-
-  //   return () => {
-  //     window.removeEventListener('beforeunload', handleBeforeUnload);
-  //   };
-  // }, []);
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, []);
 
   return (
-    <div>
-      <Header/>
-      <div className="px-6 py-5 ">
-        <TableHeader files={files} setFiles={setFiles}/>
-        <TranscriptionsTable files={files!} setFiles={setFiles}/>
-      </div>
-    </div>
-
+      <Home user={user} setUser={setUser}/>
   );
 }
 
