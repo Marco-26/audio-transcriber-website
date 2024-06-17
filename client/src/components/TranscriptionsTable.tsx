@@ -1,7 +1,7 @@
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { getTranscriptionsEntries, processDelete, processTranscription } from '../utils/api-client';
 import { FileInfo } from '../shared/FileType';
-import { formatFileSize, generateTXT } from '../utils/utils';
+import { formatFileSize, generateFileInfo, generateTXT } from '../utils/utils';
 import { Table,TableBody, TableCell, TableHead, TableHeader, TableRow } from './UI/Table';
 import { Button } from './UI/Button';
 import { Play, Trash, Download } from 'lucide-react';
@@ -24,7 +24,7 @@ export const TranscriptionsTable:React.FC<TableProps> = ({user,files,setFiles}):
     setStartedTranscription(true);
     file.transcriptionStatus = "Processing...";
     
-    await processTranscription(file.file, 
+    await processTranscription(file.file!, 
       (message) => setTranscription(message), 
       (error) => console.error(error))
     
@@ -48,7 +48,7 @@ export const TranscriptionsTable:React.FC<TableProps> = ({user,files,setFiles}):
 
     await processDelete(file.name, 
       (message) => {
-        const updatedFiles= removeFile(file.file,files)
+        const updatedFiles= removeFile(file.file!,files)
         setFiles(updatedFiles)
       }, 
       (error) => console.error(error))
@@ -60,7 +60,26 @@ export const TranscriptionsTable:React.FC<TableProps> = ({user,files,setFiles}):
         const response = await getTranscriptionsEntries(
           user["id"],
           (message) => console.log(message), 
-          (error) => console.error(error));
+          (error) => console.error(error)
+        );
+        
+        response.forEach(element => {
+          const temp:FileInfo = {
+            file:undefined,
+            name:element.filename,
+            size:10,
+            transcriptionStatus: "On Wait",
+            transcriptionFileName: "test"
+          }
+          setFiles((prevFiles) => {
+            if (!prevFiles) {
+              return [temp];
+            } else {
+              const updatedFiles = [...prevFiles, temp];
+              return updatedFiles;
+            }
+          });
+        });
       };
     }
       

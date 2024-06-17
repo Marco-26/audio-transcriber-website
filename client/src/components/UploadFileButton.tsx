@@ -29,7 +29,7 @@ interface UploadFileButtonProps {
 }
 
 export const UploadFileButton: React.FC<UploadFileButtonProps> = ({ user,files, setFiles }): JSX.Element => {
-  const addNewFileEntry = (file: FileInfo,) => {
+  const addNewFileEntry = (file: FileInfo) => {
     setFiles((prevFiles) => {
       if (!prevFiles) {
         return [file];
