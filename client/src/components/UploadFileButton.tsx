@@ -11,7 +11,7 @@ import { processUpload } from '../utils/api-client';
 import { AxiosError } from 'axios';
 import { Dispatch, SetStateAction } from 'react';
 import { FileInfo } from '../shared/FileType';
-import { generateFileInfo, notifyError } from '../utils/utils';
+import { generateFileInfo, notifyError, updateFiles } from '../utils/utils';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
 import { User } from '../shared/User';
@@ -29,17 +29,6 @@ interface UploadFileButtonProps {
 }
 
 export const UploadFileButton: React.FC<UploadFileButtonProps> = ({ user,files, setFiles }): JSX.Element => {
-  const addNewFileEntry = (file: FileInfo) => {
-    setFiles((prevFiles) => {
-      if (!prevFiles) {
-        return [file];
-      } else {
-        const updatedFiles = [...prevFiles, file];
-        return updatedFiles;
-      }
-    });
-  };
-
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -70,10 +59,8 @@ export const UploadFileButton: React.FC<UploadFileButtonProps> = ({ user,files, 
       );
   
       const file = generateFileInfo(fileTemp, "test");
-      addNewFileEntry(file);
-      console.log("File entry added successfully");
+      setFiles((prevFiles) => updateFiles(prevFiles!, file));
     } catch (error) {
-      console.error('Error during file upload or processing:', error);
       notifyError("Error uploading the file...")
       return;
     }

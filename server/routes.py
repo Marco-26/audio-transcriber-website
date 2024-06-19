@@ -62,7 +62,7 @@ def register_routes(app, db):
         transcription_list = [{
             'id': t.id,
             'user_id': t.user_id,
-            'filenmae': t.filename
+            'filename': t.filename
         } for t in transcriptions]
 
         return jsonify(transcriptions=transcription_list, message="File uploaded sucessfuly")
@@ -105,4 +105,7 @@ def register_routes(app, db):
             return jsonify(error="There was an error deleting the file...")
 
         return jsonify(message="Sucessfully deleted the file")
+    
+    def generate_file_info(file):
+        
     

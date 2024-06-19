@@ -17,6 +17,14 @@ export const formatFileSize = (sizeInBytes: number): string => {
   }
 }
 
+export const updateFiles = (prevFiles:FileInfo[], newFile:FileInfo) => {
+  if (!prevFiles) {
+    return [newFile];
+  } else {
+    return [...prevFiles, newFile];
+  }
+};
+
 export const notifyError = (error:string) => {
     toast.error(error, {
       position: "bottom-right",
@@ -33,7 +41,8 @@ export const notifyError = (error:string) => {
 
 export const generateFileInfo = (file:File, fileName:string) => {
   const info:FileInfo = {
-    file:file,
+    id:2,
+    // file:file,
     name:file.name,
     size:file.size,
     transcriptionStatus: "On Wait",
@@ -57,7 +66,7 @@ export const generateTXT = (transcription:string,fileName:string) => {
 
 export const removeFile = (fileToRemove: File,files:FileInfo[]) => {
   if (files) {
-    const updatedFiles = files.filter(file => file.file !== fileToRemove);
-    return updatedFiles;
+    // const updatedFiles = files.filter(file => file.file !== fileToRemove);
+    // return updatedFiles;
   }
 };

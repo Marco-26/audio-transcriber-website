@@ -1,5 +1,6 @@
 from flask_login import UserMixin
 from app import db
+from datetime import datetime
 
 class User(db.Model, UserMixin):
   __tablename__ = 'users'
@@ -27,7 +28,10 @@ class Transcription(db.Model):
   
   id = db.Column(db.Integer, primary_key=True)
   user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+  # file_id
   filename = db.Column(db.Text, nullable=False)
+  filesize = db.Column(db.Integer, nullable=False)
+  date = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
 
   def __init__(self, user_id, filename):
     self.user_id = user_id
