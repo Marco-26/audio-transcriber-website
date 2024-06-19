@@ -20,17 +20,17 @@ export const TranscriptionsTable:React.FC<TableProps> = ({user,files,setFiles}):
   const [transcription, setTranscription] = useState<string>()
   
   const handleTranscription = async (file:FileEntry) => {
-    setFinishedTranscription(false);
-    setStartedTranscription(true);
-    file.transcriptionStatus = "Processing...";
+    // setFinishedTranscription(false);
+    // setStartedTranscription(true);
+    // file.transcriptionStatus = "Processing...";
     
     // await processTranscription(file.file!, 
     //   (message) => setTranscription(message), 
     //   (error) => console.error(error))
     
-    setStartedTranscription(false)
-    setFinishedTranscription(true)
-    file.transcriptionStatus="Finished"
+    // setStartedTranscription(false)
+    // setFinishedTranscription(true)
+    // file.transcriptionStatus="Finished"
   }
 
   const handleDownload = (file:FileEntry) => {
@@ -64,13 +64,14 @@ export const TranscriptionsTable:React.FC<TableProps> = ({user,files,setFiles}):
         );
         
         response.forEach(element => {
+          console.log(element.date);
           const temp:FileEntry = {
-            id:1,
+            id:element.file_id,
             name:element.filename,
-            size:10,
-            date:new Date(),
+            size:element.filesize,
+            date:new Date(element.date),
             transcriptionStatus:"Finished",
-            transcriptionFileName: ""
+            transcriptionFileName: "transcription"
           }
 
           setFiles((prevFiles) => updateFiles(prevFiles!, temp));
@@ -100,7 +101,7 @@ export const TranscriptionsTable:React.FC<TableProps> = ({user,files,setFiles}):
                   {file.name}
                 </TableCell>
                 <TableCell>{formatFileSize(file.size)}</TableCell>
-                <TableCell>25/02/2024</TableCell>
+                <TableCell>{file.date.toLocaleDateString()}</TableCell>
                 {file.transcriptionStatus==="On Wait" ? 
                   <TableCell> 
                     <Button

@@ -20,26 +20,28 @@ type ErrorCallback = (error: AxiosError) => void
 //       onError(error);
 //     });
 // }
-type TranscriptionResponse = {
-  id:string,
+type Files = {
+  file_id:number,
   user_id:string,
-  filename: string;
-  // Add other properties as needed
+  filename: string,
+  filesize:number,
+  date:Date
 };
+
 export async function getTranscriptionsEntries(
   user_id: string,
   onSuccess: SuccessCallback,
   onError: ErrorCallback
-): Promise<TranscriptionResponse[]> {
+): Promise<Files[]> {
   const formData = new FormData();
   formData.append('user_id', user_id);
   
   console.log('Uploading the file...');
 
   try {
-    const response: AxiosResponse<{ message: string; transcriptions: TranscriptionResponse[] }> = await axios.post('api/entries', formData);
+    const response: AxiosResponse<{ message: string; files: Files[] }> = await axios.post('api/entries', formData);
     onSuccess(response.data.message);
-    return response.data.transcriptions; 
+    return response.data.files; 
   } catch (error) {
     onError(error as AxiosError);
     return []; 
@@ -52,9 +54,9 @@ export async function processUpload(user_id:string,file: File, onSuccess: Succes
   formData.append("user_id", user_id);
   
   await axios.post('api/upload', formData)
-    .then((response: AxiosResponse<{ message: string, file_info:any }>) => {
+    .then((response: AxiosResponse<{ message: string, fileInfo:any }>) => {
       onSuccess(response.data.message);
-      return response.data.file_info
+      return response.data.fileInfo
     })
     .catch((error: AxiosError) => {
       onError(error);

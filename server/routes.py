@@ -52,20 +52,22 @@ def register_routes(app, db):
         return response, 200
     
     @app.route("/api/entries", methods=['POST'])
-    def get_transcription_entries():
+    def get_file_entries():
         if 'user_id' not in request.form:
             return jsonify(error="No user_id provided"), 400
 
         user_id = request.form["user_id"]
-        transcriptions = Transcription.query.filter_by(user_id=user_id)
+        files_list = FileEntry.query.filter_by(user_id=user_id)
 
-        transcription_list = [{
-            'id': t.id,
+        files = [{
+            'file_id': t.id,
             'user_id': t.user_id,
-            'filename': t.filename
-        } for t in transcriptions]
+            'filename': t.filename,
+            'filesize':t.filesize,
+            'date':t.date
+        } for t in files_list]
 
-        return jsonify(transcriptions=transcription_list, message="File uploaded sucessfuly")
+        return jsonify(files=files, message="File uploaded sucessfuly")
 
     @app.route("/api/upload", methods=['POST'])
     def upload_endpoint():

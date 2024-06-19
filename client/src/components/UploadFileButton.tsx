@@ -24,8 +24,8 @@ const formSchema = z.object({
 
 interface UploadFileButtonProps {
   user:User |undefined;
-  files:FileInfo[] | undefined; 
-  setFiles: Dispatch<SetStateAction<FileInfo[] | undefined>>;
+  files:FileEntry[] | undefined; 
+  setFiles: Dispatch<SetStateAction<FileEntry[] | undefined>>;
 }
 
 export const UploadFileButton: React.FC<UploadFileButtonProps> = ({ user,files, setFiles }): JSX.Element => {
@@ -46,7 +46,7 @@ export const UploadFileButton: React.FC<UploadFileButtonProps> = ({ user,files, 
     const user_id = user["id"];
     const fileTemp = values.file[0];
     try {
-      fileInfo = await processUpload(
+      await processUpload(
         user_id,
         fileTemp,
         (message: string) => {
@@ -56,8 +56,10 @@ export const UploadFileButton: React.FC<UploadFileButtonProps> = ({ user,files, 
           console.error('Error uploading file:', error);
           throw error;
         }
-      );
-      console.log(fileInfo)
+      ).then(fileInfo => {
+        console.log("File info: " + fileInfo);
+      });
+
       const file = generateFileInfo(fileTemp, "test");
       setFiles((prevFiles) => updateFiles(prevFiles!, file));
     } catch (error) {
