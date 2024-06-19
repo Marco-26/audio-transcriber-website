@@ -42,3 +42,12 @@ class FileEntry(db.Model):
   
   def get_id(self):
     return self.id
+  
+  def get_filename(self):
+    return self.filename
+  
+  def get_filesize(self):
+    return self.filesize
+  
+  def get_date(self):
+    return self.date

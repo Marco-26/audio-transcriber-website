@@ -1,5 +1,5 @@
 import { toast } from 'react-toastify';
-import { FileInfo } from '../shared/FileType';
+import { FileEntry } from '../shared/FileType';
 
 export const formatFileSize = (sizeInBytes: number): string => {
   const kilobyte = 1024;
@@ -17,7 +17,7 @@ export const formatFileSize = (sizeInBytes: number): string => {
   }
 }
 
-export const updateFiles = (prevFiles:FileInfo[], newFile:FileInfo) => {
+export const updateFiles = (prevFiles:FileEntry[], newFile:FileEntry) => {
   if (!prevFiles) {
     return [newFile];
   } else {
@@ -40,7 +40,7 @@ export const notifyError = (error:string) => {
 }
 
 export const generateFileInfo = (file:File, fileName:string) => {
-  const info:FileInfo = {
+  const info:FileEntry = {
     id:2,
     // file:file,
     name:file.name,
@@ -65,7 +65,7 @@ export const generateTXT = (transcription:string,fileName:string) => {
   URL.revokeObjectURL(url);
 }
 
-export const removeFile = (fileToRemove: File,files:FileInfo[]) => {
+export const removeFile = (fileToRemove: File,files:FileEntry[]) => {
   if (files) {
     // const updatedFiles = files.filter(file => file.file !== fileToRemove);
     // return updatedFiles;

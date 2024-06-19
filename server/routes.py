@@ -70,8 +70,6 @@ def register_routes(app, db):
     @app.route("/api/upload", methods=['POST'])
     def upload_endpoint():
         if 'file' not in request.files:
-            print("Request files:", request.files)
-            print("Request form:", request.form)
             return jsonify(error="No file provided"), 400
         elif 'user_id' not in request.form:
             return jsonify(error="No user_id provided"), 400
@@ -80,17 +78,24 @@ def register_routes(app, db):
 
         user_id = request.form["user_id"]
         
-        fileEntry = FileEntry(user_id=user_id, filename=file.filename, filesize=10)
-        db.session.add(fileEntry)
+        file_entry = FileEntry(user_id=user_id, filename=file.filename, filesize=10)
+        db.session.add(file_entry)
         db.session.commit()
 
-        file_id = fileEntry.get_id()
+        file_id = file_entry.get_id()
         file_path=f"{data_folder_path}/{file_id}"
         
         os.makedirs(file_path)
         temp_save_file(file_path, file.filename, file)
 
-        return jsonify(message="File uploaded sucessfuly")
+        file_info = {
+            "id": file_entry.get_id(),
+            "filename": file_entry.get_filename(),
+            "filesize": file_entry.get_filesize(),
+            "date": file_entry.get_date().isoformat(),
+        }
+        
+        return jsonify(message="File uploaded sucessfuly", file_info=file_info)
     
     @app.route("/api/transcript", methods=['POST'])
     async def transcript_endpoint():

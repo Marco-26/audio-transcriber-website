@@ -1,6 +1,5 @@
-export type FileInfo = {
+export type FileEntry = {
   id:number,
-  // file:File | undefined,
   name: string,
   size: number,
   date:Date|undefined,

@@ -48,15 +48,13 @@ export async function getTranscriptionsEntries(
 
 export async function processUpload(user_id:string,file: File, onSuccess: SuccessCallback, onError: ErrorCallback) {
   const formData = new FormData()
-  // Append each file to formData
   formData.append("file", file);
   formData.append("user_id", user_id);
   
-  console.log("Uploading the file...")
-
   await axios.post('api/upload', formData)
-    .then((response: AxiosResponse<{ message: string }>) => {
+    .then((response: AxiosResponse<{ message: string, file_info:any }>) => {
       onSuccess(response.data.message);
+      return response.data.file_info
     })
     .catch((error: AxiosError) => {
       onError(error);

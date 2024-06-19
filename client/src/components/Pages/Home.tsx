@@ -1,4 +1,4 @@
-import { FileInfo } from '@/src/shared/FileType';
+import { FileEntry } from '@/src/shared/FileType';
 import React, { Dispatch, SetStateAction, useState } from 'react'
 import TableHeader from '../TableHeader';
 import { TranscriptionsTable } from '../TranscriptionsTable';
@@ -10,7 +10,7 @@ interface HomeProps {
   setUser: Dispatch<SetStateAction<User | undefined>>;
 }
 const Home:React.FC<HomeProps> = ({user,setUser}) => {
-  const [files, setFiles] = useState<FileInfo[] | undefined>([]);
+  const [files, setFiles] = useState<FileEntry[] | undefined>([]);
 
   return (
     <>

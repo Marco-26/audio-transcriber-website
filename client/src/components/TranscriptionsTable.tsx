@@ -1,6 +1,6 @@
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { getTranscriptionsEntries, processDelete, processTranscription } from '../utils/api-client';
-import { FileInfo } from '../shared/FileType';
+import { FileEntry } from '../shared/FileType';
 import { formatFileSize, generateFileInfo, generateTXT, updateFiles } from '../utils/utils';
 import { Table,TableBody, TableCell, TableHead, TableHeader, TableRow } from './UI/Table';
 import { Button } from './UI/Button';
@@ -10,8 +10,8 @@ import { User } from '../shared/User';
 
 type TableProps = {
   user:User|undefined;
-  files:FileInfo[];
-  setFiles: Dispatch<SetStateAction<FileInfo[] | undefined>>;
+  files:FileEntry[];
+  setFiles: Dispatch<SetStateAction<FileEntry[] | undefined>>;
 }
 
 export const TranscriptionsTable:React.FC<TableProps> = ({user,files,setFiles}):JSX.Element => {
@@ -19,7 +19,7 @@ export const TranscriptionsTable:React.FC<TableProps> = ({user,files,setFiles}):
   const [finishedTranscription, setFinishedTranscription] = useState<Boolean>(false)
   const [transcription, setTranscription] = useState<string>()
   
-  const handleTranscription = async (file:FileInfo) => {
+  const handleTranscription = async (file:FileEntry) => {
     setFinishedTranscription(false);
     setStartedTranscription(true);
     file.transcriptionStatus = "Processing...";
@@ -33,7 +33,7 @@ export const TranscriptionsTable:React.FC<TableProps> = ({user,files,setFiles}):
     file.transcriptionStatus="Finished"
   }
 
-  const handleDownload = (file:FileInfo) => {
+  const handleDownload = (file:FileEntry) => {
     if (transcription) {
       generateTXT(transcription, file.transcriptionFileName!)
     } else {
@@ -41,7 +41,7 @@ export const TranscriptionsTable:React.FC<TableProps> = ({user,files,setFiles}):
     }
   };
 
-  // const handleDelete = async (file:FileInfo) => {
+  // const handleDelete = async (file:FileEntry) => {
   //   if(!file){
   //     return;
   //   }
@@ -64,7 +64,7 @@ export const TranscriptionsTable:React.FC<TableProps> = ({user,files,setFiles}):
         );
         
         response.forEach(element => {
-          const temp:FileInfo = {
+          const temp:FileEntry = {
             id:1,
             name:element.filename,
             size:10,
