@@ -45,6 +45,7 @@ export const generateFileInfo = (file:File, fileName:string) => {
     // file:file,
     name:file.name,
     size:file.size,
+    date:undefined,
     transcriptionStatus: "On Wait",
     transcriptionFileName: fileName
   }

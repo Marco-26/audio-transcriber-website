@@ -1,6 +1,6 @@
 import json
 from flask import  abort, jsonify, request,redirect, url_for
-from models import User, Transcription
+from models import User, FileEntry
 import os
 from utils import temp_save_file
 from app import data_folder_path, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET
@@ -70,18 +70,25 @@ def register_routes(app, db):
     @app.route("/api/upload", methods=['POST'])
     def upload_endpoint():
         if 'file' not in request.files:
+            print("Request files:", request.files)
+            print("Request form:", request.form)
             return jsonify(error="No file provided"), 400
         elif 'user_id' not in request.form:
             return jsonify(error="No user_id provided"), 400
 
         file = request.files['file']
+
         user_id = request.form["user_id"]
         
-        transcription_entry = Transcription(user_id=user_id, filename="test_filename")
-        db.session.add(transcription_entry)
+        fileEntry = FileEntry(user_id=user_id, filename=file.filename, filesize=10)
+        db.session.add(fileEntry)
         db.session.commit()
 
-        temp_save_file(data_folder_path, file.filename, file)
+        file_id = fileEntry.get_id()
+        file_path=f"{data_folder_path}/{file_id}"
+        
+        os.makedirs(file_path)
+        temp_save_file(file_path, file.filename, file)
 
         return jsonify(message="File uploaded sucessfuly")
     
@@ -105,7 +112,3 @@ def register_routes(app, db):
             return jsonify(error="There was an error deleting the file...")
 
         return jsonify(message="Sucessfully deleted the file")
-    
-    def generate_file_info(file):
-        
-    

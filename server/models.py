@@ -10,7 +10,7 @@ class User(db.Model, UserMixin):
   email = db.Column(db.Text, nullable=False, unique=True)
   google_id = db.Column(db.Text, nullable=False, unique=True)
 
-  transcriptions = db.relationship('Transcription', backref='user', lazy='dynamic')
+  files = db.relationship('FileEntry', backref='user', lazy='dynamic')
 
   def __init__(self, name, email, google_id):
     self.name = name
@@ -23,19 +23,22 @@ class User(db.Model, UserMixin):
   def get_id(self):
     return self.id
 
-class Transcription(db.Model):
-  __tablename__ = 'transcriptions'
+class FileEntry(db.Model):
+  __tablename__ = 'files'
   
   id = db.Column(db.Integer, primary_key=True)
   user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-  # file_id
   filename = db.Column(db.Text, nullable=False)
   filesize = db.Column(db.Integer, nullable=False)
   date = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
 
-  def __init__(self, user_id, filename):
+  def __init__(self, user_id, filename,filesize):
     self.user_id = user_id
     self.filename = filename
+    self.filesize = filesize
 
   def __repr__(self):
     return f'<Transcription: {self.id} by User {self.user_id}>'
+  
+  def get_id(self):
+    return self.id

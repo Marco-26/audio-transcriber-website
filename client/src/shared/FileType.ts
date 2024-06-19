@@ -3,7 +3,7 @@ export type FileInfo = {
   // file:File | undefined,
   name: string,
   size: number,
-  date:Date,
+  date:Date|undefined,
   transcriptionStatus: "On Wait" | "Processing..." | "Finished",
   transcriptionFileName:string
 }

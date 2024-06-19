@@ -24,9 +24,9 @@ export const TranscriptionsTable:React.FC<TableProps> = ({user,files,setFiles}):
     setStartedTranscription(true);
     file.transcriptionStatus = "Processing...";
     
-    await processTranscription(file.file!, 
-      (message) => setTranscription(message), 
-      (error) => console.error(error))
+    // await processTranscription(file.file!, 
+    //   (message) => setTranscription(message), 
+    //   (error) => console.error(error))
     
     setStartedTranscription(false)
     setFinishedTranscription(true)
@@ -41,18 +41,18 @@ export const TranscriptionsTable:React.FC<TableProps> = ({user,files,setFiles}):
     }
   };
 
-  const handleDelete = async (file:FileInfo) => {
-    if(!file){
-      return;
-    }
+  // const handleDelete = async (file:FileInfo) => {
+  //   if(!file){
+  //     return;
+  //   }
 
-    await processDelete(file.name, 
-      (message) => {
-        const updatedFiles= removeFile(file.file!,files)
-        setFiles(updatedFiles)
-      }, 
-      (error) => console.error(error))
-  } 
+  //   await processDelete(file.name, 
+  //     (message) => {
+  //       const updatedFiles= removeFile(file.file!,files)
+  //       setFiles(updatedFiles)
+  //     }, 
+  //     (error) => console.error(error))
+  // } 
 
   useEffect(() => {
     const fetchTranscriptions = async () => {
@@ -66,7 +66,6 @@ export const TranscriptionsTable:React.FC<TableProps> = ({user,files,setFiles}):
         response.forEach(element => {
           const temp:FileInfo = {
             id:1,
-            file:undefined,
             name:element.filename,
             size:10,
             date:new Date(),
@@ -134,7 +133,7 @@ export const TranscriptionsTable:React.FC<TableProps> = ({user,files,setFiles}):
                     
                   </Button>
                 </TableCell>
-                <TableCell><Button className='bg-rose-700' onClick={()=> handleDelete(file)}><Trash className='w-4 h-4 mr-2'/>Delete</Button></TableCell>
+                {/* <TableCell><Button className='bg-rose-700' onClick={()=> handleDelete(file)}><Trash className='w-4 h-4 mr-2'/>Delete</Button></TableCell> */}
               </>
             :
               <TableCell className='p-3'>No file uploaded</TableCell>
