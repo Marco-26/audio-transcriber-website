@@ -93,7 +93,7 @@ def register_routes(app, db):
         os.makedirs(file_path)
         temp_save_file(file_path, file.filename, file)
 
-        file_info = {
+        fileEntry = {
             "file_id": file_entry.id,
             "user_id":file_entry.user_id,
             "filename": file_entry.filename,
@@ -102,7 +102,7 @@ def register_routes(app, db):
             "transcribed":file_entry.transcribed
         }
         
-        return jsonify(message="File uploaded sucessfuly", fileInfo=file_info)
+        return jsonify(message="File uploaded sucessfuly", fileEntry=fileEntry)
     
     @app.route("/api/transcript", methods=['POST'])
     async def transcript_endpoint():

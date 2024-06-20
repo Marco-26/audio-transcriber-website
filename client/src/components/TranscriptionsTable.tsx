@@ -1,12 +1,13 @@
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { getTranscriptionsEntries, processDelete, processTranscription } from '../utils/api-client';
-import { FileEntry } from '../shared/FileType';
+import { FileEntry } from '../shared/Types';
 import { formatFileSize, generateFileInfo, generateTXT, updateFiles } from '../utils/utils';
 import { Table,TableBody, TableCell, TableHead, TableHeader, TableRow } from './UI/Table';
 import { Button } from './UI/Button';
 import { Play, Trash, Download } from 'lucide-react';
 import {removeFile} from '../utils/utils'
 import { User } from '../shared/User';
+import { parse } from 'path';
 
 type TableProps = {
   user:User|undefined;
@@ -16,9 +17,9 @@ type TableProps = {
 
 export const TranscriptionsTable:React.FC<TableProps> = ({user,files,setFiles}):JSX.Element => {
   const [startedTranscription, setStartedTranscription] = useState<boolean>(false)
-  const [finishedTranscription, setFinishedTranscription] = useState<Boolean>(false)
-  const [transcription, setTranscription] = useState<string>()
-  
+  const [finishedTranscription, setFinishedTranscription] = useState<boolean>(false)
+  const [transcription, setTranscription] = useState<string>("")
+
   const handleTranscription = async (file:FileEntry) => {
     // setFinishedTranscription(false);
     // setStartedTranscription(true);
@@ -35,7 +36,7 @@ export const TranscriptionsTable:React.FC<TableProps> = ({user,files,setFiles}):
 
   const handleDownload = (file:FileEntry) => {
     if (transcription) {
-      generateTXT(transcription, file.transcriptionFileName!)
+      generateTXT(transcription)
     } else {
       console.error('No transcription available');
     }
@@ -62,19 +63,8 @@ export const TranscriptionsTable:React.FC<TableProps> = ({user,files,setFiles}):
           (message) => console.log(message), 
           (error) => console.error(error)
         );
-        
-        response.forEach(element => {
-          const temp:FileEntry = {
-            id:element.file_id,
-            name:element.filename,
-            size:element.filesize,
-            date:new Date(element.date),
-            transcriptionStatus:"Finished",
-            transcriptionFileName: "transcription"
-          }
 
-          setFiles((prevFiles) => updateFiles(prevFiles!, temp));
-        });
+        setFiles(response)
       };
     }
       
@@ -93,15 +83,16 @@ export const TranscriptionsTable:React.FC<TableProps> = ({user,files,setFiles}):
           </TableHeader>
           <TableBody>
             {files.map((file) => (
-              <TableRow key={file.id}>
+              <TableRow key={file.file_id}>
               {files ?
               <>
                 <TableCell>
-                  {file.name}
+                  {file.filename}
                 </TableCell>
-                <TableCell>{formatFileSize(file.size)}</TableCell>
+                <TableCell>{formatFileSize(file.filesize)}</TableCell>
                 <TableCell>{file.date.toLocaleDateString()}</TableCell>
-                {file.transcriptionStatus==="On Wait" ? 
+                {/* <TableCell>test</TableCell> */}
+                {file.transcribed !== false ? 
                   <TableCell> 
                     <Button
                       variant={"link"}
@@ -114,14 +105,14 @@ export const TranscriptionsTable:React.FC<TableProps> = ({user,files,setFiles}):
                     </Button> 
                   </TableCell>
                     :
-                  <TableCell>{file.transcriptionStatus}</TableCell>
+                  <TableCell>Processing</TableCell>
                   }
                 <TableCell>
                   <Button variant={"link"}  
                     onClick={() => handleDownload(file)} 
                     disabled={
                       !finishedTranscription || 
-                      file.transcriptionStatus !== "Finished"
+                      file.transcribed !== false
                     } 
                     className='pl-0'>
                     {!transcription ? <p>Unavailable</p> : 

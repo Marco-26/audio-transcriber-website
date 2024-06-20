@@ -1,34 +1,9 @@
  import axios, { AxiosResponse, AxiosError } from 'axios';
+import { FileEntry } from '../shared/Types';
 
 type ResponseCallback = (resp: AxiosResponse) => void
 type SuccessCallback = (message: string) => void
 type ErrorCallback = (error: AxiosError) => void
-
-// export async function getTranscriptionsEntries(user_id:string, onSuccess: SuccessCallback, onError: ErrorCallback) {
-//   const formData = new FormData()
-//   // Append each file to formData
-//   formData.append("user_id", user_id);
-  
-//   console.log("Uploading the file...")
-
-//   const response = await axios.post('api/entries', formData)
-//     .then((response: AxiosResponse<{ message: string, transcriptions:any[] }>) => {
-//       onSuccess(response.data.message);
-//       console.log(response.data.transcriptions)
-//     })
-//     .catch((error: AxiosError) => {
-//       onError(error);
-//     });
-// }
-
-type FileEntry = {
-  file_id:number,
-  user_id:string,
-  filename: string,
-  filesize:number,
-  date:Date,
-  transcribed:boolean
-};
 
 export async function getTranscriptionsEntries(
   user_id: string,
@@ -40,8 +15,12 @@ export async function getTranscriptionsEntries(
 
   try {
     const response: AxiosResponse<{ message: string; files: FileEntry[] }> = await axios.post('api/entries', formData);
+    const data = response.data.files.map((entry: FileEntry) => ({
+      ...entry,
+      date: new Date(entry.date), 
+    }));
     onSuccess(response.data.message);
-    return response.data.files; 
+    return data; 
   } catch (error) {
     onError(error as AxiosError);
     return []; 
@@ -52,15 +31,19 @@ export async function processUpload(user_id:string,file: File, onSuccess: Succes
   const formData = new FormData()
   formData.append("file", file);
   formData.append("user_id", user_id);
-  
-  await axios.post('api/upload', formData)
-    .then((response: AxiosResponse<{ message: string, fileEntry:FileEntry }>) => {
-      onSuccess(response.data.message);
-      return response.data.fileEntry
-    })
-    .catch((error: AxiosError) => {
-      onError(error);
-    });
+
+  try {
+    const response: AxiosResponse<{ message: string; fileEntry: FileEntry }> = await axios.post('api/upload', formData);
+    const fileEntry = {
+      ...response.data.fileEntry,
+      date: new Date(response.data.fileEntry.date)
+    };
+    onSuccess(response.data.message);
+    return fileEntry; 
+  } catch (error) {
+    onError(error as AxiosError);
+    return undefined; 
+  }
 }
 
 export async function processTranscription(file: File, onSuccess: SuccessCallback, onError: ErrorCallback) {

@@ -10,7 +10,7 @@ import { useForm } from 'react-hook-form';
 import { processUpload } from '../utils/api-client';
 import { AxiosError } from 'axios';
 import { Dispatch, SetStateAction } from 'react';
-import { FileEntry } from '../shared/FileType';
+import { FileEntry } from '../shared/Types';
 import { generateFileInfo, notifyError, updateFiles } from '../utils/utils';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
@@ -58,11 +58,11 @@ export const UploadFileButton: React.FC<UploadFileButtonProps> = ({ user,files, 
           throw error;
         }
       ).then(fileInfo => {
-        console.log("File info: " + fileInfo);
+        const fileEntry = JSON.parse(JSON.stringify(fileInfo));
+        setFiles((prevFiles) => updateFiles(prevFiles!, fileEntry));
       });
 
-      const file = generateFileInfo(fileTemp, "test");
-      setFiles((prevFiles) => updateFiles(prevFiles!, file));
+      
     } catch (error) {
       notifyError("Error uploading the file...")
       return;

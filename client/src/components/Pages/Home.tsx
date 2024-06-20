@@ -1,4 +1,4 @@
-import { FileEntry } from '@/src/shared/FileType';
+import { FileEntry } from '@/src/shared/Types';
 import React, { Dispatch, SetStateAction, useState } from 'react'
 import TableHeader from '../TableHeader';
 import { TranscriptionsTable } from '../TranscriptionsTable';

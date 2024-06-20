@@ -1,5 +1,5 @@
 import { toast } from 'react-toastify';
-import { FileEntry } from '../shared/FileType';
+import { FileEntry } from '../shared/Types';
 
 export const formatFileSize = (sizeInBytes: number): string => {
   const kilobyte = 1024;
@@ -39,26 +39,24 @@ export const notifyError = (error:string) => {
   )
 }
 
-export const generateFileInfo = (file:File, fileName:string) => {
-  const info:FileEntry = {
-    id:2,
-    // file:file,
-    name:file.name,
-    size:file.size,
-    date:new Date(),
-    transcriptionStatus: "On Wait",
-    transcriptionFileName: fileName
-  }
-  return info
+export const generateFileInfo = (file:FileEntry) => {
+  // const info:FileEntry = {
+  //   id:2,
+  //   name:file.name,
+  //   size:file.size,
+  //   date:new Date(),
+  //   transcriptionStatus: "On Wait",
+  // }
+  // return info
 }
 
-export const generateTXT = (transcription:string,fileName:string) => {
+export const generateTXT = (transcription:string) => {
   const blob = new Blob([transcription], { type: 'text/plain' });
   const url = URL.createObjectURL(blob);
 
   const a = document.createElement('a');
   a.href = url;
-  a.download = fileName+'.txt';
+  a.download = 'transcription.txt';
 
   a.click();
 
