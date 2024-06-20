@@ -57,7 +57,10 @@ def register_routes(app, db):
             return jsonify(error="No user_id provided"), 400
 
         user_id = request.form["user_id"]
-        files_list = FileEntry.query.filter_by(user_id=user_id)
+        files_list = FileEntry.query.filter_by(user_id=user_id).all()
+
+        if files_list == 0:
+            return
 
         files = [{
             'file_id': t.id,
@@ -84,17 +87,17 @@ def register_routes(app, db):
         db.session.add(file_entry)
         db.session.commit()
 
-        file_id = file_entry.get_id()
+        file_id = file_entry.id
         file_path=f"{data_folder_path}/{file_id}"
         
         os.makedirs(file_path)
         temp_save_file(file_path, file.filename, file)
 
         file_info = {
-            "id": file_entry.get_id(),
-            "filename": file_entry.get_filename(),
-            "filesize": file_entry.get_filesize(),
-            "date": file_entry.get_date().isoformat(),
+            "id": file_entry.id,
+            "filename": file_entry.filename,
+            "filesize": file_entry.filesize,
+            "date": file_entry.date.isoformat(),
         }
         
         return jsonify(message="File uploaded sucessfuly", file_info=file_info)

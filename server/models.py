@@ -31,6 +31,7 @@ class FileEntry(db.Model):
   filename = db.Column(db.Text, nullable=False)
   filesize = db.Column(db.Integer, nullable=False)
   date = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+  transcribed = db.Column(db.Boolean, default=False, nullable=False)
 
   def __init__(self, user_id, filename,filesize):
     self.user_id = user_id
@@ -39,15 +40,3 @@ class FileEntry(db.Model):
 
   def __repr__(self):
     return f'<Transcription: {self.id} by User {self.user_id}>'
-  
-  def get_id(self):
-    return self.id
-  
-  def get_filename(self):
-    return self.filename
-  
-  def get_filesize(self):
-    return self.filesize
-  
-  def get_date(self):
-    return self.date

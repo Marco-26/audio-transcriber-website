@@ -20,12 +20,14 @@ type ErrorCallback = (error: AxiosError) => void
 //       onError(error);
 //     });
 // }
+
 type Files = {
   file_id:number,
   user_id:string,
   filename: string,
   filesize:number,
-  date:Date
+  date:Date,
+  transcribed:boolean
 };
 
 export async function getTranscriptionsEntries(
@@ -35,8 +37,6 @@ export async function getTranscriptionsEntries(
 ): Promise<Files[]> {
   const formData = new FormData();
   formData.append('user_id', user_id);
-  
-  console.log('Uploading the file...');
 
   try {
     const response: AxiosResponse<{ message: string; files: Files[] }> = await axios.post('api/entries', formData);
