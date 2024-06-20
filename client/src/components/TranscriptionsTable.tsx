@@ -64,7 +64,6 @@ export const TranscriptionsTable:React.FC<TableProps> = ({user,files,setFiles}):
         );
         
         response.forEach(element => {
-          console.log(element.date);
           const temp:FileEntry = {
             id:element.file_id,
             name:element.filename,
@@ -93,8 +92,8 @@ export const TranscriptionsTable:React.FC<TableProps> = ({user,files,setFiles}):
             <TableHead>Download</TableHead>
           </TableHeader>
           <TableBody>
-            {files.map((file,index) => (
-              <TableRow>
+            {files.map((file) => (
+              <TableRow key={file.id}>
               {files ?
               <>
                 <TableCell>
