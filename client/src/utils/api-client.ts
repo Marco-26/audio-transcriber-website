@@ -48,19 +48,19 @@ export async function processTranscription(file: File, onSuccess: SuccessCallbac
   
   await axios.post('api/transcript', data)
     .then((response: AxiosResponse<{ message: string }>) => {
-      onSuccess("" + response.data);
+      onSuccess(response.data.message);
     })
     .catch((error: AxiosError) => {
       onError(error);
     });
 }
 
-export async function processDelete(filename: string, onSuccess: SuccessCallback, onError: ErrorCallback) {
-  console.log("Deleting file...")
+export async function processDelete(id: number, onSuccess: SuccessCallback, onError: ErrorCallback) {
+  console.log("Deleting file with the following ID: "+ id)
 
-  await axios.delete('api/delete/'+filename)
+  await axios.delete('api/delete/'+id)
     .then((response: AxiosResponse<{ message: string }>) => {
-      onSuccess("" + response.data);
+      onSuccess(response.data.message);
     })
     .catch((error: AxiosError) => {
       onError(error);

@@ -42,18 +42,15 @@ export const TranscriptionsTable:React.FC<TableProps> = ({user,files,setFiles}):
     }
   };
 
-  // const handleDelete = async (file:FileEntry) => {
-  //   if(!file){
-  //     return;
-  //   }
+  const handleDelete = async (file:FileEntry) => {
+    if(files.length === 0 || files === undefined || file === undefined){
+      return;
+    }
 
-  //   await processDelete(file.name, 
-  //     (message) => {
-  //       const updatedFiles= removeFile(file.file!,files)
-  //       setFiles(updatedFiles)
-  //     }, 
-  //     (error) => console.error(error))
-  // } 
+    await processDelete(file.file_id, 
+      (message) => {console.log(message)}, 
+      (error) => console.error(error))
+  } 
 
   useEffect(() => {
     const fetchTranscriptions = async () => {
@@ -91,7 +88,6 @@ export const TranscriptionsTable:React.FC<TableProps> = ({user,files,setFiles}):
                 </TableCell>
                 <TableCell>{formatFileSize(file.filesize)}</TableCell>
                 <TableCell>{new Date(file.date).toLocaleDateString()}</TableCell>
-                {/* <TableCell>test</TableCell> */}
                 {file.transcribed === false ? 
                   <TableCell> 
                     <Button
@@ -124,7 +120,7 @@ export const TranscriptionsTable:React.FC<TableProps> = ({user,files,setFiles}):
                     
                   </Button>
                 </TableCell>
-                {/* <TableCell><Button className='bg-rose-700' onClick={()=> handleDelete(file)}><Trash className='w-4 h-4 mr-2'/>Delete</Button></TableCell> */}
+                <TableCell><Button className='bg-rose-700' onClick={()=> handleDelete(file)}><Trash className='w-4 h-4 mr-2'/>Delete</Button></TableCell>
               </>
             :
               <TableCell className='p-3'>No file uploaded</TableCell>

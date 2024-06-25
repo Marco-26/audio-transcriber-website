@@ -1,4 +1,5 @@
 import json
+import shutil
 from flask import  abort, jsonify, request,redirect, url_for
 from models import User, FileEntry
 import os
@@ -116,12 +117,16 @@ def register_routes(app, db):
         os.remove(file)
         return transcript
     
-    @app.route("/api/delete/<filename>", methods=['DELETE'])
-    def delete_endpoint(filename):
-        print("Nome do ficheiro: " + filename)
+    @app.route("/api/delete/<id>", methods=['DELETE'])
+    def delete_endpoint(id):
+        directory_path = os.path.join(data_folder_path, id)
         try:
-            os.remove(data_folder_path+"/"+filename)
+            if os.path.isdir(directory_path):
+                shutil.rmtree(directory_path)
+            else:
+                os.remove(directory_path)
         except Exception as e:
-            return jsonify(error="There was an error deleting the file...")
+            print(f"Error: {e}")
+            return jsonify(error="There was an error deleting the file or directory."), 500
 
-        return jsonify(message="Sucessfully deleted the file")
+        return jsonify(message=f"Successfully deleted the file or directory with id: {id}"), 200

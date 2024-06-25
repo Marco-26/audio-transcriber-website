@@ -46,6 +46,7 @@ export const UploadFileButton: React.FC<UploadFileButtonProps> = ({ user,files, 
     
     const user_id = user["id"];
     const fileTemp = values.file[0];
+
     try {
       await processUpload(
         user_id,
@@ -61,8 +62,6 @@ export const UploadFileButton: React.FC<UploadFileButtonProps> = ({ user,files, 
         const fileEntry = JSON.parse(JSON.stringify(fileInfo));
         setFiles((prevFiles) => updateFiles(prevFiles!, fileEntry));
       });
-
-      
     } catch (error) {
       notifyError("Error uploading the file...")
       return;
