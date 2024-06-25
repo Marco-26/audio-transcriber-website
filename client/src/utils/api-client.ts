@@ -15,12 +15,8 @@ export async function getTranscriptionsEntries(
 
   try {
     const response: AxiosResponse<{ message: string; files: FileEntry[] }> = await axios.post('api/entries', formData);
-    const data = response.data.files.map((entry: FileEntry) => ({
-      ...entry,
-      date: new Date(entry.date), 
-    }));
     onSuccess(response.data.message);
-    return data; 
+    return response.data.files; 
   } catch (error) {
     onError(error as AxiosError);
     return []; 
@@ -34,12 +30,8 @@ export async function processUpload(user_id:string,file: File, onSuccess: Succes
 
   try {
     const response: AxiosResponse<{ message: string; fileEntry: FileEntry }> = await axios.post('api/upload', formData);
-    const fileEntry = {
-      ...response.data.fileEntry,
-      date: new Date(response.data.fileEntry.date)
-    };
     onSuccess(response.data.message);
-    return fileEntry; 
+    return response.data.fileEntry; 
   } catch (error) {
     onError(error as AxiosError);
     return undefined; 
@@ -69,38 +61,6 @@ export async function processDelete(filename: string, onSuccess: SuccessCallback
   await axios.delete('api/delete/'+filename)
     .then((response: AxiosResponse<{ message: string }>) => {
       onSuccess("" + response.data);
-    })
-    .catch((error: AxiosError) => {
-      onError(error);
-    });
-}
-
-export async function processLogin(email: string, password:string, onResponse: ResponseCallback,onError: ErrorCallback) {
-  // const data = {
-  //   "email": email,
-  //   "password": password
-  // };
-
-  await axios.post('/login')
-    .then((response: AxiosResponse<{ message: string }>) => {
-      onResponse(response)
-    })
-    .catch((error: AxiosError) => {
-      onError(error);
-    });
-}
-
-export async function processSignup(email: string, password:string, confirmPassword:string,name:string, onResponse: ResponseCallback,onError: ErrorCallback) {
-  const data = {
-    "email": email,
-    "password": password,
-    "confirmPassword":confirmPassword,
-    "name":name
-  };
-
-  await axios.post('/signup', data)
-    .then((response: AxiosResponse<{ message: string }>) => {
-      onResponse(response)
     })
     .catch((error: AxiosError) => {
       onError(error);

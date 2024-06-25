@@ -37,6 +37,7 @@ class FileEntry(db.Model):
     self.user_id = user_id
     self.filename = filename
     self.filesize = filesize
+    self.transcribed = False
 
   def __repr__(self):
     return f'<Transcription: {self.id} by User {self.user_id}>'

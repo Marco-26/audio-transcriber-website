@@ -67,7 +67,8 @@ def register_routes(app, db):
             'user_id': t.user_id,
             'filename': t.filename,
             'filesize':t.filesize,
-            'date':t.date
+            'date':t.date,
+            'transcribed': t.transcribed
         } for t in files_list]
 
         return jsonify(files=files, message="File uploaded sucessfuly")

@@ -90,9 +90,9 @@ export const TranscriptionsTable:React.FC<TableProps> = ({user,files,setFiles}):
                   {file.filename}
                 </TableCell>
                 <TableCell>{formatFileSize(file.filesize)}</TableCell>
-                <TableCell>{file.date.toLocaleDateString()}</TableCell>
+                <TableCell>{new Date(file.date).toLocaleDateString()}</TableCell>
                 {/* <TableCell>test</TableCell> */}
-                {file.transcribed !== false ? 
+                {file.transcribed === false ? 
                   <TableCell> 
                     <Button
                       variant={"link"}
