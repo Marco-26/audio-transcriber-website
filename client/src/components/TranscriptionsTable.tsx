@@ -47,9 +47,11 @@ export const TranscriptionsTable:React.FC<TableProps> = ({user,files,setFiles}):
       return;
     }
 
-    await processDelete(file.file_id, 
+    const updatedFiles = await processDelete(file.file_id, file.user_id, 
       (message) => {console.log(message)}, 
       (error) => console.error(error))
+
+    setFiles(updatedFiles)
   } 
 
   useEffect(() => {

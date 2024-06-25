@@ -10,6 +10,7 @@ export async function getTranscriptionsEntries(
   onSuccess: SuccessCallback,
   onError: ErrorCallback
 ): Promise<FileEntry[]> {
+  
   const formData = new FormData();
   formData.append('user_id', user_id);
 
@@ -55,14 +56,22 @@ export async function processTranscription(file: File, onSuccess: SuccessCallbac
     });
 }
 
-export async function processDelete(id: number, onSuccess: SuccessCallback, onError: ErrorCallback) {
-  console.log("Deleting file with the following ID: "+ id)
+export async function processDelete(fileID: number, userID: string, onSuccess: SuccessCallback, onError: ErrorCallback) {
+  console.log("Deleting file with the following ID: "+ fileID)
 
-  await axios.delete('api/delete/'+id)
+  await axios.delete('api/delete/'+fileID)
     .then((response: AxiosResponse<{ message: string }>) => {
       onSuccess(response.data.message);
     })
     .catch((error: AxiosError) => {
       onError(error);
     });
+
+    const files = await getTranscriptionsEntries(
+      userID,
+      (message) => console.log(message), 
+      (error) => console.error(error)
+    );
+
+    return files;
 }

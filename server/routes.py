@@ -122,6 +122,9 @@ def register_routes(app, db):
         directory_path = os.path.join(data_folder_path, id)
         try:
             if os.path.isdir(directory_path):
+                file_entry = FileEntry.query.filter_by(id=id).first()
+                db.session.delete(file_entry)
+                db.session.commit()
                 shutil.rmtree(directory_path)
             else:
                 os.remove(directory_path)
