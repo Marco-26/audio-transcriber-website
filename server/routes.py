@@ -1,9 +1,10 @@
 import json
+from pathlib import Path
 import shutil
 from flask import  abort, jsonify, request,redirect, url_for
 from models import User, FileEntry
 import os
-from utils import temp_save_file
+from utils import temp_save_file, transcribe_audio
 from app import data_folder_path, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET
 import requests
 from flask_jwt_extended import create_access_token
@@ -106,16 +107,16 @@ def register_routes(app, db):
         
         return jsonify(message="File uploaded sucessfuly", fileEntry=fileEntry)
     
-    @app.route("/api/transcript", methods=['POST'])
-    async def transcript_endpoint():
-        data = request.get_json()
-        filename = data.get('filename')
-        file = os.path.join(data_folder_path, filename)
+    @app.route("/api/transcript/<file_id>/<filename>", methods=['POST'])
+    async def transcript_endpoint(file_id,filename):
+        file = os.path.join(data_folder_path, file_id,filename)
+        transcript = await transcribe_audio(file)
 
-        #transcript = await transcribe_audio(file)
+        transcript_file_path = Path(data_folder_path+"/"+file_id) / f"{file_id}_{filename}.txt"
+        with open(transcript_file_path, 'w') as file:
+            file.write(transcript)
 
-        os.remove(file)
-        return transcript
+        return jsonify(message="Finished Transcribing the audio")
     
     @app.route("/api/delete/<id>", methods=['DELETE'])
     def delete_endpoint(id):

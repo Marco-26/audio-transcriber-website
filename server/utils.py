@@ -13,12 +13,10 @@ async def transcribe_audio(file):
         stdout, stderr = process.communicate()
         
         if process.returncode == 0:
-            #TODO: FIND A BETTER WAY TO DO THIS
-            output = stdout.decode().strip()
-            return output
+            return stdout.decode().strip()
         else:
-            error_message = stderr.decode().strip()
-            return jsonify({'error': error_message}), 500
-
+            print("Error transcribing file:", stderr.decode().strip())
+            return None
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        print("Exception during transcription:", str(e))
+        return None

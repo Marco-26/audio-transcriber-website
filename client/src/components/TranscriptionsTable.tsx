@@ -18,28 +18,25 @@ type TableProps = {
 export const TranscriptionsTable:React.FC<TableProps> = ({user,files,setFiles}):JSX.Element => {
   const [startedTranscription, setStartedTranscription] = useState<boolean>(false)
   const [finishedTranscription, setFinishedTranscription] = useState<boolean>(false)
-  const [transcription, setTranscription] = useState<string>("")
 
   const handleTranscription = async (file:FileEntry) => {
-    // setFinishedTranscription(false);
-    // setStartedTranscription(true);
-    // file.transcriptionStatus = "Processing...";
+    setFinishedTranscription(false);
+    setStartedTranscription(true);
     
-    // await processTranscription(file.file!, 
-    //   (message) => setTranscription(message), 
-    //   (error) => console.error(error))
+    await processTranscription(file.file_id, file.filename,
+      (message) => console.log(message), 
+      (error) => console.error(error))
     
-    // setStartedTranscription(false)
-    // setFinishedTranscription(true)
-    // file.transcriptionStatus="Finished"
+    setStartedTranscription(false)
+    setFinishedTranscription(true)
   }
 
   const handleDownload = (file:FileEntry) => {
-    if (transcription) {
-      generateTXT(transcription)
-    } else {
-      console.error('No transcription available');
-    }
+    // if (transcription) {
+    //   generateTXT(transcription)
+    // } else {
+    //   console.error('No transcription available');
+    // }
   };
 
   const handleDelete = async (file:FileEntry) => {
@@ -113,7 +110,7 @@ export const TranscriptionsTable:React.FC<TableProps> = ({user,files,setFiles}):
                       file.transcribed !== false
                     } 
                     className='pl-0'>
-                    {!transcription ? <p>Unavailable</p> : 
+                    {!file.transcribed ? <p>Unavailable</p> : 
                       <>
                         <Download className='w-4 h-4 mr-2'/>
                         Download

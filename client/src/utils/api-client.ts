@@ -39,15 +39,11 @@ export async function processUpload(user_id:string,file: File, onSuccess: Succes
   }
 }
 
-export async function processTranscription(file: File, onSuccess: SuccessCallback, onError: ErrorCallback) {
-  const data = {
-    filename: file.name,
-  };
-
+export async function processTranscription(fileID: number, filename:string,onSuccess: SuccessCallback, onError: ErrorCallback) {
   console.log("Starting transcription...")
   console.log("This might take awhile")
   
-  await axios.post('api/transcript', data)
+  await axios.post('api/transcript/'+fileID+"/"+filename)
     .then((response: AxiosResponse<{ message: string }>) => {
       onSuccess(response.data.message);
     })
