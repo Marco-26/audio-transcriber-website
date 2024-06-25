@@ -73,7 +73,7 @@ def register_routes(app, db):
             'transcribed': t.transcribed
         } for t in files_list]
 
-        return jsonify(files=files, message="File uploaded sucessfuly")
+        return jsonify(files=files, message="Retrieving files...")
 
     @app.route("/api/upload", methods=['POST'])
     def upload_endpoint():
@@ -109,12 +109,18 @@ def register_routes(app, db):
     
     @app.route("/api/transcript/<file_id>/<filename>", methods=['POST'])
     async def transcript_endpoint(file_id,filename):
-        file = os.path.join(data_folder_path, file_id,filename)
-        transcript = await transcribe_audio(file)
+        file = FileEntry.query.filter_by(id=file_id).first()
+        file_path = os.path.join(data_folder_path, file_id,filename)
+        print("Localização do ficheiro: " + file_path)
+        transcript = await transcribe_audio(file_path)
+        
+        transcript_file_path = Path(data_folder_path+"/"+file_id) / "transcript.txt"
+        with open(transcript_file_path, 'w') as temp_file:
+            temp_file.write(transcript)
 
-        transcript_file_path = Path(data_folder_path+"/"+file_id) / f"{file_id}_{filename}.txt"
-        with open(transcript_file_path, 'w') as file:
-            file.write(transcript)
+        file.transcribed = True
+        db.session.add(file)
+        db.session.commit()
 
         return jsonify(message="Finished Transcribing the audio")
     

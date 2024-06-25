@@ -7,9 +7,9 @@ def temp_save_file(location, filename, file):
     save_path = os.path.join(location, filename)
     file.save(save_path)
 
-async def transcribe_audio(file):
+async def transcribe_audio(file_path):
     try:
-        process = subprocess.Popen(['python', 'transcribe.py', file], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        process = subprocess.Popen(['python', 'transcribe.py', file_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         stdout, stderr = process.communicate()
         
         if process.returncode == 0:

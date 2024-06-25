@@ -39,7 +39,7 @@ export async function processUpload(user_id:string,file: File, onSuccess: Succes
   }
 }
 
-export async function processTranscription(fileID: number, filename:string,onSuccess: SuccessCallback, onError: ErrorCallback) {
+export async function processTranscription(fileID: number,filename:string, userID:string,onSuccess: SuccessCallback, onError: ErrorCallback) {
   console.log("Starting transcription...")
   console.log("This might take awhile")
   
@@ -50,6 +50,15 @@ export async function processTranscription(fileID: number, filename:string,onSuc
     .catch((error: AxiosError) => {
       onError(error);
     });
+
+    //GET THE UPDATED FILES, SINCE THE BACKEND CHANGES THE "TRANSCRIBED" ATTRIBUTE
+    const files = await getTranscriptionsEntries(
+      userID,
+      (message) => console.log(message), 
+      (error) => console.error(error)
+    );
+
+    return files;
 }
 
 export async function processDelete(fileID: number, userID: string, onSuccess: SuccessCallback, onError: ErrorCallback) {

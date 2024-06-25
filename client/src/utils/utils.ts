@@ -39,17 +39,6 @@ export const notifyError = (error:string) => {
   )
 }
 
-export const generateFileInfo = (file:FileEntry) => {
-  // const info:FileEntry = {
-  //   id:2,
-  //   name:file.name,
-  //   size:file.size,
-  //   date:new Date(),
-  //   transcriptionStatus: "On Wait",
-  // }
-  // return info
-}
-
 export const generateTXT = (transcription:string) => {
   const blob = new Blob([transcription], { type: 'text/plain' });
   const url = URL.createObjectURL(blob);
@@ -62,10 +51,3 @@ export const generateTXT = (transcription:string) => {
 
   URL.revokeObjectURL(url);
 }
-
-export const removeFile = (fileToRemove: File,files:FileEntry[]) => {
-  if (files) {
-    // const updatedFiles = files.filter(file => file.file !== fileToRemove);
-    // return updatedFiles;
-  }
-};

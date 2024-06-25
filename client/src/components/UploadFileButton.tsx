@@ -11,7 +11,7 @@ import { processUpload } from '../utils/api-client';
 import { AxiosError } from 'axios';
 import { Dispatch, SetStateAction } from 'react';
 import { FileEntry } from '../shared/Types';
-import { generateFileInfo, notifyError, updateFiles } from '../utils/utils';
+import { notifyError, updateFiles } from '../utils/utils';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
 import { User } from '../shared/User';
