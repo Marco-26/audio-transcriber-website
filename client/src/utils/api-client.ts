@@ -10,12 +10,12 @@ export async function getTranscriptionsEntries(
   onSuccess: SuccessCallback,
   onError: ErrorCallback
 ): Promise<FileEntry[]> {
-  
+
   const formData = new FormData();
   formData.append('user_id', user_id);
 
   try {
-    const response: AxiosResponse<{ message: string; files: FileEntry[] }> = await axios.post('api/entries', formData);
+    const response: AxiosResponse<{ message: string; files: FileEntry[] }> = await axios.get('api/entries/'+user_id);
     onSuccess(response.data.message);
     return response.data.files; 
   } catch (error) {

@@ -52,16 +52,16 @@ def register_routes(app, db):
 
         return response, 200
     
-    @app.route("/api/entries", methods=['POST'])
-    def get_file_entries():
-        if 'user_id' not in request.form:
-            return jsonify(error="No user_id provided"), 400
+    @app.route("/api/entries/<user_id>", methods=['GET'])
+    def get_file_entries(user_id):
+        user_exists = User.query.filter_by(google_id=user_id).first()
+        if not user_exists:
+            return jsonify(error='User not found')
 
-        user_id = request.form["user_id"]
         files_list = FileEntry.query.filter_by(user_id=user_id).all()
 
-        if files_list == 0:
-            return
+        if not files_list:
+            return jsonify(error='No files found for this user')
 
         files = [{
             'file_id': t.id,

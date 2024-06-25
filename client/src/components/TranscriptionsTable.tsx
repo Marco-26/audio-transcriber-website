@@ -68,7 +68,7 @@ export const TranscriptionsTable:React.FC<TableProps> = ({user,files,setFiles}):
     }
       
     fetchTranscriptions();
-  }, [user]);
+  }, [user,setFiles]);
 
   return (
     <div className='border rounded'>
