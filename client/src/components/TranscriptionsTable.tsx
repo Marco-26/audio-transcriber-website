@@ -1,5 +1,5 @@
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import { getTranscriptionsEntries, processDelete, processTranscription } from '../utils/api-client';
+import { fetchTranscriptionFile, getTranscriptionsEntries, processDelete, processTranscription } from '../utils/api-client';
 import { FileEntry } from '../shared/Types';
 import { formatFileSize, generateTXT} from '../utils/utils';
 import { Table,TableBody, TableCell, TableHead, TableHeader, TableRow } from './UI/Table';
@@ -30,12 +30,18 @@ export const TranscriptionsTable:React.FC<TableProps> = ({user,files,setFiles}):
     }
   }
 
-  const handleDownload = (file:FileEntry) => {
-    // if (transcription) {
-    //   generateTXT(transcription)
-    // } else {
-    //   console.error('No transcription available');
-    // }
+  const handleDownload = async (file:FileEntry) => {
+    if(!file.transcribed){
+      return
+    }
+
+    const transcription = await fetchTranscriptionFile(
+      file.file_id,
+      (message) => console.log(message), 
+      (error) => console.error(error)
+    )
+
+    generateTXT(transcription)
   };
 
   const handleDelete = async (file:FileEntry) => {

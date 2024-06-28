@@ -126,6 +126,17 @@ def register_routes(app, db):
 
         return jsonify(message="Finished Transcribing the audio")
     
+    @app.route("/api/transcription/<file_id>", methods=['GET'])
+    async def fetch_transcribed_audio(file_id):
+        file = FileEntry.query.filter_by(id=file_id).first()
+        file_path = os.path.join(data_folder_path, file_id,"transcript.txt")
+        
+        if(os.path.isfile(file_path)):
+            with open(file_path, 'r') as file:
+                file_contents = file.read()
+
+        return jsonify(transcription=file_contents, message="Finished fetching transcription...")
+    
     @app.route("/api/delete/<id>", methods=['DELETE'])
     def delete_endpoint(id):
         directory_path = os.path.join(data_folder_path, id)

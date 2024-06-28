@@ -69,3 +69,14 @@ export async function processDelete(fileID: number, userID: string, onSuccess: S
 
   return files;
 }
+
+export async function fetchTranscriptionFile(fileID: number, onSuccess: SuccessCallback, onError: ErrorCallback) {
+  try {
+    const response: AxiosResponse<{ message: string; transcription: string }> = await axios.get('api/transcription/'+fileID);
+    onSuccess(response.data.message);
+    return response.data.transcription; 
+  } catch (error) {
+    onError(error as AxiosError);
+    return ""; 
+  }
+}
