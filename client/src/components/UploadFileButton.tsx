@@ -44,7 +44,7 @@ export const UploadFileButton: React.FC<UploadFileButtonProps> = ({ user,files, 
       return;
     }
     
-    const user_id = user["id"];
+    const user_id = user.id;
     const fileTemp = values.file[0];
 
     try {

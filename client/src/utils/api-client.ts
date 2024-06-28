@@ -1,7 +1,6 @@
  import axios, { AxiosResponse, AxiosError } from 'axios';
 import { FileEntry } from '../shared/Types';
 
-type ResponseCallback = (resp: AxiosResponse) => void
 type SuccessCallback = (message: string) => void
 type ErrorCallback = (error: AxiosError) => void
 
@@ -10,7 +9,6 @@ export async function getTranscriptionsEntries(
   onSuccess: SuccessCallback,
   onError: ErrorCallback
 ): Promise<FileEntry[]> {
-
   const formData = new FormData();
   formData.append('user_id', user_id);
 
@@ -50,33 +48,24 @@ export async function processTranscription(fileID: number,filename:string, userI
     .catch((error: AxiosError) => {
       onError(error);
     });
-
-    //GET THE UPDATED FILES, SINCE THE BACKEND CHANGES THE "TRANSCRIBED" ATTRIBUTE
-    const files = await getTranscriptionsEntries(
-      userID,
-      (message) => console.log(message), 
-      (error) => console.error(error)
-    );
-
-    return files;
 }
 
 export async function processDelete(fileID: number, userID: string, onSuccess: SuccessCallback, onError: ErrorCallback) {
   console.log("Deleting file with the following ID: "+ fileID)
 
-  await axios.delete('api/delete/'+fileID)
-    .then((response: AxiosResponse<{ message: string }>) => {
-      onSuccess(response.data.message);
-    })
-    .catch((error: AxiosError) => {
-      onError(error);
-    });
+  await axios.post('api/transcript/' + fileID)
+  .then((response: AxiosResponse<{ message: string }>) => {
+    onSuccess(response.data.message);
+  })
+  .catch((error: AxiosError) => {
+    onError(error);
+  });
+    
+  const files = await getTranscriptionsEntries(
+    userID,
+    (message) => console.log(message), 
+    (error) => console.error(error)
+  );
 
-    const files = await getTranscriptionsEntries(
-      userID,
-      (message) => console.log(message), 
-      (error) => console.error(error)
-    );
-
-    return files;
+  return files;
 }

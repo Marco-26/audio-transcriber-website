@@ -55,10 +55,10 @@ def register_routes(app, db):
     
     @app.route("/api/entries/<user_id>", methods=['GET'])
     def get_file_entries(user_id):
+        print("USER ID: " + user_id)
         user_exists = User.query.filter_by(google_id=user_id).first()
         if not user_exists:
             return jsonify(error='User not found')
-
         files_list = FileEntry.query.filter_by(user_id=user_id).all()
 
         if not files_list:
@@ -73,7 +73,7 @@ def register_routes(app, db):
             'transcribed': t.transcribed
         } for t in files_list]
 
-        return jsonify(files=files, message="Retrieving files...")
+        return jsonify(files=files, message="Fetched all files")
 
     @app.route("/api/upload", methods=['POST'])
     def upload_endpoint():
@@ -81,10 +81,13 @@ def register_routes(app, db):
             return jsonify(error="No file provided"), 400
         elif 'user_id' not in request.form:
             return jsonify(error="No user_id provided"), 400
-
-        file = request.files['file']
-
+        
         user_id = request.form["user_id"]
+        file = request.files['file']
+        
+        user_exists = User.query.filter_by(google_id=user_id).first()
+        if not user_exists:
+            return jsonify(error='User not found')
         
         file_entry = FileEntry(user_id=user_id, filename=file.filename, filesize=10)
         db.session.add(file_entry)
@@ -111,7 +114,6 @@ def register_routes(app, db):
     async def transcript_endpoint(file_id,filename):
         file = FileEntry.query.filter_by(id=file_id).first()
         file_path = os.path.join(data_folder_path, file_id,filename)
-        print("Localização do ficheiro: " + file_path)
         transcript = await transcribe_audio(file_path)
         
         transcript_file_path = Path(data_folder_path+"/"+file_id) / "transcript.txt"

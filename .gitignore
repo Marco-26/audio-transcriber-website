@@ -3,3 +3,4 @@ server/__pycache__/
 server/migrations/
 server/instance/
 server/client-secret.json
+server/data/

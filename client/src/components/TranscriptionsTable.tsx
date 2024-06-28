@@ -15,15 +15,19 @@ type TableProps = {
 
 export const TranscriptionsTable:React.FC<TableProps> = ({user,files,setFiles}):JSX.Element => {
   const [startedTranscription, setStartedTranscription] = useState<boolean>(false)
-
+  
   const handleTranscription = async (file:FileEntry) => {
-    setStartedTranscription(true);
-    console.log(file.filename)
-    await processTranscription(file.file_id, file.filename,file.user_id,
-      (message) => console.log(message), 
-      (error) => console.error(error))
-    
-    setStartedTranscription(false)
+    if(user){
+      setStartedTranscription(true);
+
+      await processTranscription(file.file_id, file.filename,file.user_id,
+        (message) => console.log(message), 
+        (error) => console.error(error))
+      
+      setStartedTranscription(false)
+      
+      fetchTranscriptions()
+    }
   }
 
   const handleDownload = (file:FileEntry) => {
@@ -45,22 +49,22 @@ export const TranscriptionsTable:React.FC<TableProps> = ({user,files,setFiles}):
 
     setFiles(updatedFiles)
   } 
+  
+  const fetchTranscriptions = async () => {
+    if(user){
+      const response = await getTranscriptionsEntries(
+        user.id,
+        (message) => console.log(message), 
+        (error) => console.error(error)
+      );
+
+      setFiles(response)
+    };
+  }
 
   useEffect(() => {
-    const fetchTranscriptions = async () => {
-      if(user){
-        const response = await getTranscriptionsEntries(
-          user["id"],
-          (message) => console.log(message), 
-          (error) => console.error(error)
-        );
-
-        setFiles(response)
-      };
-    }
-      
     fetchTranscriptions();
-  }, [user,setFiles]);
+  }, [user]);
 
   return (
     <div className='border rounded'>
