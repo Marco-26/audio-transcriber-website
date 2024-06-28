@@ -53,7 +53,7 @@ export async function processTranscription(fileID: number,filename:string, userI
 export async function processDelete(fileID: number, userID: string, onSuccess: SuccessCallback, onError: ErrorCallback) {
   console.log("Deleting file with the following ID: "+ fileID)
 
-  await axios.post('api/transcript/' + fileID)
+  await axios.delete('api/delete/' + fileID)
   .then((response: AxiosResponse<{ message: string }>) => {
     onSuccess(response.data.message);
   })
@@ -61,13 +61,13 @@ export async function processDelete(fileID: number, userID: string, onSuccess: S
     onError(error);
   });
     
-  const files = await getTranscriptionsEntries(
-    userID,
-    (message) => console.log(message), 
-    (error) => console.error(error)
-  );
+  // const files = await getTranscriptionsEntries(
+  //   userID,
+  //   (message) => console.log(message), 
+  //   (error) => console.error(error)
+  // );
 
-  return files;
+  // return files;
 }
 
 export async function fetchTranscriptionFile(fileID: number, onSuccess: SuccessCallback, onError: ErrorCallback) {

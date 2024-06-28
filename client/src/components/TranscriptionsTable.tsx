@@ -49,11 +49,11 @@ export const TranscriptionsTable:React.FC<TableProps> = ({user,files,setFiles}):
       return;
     }
 
-    const updatedFiles = await processDelete(file.file_id, file.user_id, 
+    await processDelete(file.file_id, file.user_id, 
       (message) => {console.log(message)}, 
       (error) => console.error(error))
-
-    setFiles(updatedFiles)
+    
+    fetchTranscriptions()
   } 
   
   const fetchTranscriptions = async () => {
