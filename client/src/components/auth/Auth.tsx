@@ -18,26 +18,12 @@ async function getUserInfo(codeResponse:any) {
   return await response.json();
 }
 
-async function getProtected() {
-  var response = await fetch("/protected", {
-    method: "GET",
-    credentials: "include",
-    mode: "cors",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  })
-    .then((res) => res.json())
-    .then((msg) => console.log(msg));
-}
-
 interface AuthProps{
   user:User | undefined; 
   setUser: Dispatch<SetStateAction<User | undefined>>;
 }
 
 const Auth:React.FC<AuthProps> = ({user,setUser}) => {
-  const [loggedIn, setLoggedIn] = useState(false);
   
   const googleLogin = useGoogleLogin({
     flow: "auth-code",
@@ -51,19 +37,17 @@ const Auth:React.FC<AuthProps> = ({user,setUser}) => {
         picture: loginDetails.user.picture,
       };
       
-      setLoggedIn(true);
       setUser(mappedUser);
     },
   });
 
   const handleLogout = () => {
-    getProtected();
-    setLoggedIn(false);
+    setUser(undefined);
   };
 
   return (
     <>
-      {!loggedIn ? (
+      {!user ? (
         <Button onClick={() => googleLogin()}>
           <UserIcon className='mr-2'/>
           Login

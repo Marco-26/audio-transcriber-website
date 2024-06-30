@@ -65,7 +65,9 @@ export const TranscriptionsTable:React.FC<TableProps> = ({user,files,setFiles}):
       );
 
       setFiles(response)
+      return;
     };
+    setFiles([]);
   }
 
   useEffect(() => {

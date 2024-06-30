@@ -22,7 +22,6 @@ const TableHeader:React.FC<TableHeaderProps> = ({user,files,setFiles}) =>  {
           <div className="flex items-center">
             <TabsList>
               <TabsTrigger value="all">All</TabsTrigger>
-              <TabsTrigger value="active">Processing</TabsTrigger>
               <TabsTrigger value="draft">Done</TabsTrigger>
             </TabsList>
           </div>
