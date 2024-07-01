@@ -14,17 +14,17 @@ type TableProps = {
 }
 
 export const TranscriptionsTable:React.FC<TableProps> = ({user,files,setFiles}):JSX.Element => {
-  const [startedTranscription, setStartedTranscription] = useState<boolean>(false)
-  
+  const [transcriptionStatus, setTranscriptionStatus] = useState<{ [key: string]: boolean }>({});
+
   const handleTranscription = async (file:FileEntry) => {
     if(user){
-      setStartedTranscription(true);
+      setTranscriptionStatus((prev) => ({ ...prev, [file.file_id]: true }));
 
       await processTranscription(file.file_id, file.filename,file.user_id,
         (message) => console.log(message), 
         (error) => console.error(error))
       
-      setStartedTranscription(false)
+      setTranscriptionStatus((prev) => ({ ...prev, [file.file_id]: false }));
       
       fetchTranscriptions()
     }
@@ -97,13 +97,12 @@ export const TranscriptionsTable:React.FC<TableProps> = ({user,files,setFiles}):
                 <TableCell>
                   {file.transcribed ?
                     "Done" :  // Caso o arquivo já tenha sido transcrito
-                    (startedTranscription ?
-                      "Processing..." :  // Caso a transcrição tenha começado mas ainda não tenha terminado
-                      <Button  // Caso a transcrição ainda não tenha começado
+                    (transcriptionStatus[file.file_id] ?
+                      "Processing..." : 
+                      <Button  
                         variant="link"
                         className="pl-0"
                         onClick={() => handleTranscription(file)}
-                        disabled={startedTranscription}
                       >
                         <Play className="w-4 h-4 mr-2"/>
                         Start
