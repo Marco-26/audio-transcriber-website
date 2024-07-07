@@ -114,6 +114,7 @@ def register_routes(app, db):
     async def transcript_endpoint(file_id,filename):
         file = FileEntry.query.filter_by(id=file_id).first()
         file_path = os.path.join(data_folder_path, file_id,filename)
+        
         transcript = await transcribe_audio(file_path)
         
         transcript_file_path = Path(data_folder_path+"/"+file_id) / "transcript.txt"
