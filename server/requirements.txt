@@ -14,3 +14,4 @@ pyjwt
 google-auth-oauthlib
 google-auth
 Flask-JWT-Extended
+opencv-python
