@@ -29,4 +29,7 @@ def get_file_size(audio_file_path):
     size = audio_file_path.tell()
     audio_file_path.seek(0)
     return round((size / (1024 * 1024)),2)
+
     
+def get_file_info(audio_file_path):
+    return str(get_file_size(audio_file_path)) + " MB" + " - " + str(get_audio_time(audio_file_path))

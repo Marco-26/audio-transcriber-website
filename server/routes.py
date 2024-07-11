@@ -4,7 +4,7 @@ import shutil
 from flask import  abort, jsonify, request,redirect, url_for
 from models import User, FileEntry
 import os
-from utils import temp_save_file, transcribe_audio,get_audio_time,get_file_size
+from utils import temp_save_file, transcribe_audio,get_file_info
 from app import data_folder_path, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET
 import requests
 from flask_jwt_extended import create_access_token
@@ -89,9 +89,9 @@ def register_routes(app, db):
         if not user_exists:
             return jsonify(error='User not found')
         
-        print(str(get_audio_time(file)) + " " + str(get_file_size(file)))
+        file_info = get_file_info(file);
 
-        file_entry = FileEntry(user_id=user_id, filename=file.filename, filesize=10)
+        file_entry = FileEntry(user_id=user_id, filename=file.filename, info=file_info)
         db.session.add(file_entry)
         db.session.commit()
 
@@ -104,7 +104,7 @@ def register_routes(app, db):
             "file_id": file_entry.id,
             "user_id":file_entry.user_id,
             "filename": file_entry.filename,
-            "filesize": file_entry.filesize,
+            "info": file_entry.info,
             "date": file_entry.date.isoformat(),
             "transcribed":file_entry.transcribed
         }

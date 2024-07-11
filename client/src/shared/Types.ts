@@ -3,7 +3,7 @@ export type FileEntry = {
   file_id:number,
   user_id:string,
   filename: string,
-  filesize:number,
+  info:string,
   date:Date,
   transcribed:boolean
 };

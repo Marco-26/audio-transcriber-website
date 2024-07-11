@@ -77,59 +77,65 @@ export const TranscriptionsTable:React.FC<TableProps> = ({user,files,setFiles}):
   return (
     <div className='border rounded'>
         <Table>
-          <TableHeader>        
-            <TableHead>Name</TableHead>
-            <TableHead>Metadata</TableHead>
-            <TableHead>Date</TableHead>
-            <TableHead>Transcription Status</TableHead>
-            <TableHead>Download</TableHead>
-          </TableHeader>
-          <TableBody>
-            {files.map((file) => (
-              <TableRow key={file.file_id}>
-              {files ?
-              <>
-                <TableCell>
-                  {file.filename}
-                </TableCell>
-                <TableCell>{formatFileSize(file.filesize)}</TableCell>
-                <TableCell>{new Date(file.date).toLocaleDateString()}</TableCell>
-                <TableCell>
-                  {file.transcribed ?
-                    "Done" :  // Caso o arquivo já tenha sido transcrito
-                    (transcriptionStatus[file.file_id] ?
-                      "Processing..." : 
-                      <Button  
-                        variant="link"
-                        className="pl-0"
-                        onClick={() => handleTranscription(file)}
-                      >
-                        <Play className="w-4 h-4 mr-2"/>
-                        Start
-                      </Button>
-                    )
-                  }
-                </TableCell>
-                <TableCell>
-                  <Button variant={"link"}  
-                    onClick={() => handleDownload(file)} 
-                    disabled={
-                      file.transcribed === false
-                    } 
-                    className='pl-0'>
-                        <Download className='w-4 h-4 mr-2'/>
-                        Download
-                  </Button>
-                </TableCell>
-                <TableCell><Button className='bg-rose-700' onClick={()=> handleDelete(file)}><Trash className='w-4 h-4 mr-2'/>Delete</Button></TableCell>
-              </>
-            :
-              <TableCell className='p-3'>No file uploaded</TableCell>
-            }
-              </TableRow>
-            ))}
-          </TableBody>
+            <TableHeader>        
+                <TableHead>Name</TableHead>
+                <TableHead>Metadata</TableHead>
+                <TableHead>Date</TableHead>
+                <TableHead>Transcription Status</TableHead>
+                <TableHead>Download</TableHead>
+                <TableHead>Action</TableHead>
+            </TableHeader>
+            <TableBody>
+                {files && files.length > 0 ? (
+                    files.map((file) => (
+                        <TableRow key={file.file_id}>
+                            <TableCell>{file.filename}</TableCell>
+                            <TableCell>{file.info}</TableCell>
+                            <TableCell>{new Date(file.date).toLocaleDateString()}</TableCell>
+                            <TableCell>
+                                {file.transcribed ? (
+                                    "Done"
+                                ) : (
+                                    transcriptionStatus[file.file_id] ? (
+                                        "Processing..."
+                                    ) : (
+                                        <Button
+                                            variant="link"
+                                            className="pl-0"
+                                            onClick={() => handleTranscription(file)}
+                                        >
+                                            <Play className="w-4 h-4 mr-2" />
+                                            Start
+                                        </Button>
+                                    )
+                                )}
+                            </TableCell>
+                            <TableCell>
+                                <Button
+                                    variant="link"
+                                    onClick={() => handleDownload(file)}
+                                    disabled={!file.transcribed}
+                                    className='pl-0'
+                                >
+                                    <Download className='w-4 h-4 mr-2' />
+                                    Download
+                                </Button>
+                            </TableCell>
+                            <TableCell>
+                                <Button className='bg-rose-700' onClick={() => handleDelete(file)}>
+                                    <Trash className='w-4 h-4 mr-2' />
+                                    Delete
+                                </Button>
+                            </TableCell>
+                        </TableRow>
+                      ))
+                  ) : (
+                      <TableRow>
+                          <TableCell className='p-3'>No file uploaded</TableCell>
+                      </TableRow>
+                )}
+            </TableBody>
         </Table>
-      </div>
-  );
+    </div>
+);
 }

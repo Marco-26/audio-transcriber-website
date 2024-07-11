@@ -29,14 +29,14 @@ class FileEntry(db.Model):
   id = db.Column(db.Integer, primary_key=True)
   user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
   filename = db.Column(db.Text, nullable=False)
-  filesize = db.Column(db.Integer, nullable=False)
+  info = db.Column(db.Text, nullable=False)
   date = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
   transcribed = db.Column(db.Boolean, default=False, nullable=False)
 
-  def __init__(self, user_id, filename,filesize):
+  def __init__(self, user_id, filename,info):
     self.user_id = user_id
     self.filename = filename
-    self.filesize = filesize
+    self.info = info
     self.transcribed = False
 
   def __repr__(self):
