@@ -10,8 +10,8 @@ import { useForm } from 'react-hook-form';
 import { processUpload } from '../utils/api-client';
 import { AxiosError } from 'axios';
 import { Dispatch, SetStateAction } from 'react';
-import { FileInfo } from '../shared/FileType';
-import { generateFileInfo, notifyError } from '../utils/utils';
+import { FileEntry } from '../shared/Types';
+import { notifyError, updateFiles } from '../utils/utils';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
 import { User } from '../shared/User';
@@ -24,22 +24,11 @@ const formSchema = z.object({
 
 interface UploadFileButtonProps {
   user:User |undefined;
-  files:FileInfo[] | undefined; 
-  setFiles: Dispatch<SetStateAction<FileInfo[] | undefined>>;
+  files:FileEntry[] | undefined; 
+  setFiles: Dispatch<SetStateAction<FileEntry[] | undefined>>;
 }
 
 export const UploadFileButton: React.FC<UploadFileButtonProps> = ({ user,files, setFiles }): JSX.Element => {
-  const addNewFileEntry = (file: FileInfo,) => {
-    setFiles((prevFiles) => {
-      if (!prevFiles) {
-        return [file];
-      } else {
-        const updatedFiles = [...prevFiles, file];
-        return updatedFiles;
-      }
-    });
-  };
-
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -54,9 +43,13 @@ export const UploadFileButton: React.FC<UploadFileButtonProps> = ({ user,files, 
       notifyError("Please login to proceed...")
       return;
     }
+    
+    const user_id = user.id;
     const fileTemp = values.file[0];
+
     try {
       await processUpload(
+        user_id,
         fileTemp,
         (message: string) => {
           console.log(message);
@@ -65,13 +58,11 @@ export const UploadFileButton: React.FC<UploadFileButtonProps> = ({ user,files, 
           console.error('Error uploading file:', error);
           throw error;
         }
-      );
-  
-      const file = generateFileInfo(fileTemp, "test");
-      addNewFileEntry(file);
-      console.log("File entry added successfully");
+      ).then(fileInfo => {
+        const fileEntry = JSON.parse(JSON.stringify(fileInfo));
+        setFiles((prevFiles) => updateFiles(prevFiles!, fileEntry));
+      });
     } catch (error) {
-      console.error('Error during file upload or processing:', error);
       notifyError("Error uploading the file...")
       return;
     }

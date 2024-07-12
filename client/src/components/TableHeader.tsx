@@ -1,13 +1,13 @@
 import React, { Dispatch, SetStateAction } from 'react'
 import { Tabs, TabsList, TabsTrigger } from './UI/Tabs';
 import { UploadFileButton } from './UploadFileButton';
-import { FileInfo } from '../shared/FileType';
+import { FileEntry } from '../shared/Types';
 import { User } from '../shared/User';
   
 interface TableHeaderProps{
   user:User | undefined; 
-  files: FileInfo[] | undefined;
-  setFiles: Dispatch<SetStateAction<FileInfo[] | undefined>>;
+  files: FileEntry[] | undefined;
+  setFiles: Dispatch<SetStateAction<FileEntry[] | undefined>>;
 }
 
 const TableHeader:React.FC<TableHeaderProps> = ({user,files,setFiles}) =>  {
@@ -22,7 +22,6 @@ const TableHeader:React.FC<TableHeaderProps> = ({user,files,setFiles}) =>  {
           <div className="flex items-center">
             <TabsList>
               <TabsTrigger value="all">All</TabsTrigger>
-              <TabsTrigger value="active">Processing</TabsTrigger>
               <TabsTrigger value="draft">Done</TabsTrigger>
             </TabsList>
           </div>

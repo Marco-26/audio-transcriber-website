@@ -1,24 +1,26 @@
+from transcribe import transcribe
+from pydub import AudioSegment
 import os
-from flask import jsonify
-import subprocess
-
 
 def temp_save_file(location, filename, file):
     save_path = os.path.join(location, filename)
     file.save(save_path)
 
-async def transcribe_audio(file):
-    try:
-        process = subprocess.Popen(['python', 'transcribe.py', file], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        stdout, stderr = process.communicate()
-        
-        if process.returncode == 0:
-            #TODO: FIND A BETTER WAY TO DO THIS
-            output = stdout.decode().strip()
-            return output
-        else:
-            error_message = stderr.decode().strip()
-            return jsonify({'error': error_message}), 500
+async def transcribe_audio(file_path):
+    transcript = transcribe(file_path, "transcription")
+    
+    if not transcript:
+        print("Error transcribing file...")
+        return None
+    
+    return transcript
 
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
+def get_file_size(audio_file_path):
+    audio_file_path.seek(0, os.SEEK_END)
+    size = audio_file_path.tell()
+    audio_file_path.seek(0)
+    return round((size / (1024 * 1024)),2)
+
+    
+def get_file_info(audio_file_path):
+    return str(get_file_size(audio_file_path)) + " MB"

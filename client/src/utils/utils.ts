@@ -1,5 +1,5 @@
 import { toast } from 'react-toastify';
-import { FileInfo } from '../shared/FileType';
+import { FileEntry } from '../shared/Types';
 
 export const formatFileSize = (sizeInBytes: number): string => {
   const kilobyte = 1024;
@@ -17,6 +17,14 @@ export const formatFileSize = (sizeInBytes: number): string => {
   }
 }
 
+export const updateFiles = (prevFiles:FileEntry[], newFile:FileEntry) => {
+  if (!prevFiles) {
+    return [newFile];
+  } else {
+    return [...prevFiles, newFile];
+  }
+};
+
 export const notifyError = (error:string) => {
     toast.error(error, {
       position: "bottom-right",
@@ -31,33 +39,15 @@ export const notifyError = (error:string) => {
   )
 }
 
-export const generateFileInfo = (file:File, fileName:string) => {
-  const info:FileInfo = {
-    file:file,
-    name:file.name,
-    size:file.size,
-    transcriptionStatus: "On Wait",
-    transcriptionFileName: fileName
-  }
-  return info
-}
-
-export const generateTXT = (transcription:string,fileName:string) => {
+export const generateTXT = (transcription:string) => {
   const blob = new Blob([transcription], { type: 'text/plain' });
   const url = URL.createObjectURL(blob);
 
   const a = document.createElement('a');
   a.href = url;
-  a.download = fileName+'.txt';
+  a.download = 'transcription.txt';
 
   a.click();
 
   URL.revokeObjectURL(url);
 }
-
-export const removeFile = (fileToRemove: File,files:FileInfo[]) => {
-  if (files) {
-    const updatedFiles = files.filter(file => file.file !== fileToRemove);
-    return updatedFiles;
-  }
-};

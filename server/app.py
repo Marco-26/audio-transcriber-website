@@ -25,11 +25,10 @@ def create_app():
  
   app.secret_key=secret_key
 
-
-  # client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+  client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
   
-  # if client.api_key is None:
-  #   raise OpenAIError("OpenAI API key is missing. Set it using OPENAI_API_KEY environment variable.")
+  if client.api_key is None:
+    raise OpenAIError("OpenAI API key is missing. Set it using OPENAI_API_KEY environment variable.")
 
   CORS(app, origins='http://localhost:3000')
   jwt = JWTManager(app)

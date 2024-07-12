@@ -1,11 +1,14 @@
 import json
-from flask import  abort, jsonify, request,redirect, url_for
-from models import User
+from pathlib import Path
+import shutil
+from flask import  abort, jsonify, request
+from models import User, FileEntry
 import os
-from utils import temp_save_file
+from utils import temp_save_file, transcribe_audio,get_file_info
 from app import data_folder_path, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET
 import requests
 from flask_jwt_extended import create_access_token
+from werkzeug.utils import secure_filename
 
 BACKEND_URL = "https://127.0.0.1:5000"
 FRONTEND_URL = "http://localhost:3000" 
@@ -37,51 +40,120 @@ def register_routes(app, db):
             'Authorization': f'Bearer {response["access_token"]}'
         }
         user_info = requests.get('https://www.googleapis.com/oauth2/v3/userinfo', headers=headers).json()
-        print(user_info)
-        """
-            check here if user exists in database, if not, add him
-        """
+        
         user = User.query.filter_by(email = user_info["email"]).first()
         if not user:
             print("Added new user to the database")
-            user = User(user_info["name"], user_info["email"])
+            user = User(user_info["name"], user_info["email"], user_info["sub"])
             db.session.add(user)
             db.session.commit()
 
-        jwt_token = create_access_token(identity=user_info['email'])  # create jwt token
+        jwt_token = create_access_token(identity=user_info['email'])
         response = jsonify(user=user_info)
         response.set_cookie('access_token_cookie', value=jwt_token, secure=True)
-
+        
         return response, 200
-    
+
+    @app.route("/api/entries/<user_id>", methods=['GET'])
+    def get_file_entries(user_id):
+        print("USER ID: " + user_id)
+        user_exists = User.query.filter_by(google_id=user_id).first()
+        if not user_exists:
+            return jsonify(error='User not found')
+        files_list = FileEntry.query.filter_by(user_id=user_id).all()
+
+        if not files_list:
+            return jsonify(error='No files found for this user')
+
+        files = [{
+            'file_id': t.id,
+            'user_id': t.user_id,
+            'filename': t.filename,
+            'info':t.info,
+            'date':t.date,
+            'transcribed': t.transcribed
+        } for t in files_list]
+
+        return jsonify(files=files, message="Fetched all files")
+
     @app.route("/api/upload", methods=['POST'])
     def upload_endpoint():
         if 'file' not in request.files:
             return jsonify(error="No file provided"), 400
-
+        elif 'user_id' not in request.form:
+            return jsonify(error="No user_id provided"), 400
+        
+        user_id = request.form["user_id"]
         file = request.files['file']
-        temp_save_file(data_folder_path, file.filename, file)
+        user_exists = User.query.filter_by(google_id=user_id).first()
+        
+        if not user_exists:
+            return jsonify(error='User not found')
+        
+        file_info = get_file_info(file);
 
-        return jsonify(message="File uploaded sucessfuly")
+        file_entry = FileEntry(user_id=user_id, filename=secure_filename(file.filename), file_info=file_info)
+        db.session.add(file_entry)
+        db.session.commit()
+
+        file_id = file_entry.id
+        file_path=f"{data_folder_path}/{file_id}"
+        
+        os.makedirs(file_path)
+        temp_save_file(file_path, secure_filename(file.filename), file)
+        
+        fileEntry = {
+            "file_id": file_entry.id,
+            "user_id":file_entry.user_id,
+            "filename": file_entry.filename,
+            "info": file_entry.info,
+            "date": file_entry.date.isoformat(),
+            "transcribed":file_entry.transcribed
+        }
+        
+        return jsonify(message="File uploaded sucessfuly", fileEntry=fileEntry)
     
-    @app.route("/api/transcript", methods=['POST'])
-    async def transcript_endpoint():
-        data = request.get_json()
-        filename = data.get('filename')
-        file = os.path.join(data_folder_path, filename)
+    @app.route("/api/transcript/<file_id>/<filename>", methods=['POST'])
+    async def transcript_endpoint(file_id,filename):
+        file = FileEntry.query.filter_by(id=file_id).first()
+        file_path = os.path.join(data_folder_path, file_id,filename)
+        
+        transcript = await transcribe_audio(file_path)
+        
+        transcript_file_path = Path(data_folder_path+"/"+file_id) / "transcript.txt"
+        with open(transcript_file_path, 'w') as temp_file:
+            temp_file.write(transcript)
 
-        #transcript = await transcribe_audio(file)
+        file.transcribed = True
+        db.session.add(file)
+        db.session.commit()
 
-        os.remove(file)
-        return transcript
+        return jsonify(message="Finished Transcribing the audio")
     
-    @app.route("/api/delete/<filename>", methods=['DELETE'])
-    def delete_endpoint(filename):
-        print("Nome do ficheiro: " + filename)
+    @app.route("/api/transcription/<file_id>", methods=['GET'])
+    async def fetch_transcribed_audio(file_id):
+        file = FileEntry.query.filter_by(id=file_id).first()
+        file_path = os.path.join(data_folder_path, file_id,"transcript.txt")
+        
+        if(os.path.isfile(file_path)):
+            with open(file_path, 'r') as file:
+                file_contents = file.read()
+
+        return jsonify(transcription=file_contents, message="Finished fetching transcription...")
+    
+    @app.route("/api/delete/<id>", methods=['DELETE'])
+    def delete_endpoint(id):
+        directory_path = os.path.join(data_folder_path, id)
         try:
-            os.remove(data_folder_path+"/"+filename)
+            if os.path.isdir(directory_path):
+                file_entry = FileEntry.query.filter_by(id=id).first()
+                db.session.delete(file_entry)
+                db.session.commit()
+                shutil.rmtree(directory_path)
+            else:
+                os.remove(directory_path)
         except Exception as e:
-            return jsonify(error="There was an error deleting the file...")
+            print(f"Error: {e}")
+            return jsonify(error="There was an error deleting the file or directory."), 500
 
-        return jsonify(message="Sucessfully deleted the file")
-    
+        return jsonify(message=f"Successfully deleted the file or directory with id: {id}"), 200
