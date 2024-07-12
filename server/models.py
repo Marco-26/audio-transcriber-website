@@ -33,10 +33,10 @@ class FileEntry(db.Model):
   date = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
   transcribed = db.Column(db.Boolean, default=False, nullable=False)
 
-  def __init__(self, user_id, filename,info):
+  def __init__(self, user_id, filename,file_info):
     self.user_id = user_id
     self.filename = filename
-    self.info = info
+    self.info = file_info
     self.transcribed = False
 
   def __repr__(self):

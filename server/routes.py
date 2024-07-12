@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
 import shutil
-from flask import  abort, jsonify, request,redirect, url_for
+from flask import  abort, jsonify, request
 from models import User, FileEntry
 import os
 from utils import temp_save_file, transcribe_audio,get_file_info
@@ -47,12 +47,12 @@ def register_routes(app, db):
             db.session.add(user)
             db.session.commit()
 
-        jwt_token = create_access_token(identity=user_info['email'])  # create jwt token
+        jwt_token = create_access_token(identity=user_info['email'])
         response = jsonify(user=user_info)
         response.set_cookie('access_token_cookie', value=jwt_token, secure=True)
-
+        
         return response, 200
-    
+
     @app.route("/api/entries/<user_id>", methods=['GET'])
     def get_file_entries(user_id):
         print("USER ID: " + user_id)
@@ -68,7 +68,7 @@ def register_routes(app, db):
             'file_id': t.id,
             'user_id': t.user_id,
             'filename': t.filename,
-            'filesize':t.filesize,
+            'info':t.info,
             'date':t.date,
             'transcribed': t.transcribed
         } for t in files_list]
@@ -91,12 +91,13 @@ def register_routes(app, db):
         
         file_info = get_file_info(file);
 
-        file_entry = FileEntry(user_id=user_id, filename=file.filename, info=file_info)
+        file_entry = FileEntry(user_id=user_id, filename=file.filename, file_info=file_info)
         db.session.add(file_entry)
         db.session.commit()
 
         file_id = file_entry.id
         file_path=f"{data_folder_path}/{file_id}"
+        
         os.makedirs(file_path)
         temp_save_file(file_path, file.filename, file)
         

@@ -1,6 +1,7 @@
 import os
 from openai import OpenAI
 from pydub import AudioSegment
+from pydub.exceptions import CouldntDecodeError
 import shutil
 
 MAX_CHUNK_LENGTH_IN_MS = 10 * 60 * 1000
@@ -69,7 +70,11 @@ def delete_chunks():
 
 def transcribe(audio_file_path, transcribed_file_name):
     openai_client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-    audio = AudioSegment.from_mp3(audio_file_path)
+    try:
+        audio = AudioSegment.from_mp3(audio_file_path)
+    except CouldntDecodeError as e:
+        print(f"Could not decode file {audio_file_path}: {e}")
+        return None
 
     try:
         if len(audio) <= MAX_CHUNK_LENGTH_IN_MS:
