@@ -8,6 +8,7 @@ from utils import temp_save_file, transcribe_audio,get_file_info
 from app import data_folder_path, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET
 import requests
 from flask_jwt_extended import create_access_token
+from werkzeug.utils import secure_filename
 
 BACKEND_URL = "https://127.0.0.1:5000"
 FRONTEND_URL = "http://localhost:3000" 
@@ -91,7 +92,7 @@ def register_routes(app, db):
         
         file_info = get_file_info(file);
 
-        file_entry = FileEntry(user_id=user_id, filename=file.filename, file_info=file_info)
+        file_entry = FileEntry(user_id=user_id, filename=secure_filename(file.filename), file_info=file_info)
         db.session.add(file_entry)
         db.session.commit()
 
@@ -99,7 +100,7 @@ def register_routes(app, db):
         file_path=f"{data_folder_path}/{file_id}"
         
         os.makedirs(file_path)
-        temp_save_file(file_path, file.filename, file)
+        temp_save_file(file_path, secure_filename(file.filename), file)
         
         fileEntry = {
             "file_id": file_entry.id,
