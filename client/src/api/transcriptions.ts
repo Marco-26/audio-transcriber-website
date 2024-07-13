@@ -1,6 +1,7 @@
- import axios, { AxiosResponse, AxiosError } from 'axios';
+ import { AxiosResponse, AxiosError } from 'axios';
 import { FileEntry } from '../Types/FileEntry';
 import { apiClient } from './client';
+import { notifyError } from '../utils/utils';
 
 export type SuccessCallback = (message: string) => void
 export type ErrorCallback = (error: AxiosError) => void
@@ -15,6 +16,7 @@ async function fetchTranscriptionsEntries(user_id: string) {
   }
   catch(error:any){
     console.error(error)
+    notifyError("Error while fetching transcriptions entries...")
     return []
   }
 }
@@ -25,6 +27,7 @@ export async function processTranscription(fileID: number,filename:string) {
   }
   catch(error:any){
     console.error(error)
+    notifyError("Error while processing transcription...")
   }
 }
 
@@ -34,6 +37,7 @@ export async function processDelete(fileID: number) {
   }
   catch(error:any){
     console.error(error)
+    notifyError("Error while deleting transcription entrie...")
   }
 }
 
@@ -44,6 +48,7 @@ export async function fetchTranscriptedFile(fileID: number, onSuccess: SuccessCa
     return response.data.transcription; 
   } catch (error) {
     onError(error as AxiosError);
+    notifyError("Error while downloading transcripted file...")
     return null; 
   }
 }

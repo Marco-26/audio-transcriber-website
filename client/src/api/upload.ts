@@ -1,6 +1,7 @@
 import { AxiosResponse } from "axios";
 import { FileEntry } from "../Types/FileEntry";
 import { apiClient } from "./client";
+import { notifyError } from "../utils/utils";
 
 async function processUpload(user_id:string,file: File) {
   const formData = new FormData()
@@ -13,6 +14,7 @@ async function processUpload(user_id:string,file: File) {
     return response.data.fileEntry; 
   } catch (error:any) {
     console.error(error);
+    notifyError("Error uploading the file...")
     return null; 
   }
 }
