@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
 import shutil
-from flask import  abort, jsonify, request
+from flask import  abort, jsonify, request,session
 from models import User, FileEntry
 import os
 from utils import temp_save_file, transcribe_audio,get_file_info
@@ -48,11 +48,33 @@ def register_routes(app, db):
             db.session.add(user)
             db.session.commit()
 
+        user_data = {
+            'google_id': user.google_id,
+            'name': user.name,
+            'email': user.email,
+        }
+        session["user"] = user_data
+
         jwt_token = create_access_token(identity=user_info['email'])
         response = jsonify(user=user_info)
         response.set_cookie('access_token_cookie', value=jwt_token, secure=True)
         
         return response, 200
+
+    @app.route("/@me",methods=['GET'])
+    def get_current_user():
+        user = session.get("user")
+        
+        if not user:
+            return jsonify({"error": "Unauthorized"}), 401
+        
+        user_data = {
+            'id': user["google_id"],
+            'name': user["name"],
+            'email': user["email"],
+        }
+
+        return jsonify(message="User profile fetched successfully", user=user_data)
 
     @app.route("/api/entries/<user_id>", methods=['GET'])
     def get_file_entries(user_id):
@@ -157,3 +179,8 @@ def register_routes(app, db):
             return jsonify(error="There was an error deleting the file or directory."), 500
 
         return jsonify(message=f"Successfully deleted the file or directory with id: {id}"), 200
+    
+    @app.route("/logout", methods=["POST"])
+    def logout_user():
+        session.pop("user")
+        return "200"

@@ -3,37 +3,41 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager
 from flask_bcrypt import Bcrypt
+from flask_session import Session
 from openai import OpenAI, OpenAIError
 import os,pathlib
 from flask_cors import CORS
-from oauthlib.oauth2 import WebApplicationClient
-from flask_jwt_extended import create_access_token, JWTManager, jwt_required, get_jwt_identity
+from flask_jwt_extended import JWTManager
+from db import db
 
-db = SQLAlchemy()
 data_folder_path = os.path.join(os.path.dirname(__file__), 'data')
 
 GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
 GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
 
-secret_key = "TEST" #TODO: CHANGE THIS LATER ON
-
 client_secrets_file = os.path.join(pathlib.Path(__file__).parent, "client-secret.json")
 
 def create_app():
   app = Flask(__name__)
-  app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
- 
-  app.secret_key=secret_key
 
+  app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+  app.config['SESSION_TYPE'] = 'sqlalchemy'
+  app.config["SECRET_KEY"] = os.getenv("FLASK_SECRET_KEY")
+
+  if not app.config['SECRET_KEY']:
+    raise ValueError("No SECRET_KEY set for Flask application. Set it using environment variable.")
+  
+  app.config['SESSION_SQLALCHEMY'] = db
+  db.init_app(app)
+  Session(app)
   client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
   
   if client.api_key is None:
     raise OpenAIError("OpenAI API key is missing. Set it using OPENAI_API_KEY environment variable.")
 
   CORS(app, origins='http://localhost:3000')
-  jwt = JWTManager(app)
+  JWTManager(app)
 
-  db.init_app(app)
   login_manager = LoginManager()
   login_manager.init_app(app)
 
@@ -46,5 +50,5 @@ def create_app():
   from routes import register_routes
   register_routes(app,db)
 
-  migrate = Migrate(app,db)
+  Migrate(app,db)
   return app

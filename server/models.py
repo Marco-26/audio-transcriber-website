@@ -1,5 +1,5 @@
 from flask_login import UserMixin
-from app import db
+from db import db
 from datetime import datetime
 
 class User(db.Model, UserMixin):
@@ -33,7 +33,7 @@ class FileEntry(db.Model):
   date = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
   transcribed = db.Column(db.Boolean, default=False, nullable=False)
 
-  def __init__(self, user_id, filename,file_info):
+  def __init__(self, user_id, filename,):
     self.user_id = user_id
     self.filename = filename
     self.info = file_info

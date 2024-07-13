@@ -1,5 +1,6 @@
  import axios, { AxiosResponse, AxiosError } from 'axios';
 import { FileEntry } from '../shared/Types';
+import { User } from '../shared/User';
 
 type SuccessCallback = (message: string) => void
 type ErrorCallback = (error: AxiosError) => void
@@ -60,14 +61,6 @@ export async function processDelete(fileID: number, userID: string, onSuccess: S
   .catch((error: AxiosError) => {
     onError(error);
   });
-    
-  // const files = await getTranscriptionsEntries(
-  //   userID,
-  //   (message) => console.log(message), 
-  //   (error) => console.error(error)
-  // );
-
-  // return files;
 }
 
 export async function fetchTranscriptionFile(fileID: number, onSuccess: SuccessCallback, onError: ErrorCallback) {
@@ -78,5 +71,24 @@ export async function fetchTranscriptionFile(fileID: number, onSuccess: SuccessC
   } catch (error) {
     onError(error as AxiosError);
     return ""; 
+  }
+}
+
+export async function fetchProfile(onSuccess: SuccessCallback, onError: ErrorCallback) {
+  try {
+    const response: AxiosResponse<{ message: string; user: User }> = await axios.get('@me');
+    onSuccess(response.data.message);
+    return response.data.user;
+  } catch (error) {
+    onError(error as AxiosError);
+    return null; 
+  }
+}
+
+export async function logout() {
+  try {
+    await axios.post('/logout');
+  } catch (error) {
+    console.error(error)
   }
 }
