@@ -1,11 +1,11 @@
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import { fetchTranscriptionFile, getTranscriptionsEntries, processDelete, processTranscription } from '../utils/api-client';
-import { FileEntry } from '../shared/Types';
-import { formatFileSize, generateTXT} from '../utils/utils';
+import { fetchTranscriptionFile, getTranscriptionsEntries, processDelete, processTranscription } from '../api/api-client';
+import { FileEntry } from '../Types/FileEntry';
+import { generateTXT} from '../utils/utils';
 import { Table,TableBody, TableCell, TableHead, TableHeader, TableRow } from './UI/Table';
 import { Button } from './UI/Button';
 import { Play, Trash, Download } from 'lucide-react';
-import { User } from '../shared/User';
+import { User } from '../Types/User';
 
 type TableProps = {
   user:User|undefined;
@@ -58,7 +58,7 @@ export const TranscriptionsTable:React.FC<TableProps> = ({user,files,setFiles}):
   
   const fetchTranscriptions = async () => {
     if(user){
-      const response = await getTranscriptionsEntries(
+        const response = await getTranscriptionsEntries(
         user.id,
         (message) => console.log(message), 
         (error) => console.error(error)

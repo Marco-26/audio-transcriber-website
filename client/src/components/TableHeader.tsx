@@ -1,8 +1,8 @@
 import React, { Dispatch, SetStateAction } from 'react'
 import { Tabs, TabsList, TabsTrigger } from './UI/Tabs';
 import { UploadFileButton } from './UploadFileButton';
-import { FileEntry } from '../shared/Types';
-import { User } from '../shared/User';
+import { FileEntry } from '../Types/FileEntry';
+import { User } from '../Types/User';
   
 interface TableHeaderProps{
   user:User | undefined; 

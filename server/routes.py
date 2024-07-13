@@ -74,7 +74,7 @@ def register_routes(app, db):
             'email': user["email"],
         }
 
-        return jsonify(message="User profile fetched successfully", user=user_data)
+        return jsonify(user=user_data)
 
     @app.route("/api/entries/<user_id>", methods=['GET'])
     def get_file_entries(user_id):

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './styles/globals.css'
 
 import Home from './components/Pages/Home';
-import { User } from './shared/User';
+import { User } from './Types/User';
 
 function App() {
   const [user, setUser] = useState<User | undefined>(undefined);

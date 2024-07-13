@@ -1,10 +1,10 @@
 import React, { Dispatch, SetStateAction } from "react";
 import { useGoogleLogin } from "@react-oauth/google";
-import { User } from "@/src/shared/User";
+import { User } from "@/src/Types/User";
 import { Button } from "../UI/Button";
 import { CircleUser, UserIcon } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "../UI/Dropdown";
-import { logout } from "../../utils/api-client";
+import { logout } from "../../api/api-client";
 
 async function getUserInfo(codeResponse:any) {
   var response = await fetch("/google_login", {
@@ -33,13 +33,12 @@ const Auth:React.FC<AuthProps> = ({user,setUser}) => {
         id: loginDetails.user.sub,
         name: loginDetails.user.name,
         email: loginDetails.user.email,
-        // picture: loginDetails.user.picture,
       };
       
       setUser(mappedUser);
     },
   });
-
+  
   const handleLogout = () => {
     logout();
     setUser(undefined);

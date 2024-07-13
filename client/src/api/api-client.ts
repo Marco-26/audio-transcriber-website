@@ -1,6 +1,6 @@
  import axios, { AxiosResponse, AxiosError } from 'axios';
-import { FileEntry } from '../shared/Types';
-import { User } from '../shared/User';
+import { FileEntry } from '../Types/FileEntry';
+import { User } from '../Types/User';
 
 type SuccessCallback = (message: string) => void
 type ErrorCallback = (error: AxiosError) => void

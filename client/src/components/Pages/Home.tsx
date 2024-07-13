@@ -1,29 +1,27 @@
-import { FileEntry } from '@/src/shared/Types';
+import { FileEntry } from '@/src/Types/FileEntry';
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import TableHeader from '../TableHeader';
 import { TranscriptionsTable } from '../TranscriptionsTable';
-import { User } from '@/src/shared/User';
+import { User } from '@/src/Types/User';
 import { Header } from '../Header';
-import { fetchProfile } from '../../utils/api-client';
+import UserApi from "../../api/user"
 
 interface HomeProps {
   user:User | undefined; 
   setUser: Dispatch<SetStateAction<User | undefined>>;
 }
+
 const Home:React.FC<HomeProps> = ({user,setUser}) => {
   const [files, setFiles] = useState<FileEntry[] | undefined>([]);
 
-  const fetch = async () => {
-    const user = await fetchProfile((message) => console.log(message), (error) => console.error(error));
-    if(user != null){
-      setUser(user);
-    }
-  }
-
   useEffect(() => {
-    fetch();
-  }, []);
-  
+    const fetchUser = async () => {
+      UserApi.fetchProfile().then((response) => setUser(response)).catch((error) => console.error(error))
+    };
+
+    fetchUser();
+  }, [setUser]);
+
   return (
     <>
       <Header user={user} setUser={setUser}/>

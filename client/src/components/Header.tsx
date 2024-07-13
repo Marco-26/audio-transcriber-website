@@ -1,7 +1,7 @@
 import {
   Package2,
 } from "lucide-react"
-import { User } from '../shared/User';
+import { User } from '../Types/User';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import Auth from './auth/Auth';
 import { Dispatch, SetStateAction } from 'react';
