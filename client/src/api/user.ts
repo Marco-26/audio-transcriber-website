@@ -9,6 +9,14 @@ async function fetchProfile() {
   }
 }
 
-const UserApi = {fetchProfile}
+export async function logout() {
+  try {
+    await apiClient.post('/logout')
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+const UserApi = {fetchProfile, logout}
 
 export default UserApi;

@@ -1,25 +1,14 @@
  import axios, { AxiosResponse, AxiosError } from 'axios';
 import { FileEntry } from '../Types/FileEntry';
-import { User } from '../Types/User';
+import { apiClient } from './client';
 
 type SuccessCallback = (message: string) => void
 type ErrorCallback = (error: AxiosError) => void
 
-export async function getTranscriptionsEntries(
-  user_id: string,
-  onSuccess: SuccessCallback,
-  onError: ErrorCallback
-): Promise<FileEntry[]> {
-  const formData = new FormData();
-  formData.append('user_id', user_id);
-
-  try {
-    const response: AxiosResponse<{ message: string; files: FileEntry[] }> = await axios.get('api/entries/'+user_id);
-    onSuccess(response.data.message);
-    return response.data.files; 
-  } catch (error) {
-    onError(error as AxiosError);
-    return []; 
+export async function fetchTranscriptionsEntries(user_id: string) {
+  const response: AxiosResponse<{ files: FileEntry[] }> = await apiClient.get('api/entries/'+user_id);
+  if(response != null){
+    return response.data.files;
   }
 }
 
@@ -71,24 +60,5 @@ export async function fetchTranscriptionFile(fileID: number, onSuccess: SuccessC
   } catch (error) {
     onError(error as AxiosError);
     return ""; 
-  }
-}
-
-export async function fetchProfile(onSuccess: SuccessCallback, onError: ErrorCallback) {
-  try {
-    const response: AxiosResponse<{ message: string; user: User }> = await axios.get('@me');
-    onSuccess(response.data.message);
-    return response.data.user;
-  } catch (error) {
-    onError(error as AxiosError);
-    return null; 
-  }
-}
-
-export async function logout() {
-  try {
-    await axios.post('/logout');
-  } catch (error) {
-    console.error(error)
   }
 }

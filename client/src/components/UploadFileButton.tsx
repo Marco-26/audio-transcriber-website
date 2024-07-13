@@ -7,7 +7,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { processUpload } from '../api/api-client';
+import { processUpload } from '../api/transcriptions';
 import { AxiosError } from 'axios';
 import { Dispatch, SetStateAction } from 'react';
 import { FileEntry } from '../Types/FileEntry';

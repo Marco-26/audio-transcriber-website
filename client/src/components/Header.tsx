@@ -6,7 +6,7 @@ import { GoogleOAuthProvider } from '@react-oauth/google';
 import Auth from './auth/Auth';
 import { Dispatch, SetStateAction } from 'react';
 
-type HeaderProps={
+interface HeaderProps {
   user:User | undefined;
   setUser: Dispatch<SetStateAction<User | undefined>>;
 }
