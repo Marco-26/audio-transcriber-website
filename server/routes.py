@@ -112,7 +112,7 @@ def register_routes(app, db):
         if not user_exists:
             return jsonify(error='User not found')
         
-        file_info = get_file_info(file);
+        file_info = get_file_info(file)
 
         file_entry = FileEntry(user_id=user_id, filename=secure_filename(file.filename), file_info=file_info)
         db.session.add(file_entry)
