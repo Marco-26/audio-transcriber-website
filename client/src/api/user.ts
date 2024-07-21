@@ -5,6 +5,7 @@ import { User } from "@/src/Types/User"
 async function fetchProfile() {
   const response: AxiosResponse<{ user: User }> = await apiClient.get("/@me");
   if(response != null){
+    console.log(response.data.user)
     return response.data.user;
   }
 }

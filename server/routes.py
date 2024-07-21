@@ -40,11 +40,11 @@ def register_routes(app, db):
             'Authorization': f'Bearer {response["access_token"]}'
         }
         user_info = requests.get('https://www.googleapis.com/oauth2/v3/userinfo', headers=headers).json()
-        
+        print(user_info)
         user = User.query.filter_by(email = user_info["email"]).first()
         if not user:
             print("Added new user to the database")
-            user = User(user_info["name"], user_info["email"], user_info["sub"])
+            user = User(user_info["name"], user_info["email"], user_info["sub"], user_info["picture"])
             db.session.add(user)
             db.session.commit()
 
@@ -52,7 +52,9 @@ def register_routes(app, db):
             'google_id': user.google_id,
             'name': user.name,
             'email': user.email,
+            'profileImageURL': user.profile_image_url
         }
+
         session["user"] = user_data
 
         jwt_token = create_access_token(identity=user_info['email'])
@@ -66,12 +68,13 @@ def register_routes(app, db):
         user = session.get("user")
         
         if not user:
-            return jsonify({"error": "Unauthorized"}), 401
+            return jsonify({"error": "Unauthorized"})
         
         user_data = {
             'id': user["google_id"],
             'name': user["name"],
             'email': user["email"],
+            'profileImageURL': user["profile_image_url"],
         }
 
         return jsonify(user=user_data)

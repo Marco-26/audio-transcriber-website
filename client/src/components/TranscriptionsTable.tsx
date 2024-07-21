@@ -53,8 +53,10 @@ export const TranscriptionsTable:React.FC<TableProps> = ({user,files,setFiles}):
   
   const fetchTranscriptions = async () => {
     if(user){
-      await TranscriptionsApi.fetchTranscriptionsEntries(user.id)
-        .then((files) => setFiles(files))
+      const files = await TranscriptionsApi.fetchTranscriptionsEntries(user.id)
+      if(files != null){
+        setFiles(files)
+      }
     }
   }
 
