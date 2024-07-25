@@ -1,5 +1,6 @@
 import {
   Package2,
+  FileVolume
 } from "lucide-react"
 import { User } from '../Types/User';
 import { GoogleOAuthProvider } from '@react-oauth/google';
@@ -22,7 +23,7 @@ export const Header:React.FC<HeaderProps> = ({user,setUser}):JSX.Element => {
     <header className="sticky flex justify-between top-0 h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
       <div className="hidden gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
           <div className="flex items-center gap-2 text-lg font-semibold md:text-base">
-            <Package2 className="h-6 w-6" />
+            <FileVolume />
           </div>
           <h1>AudioTranscriberAI</h1>
           {/* <Link

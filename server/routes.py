@@ -69,12 +69,12 @@ def register_routes(app, db):
         
         if not user:
             return jsonify({"error": "Unauthorized"})
-        
+        print(user)
         user_data = {
             'id': user["google_id"],
             'name': user["name"],
             'email': user["email"],
-            'profileImageURL': user["profile_image_url"],
+            'profileImageURL': user["profileImageURL"],
         }
 
         return jsonify(user=user_data)

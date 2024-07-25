@@ -61,7 +61,7 @@ const Auth:React.FC<AuthProps> = ({user,setUser}) => {
                     <p className="mr-4">{user!.name}</p>
                     <Button variant="secondary" size="icon" className="rounded-full mr-3">
                       {/* <CircleUser className="h-5 w-5" /> */}
-                      <img src={user.profileImageURL} alt='profile' className="rounded-full"/>
+                      <img src={user.profileImageURL} alt='profile' className="rounded-full border-2 border-black"/>
                       <span className="sr-only">Toggle user menu</span>
                     </Button>
                   </div>
