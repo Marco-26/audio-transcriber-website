@@ -11,9 +11,10 @@ interface TableProps {
   user:User|undefined;
   files:FileEntry[];
   setFiles: Dispatch<SetStateAction<FileEntry[] | undefined>>;
+  filter:string;
 }
 
-export const TranscriptionsTable:React.FC<TableProps> = ({user,files,setFiles}):JSX.Element => {
+export const TranscriptionsTable:React.FC<TableProps> = ({user,files,setFiles,filter}):JSX.Element => {
   const [transcriptionStatus, setTranscriptionStatus] = useState<{ [key: string]: boolean }>({});
 
   const handleTranscription = async (file:FileEntry) => {
@@ -53,7 +54,7 @@ export const TranscriptionsTable:React.FC<TableProps> = ({user,files,setFiles}):
   
   const fetchTranscriptions = async () => {
     if(user){
-      const files = await TranscriptionsApi.fetchTranscriptionsEntries(user.id)
+      const files = await TranscriptionsApi.fetchTranscriptionsEntries(user.id, filter)
       if(files != null){
         setFiles(files)
       }

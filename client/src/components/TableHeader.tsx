@@ -8,9 +8,10 @@ interface TableHeaderProps{
   user:User | undefined; 
   files: FileEntry[] | undefined;
   setFiles: Dispatch<SetStateAction<FileEntry[] | undefined>>;
+  setFilter: Dispatch<SetStateAction<string>>;
 }
 
-const TableHeader:React.FC<TableHeaderProps> = ({user,files,setFiles}) =>  {
+const TableHeader:React.FC<TableHeaderProps> = ({user,files,setFiles,setFilter}) =>  {
   return (
     <div>
       <div className='mb-7'>
@@ -18,11 +19,11 @@ const TableHeader:React.FC<TableHeaderProps> = ({user,files,setFiles}) =>  {
         <p>All your transcriptions in one place</p>
       </div>
       <div className='flex items-center justify-between mb-5'>
-        <Tabs defaultValue="all">
+        <Tabs defaultValue="all" onValueChange={(value) => setFilter(value)}>
           <div className="flex items-center">
             <TabsList>
               <TabsTrigger value="all">All</TabsTrigger>
-              <TabsTrigger value="draft">Done</TabsTrigger>
+              <TabsTrigger value="done">Done</TabsTrigger>
             </TabsList>
           </div>
         </Tabs>

@@ -6,9 +6,9 @@ import { notifyError } from '../utils/utils';
 export type SuccessCallback = (message: string) => void
 export type ErrorCallback = (error: AxiosError) => void
 
-async function fetchTranscriptionsEntries(user_id: string) {
+async function fetchTranscriptionsEntries(user_id: string, filter:string) {
   try{
-    const response: AxiosResponse<{ files: FileEntry[] }> = await apiClient.get('api/entries/'+user_id);
+    const response: AxiosResponse<{ files: FileEntry[] }> = await apiClient.get('api/entries/'+user_id+'/'+filter);
     if(response != null){
       return response.data.files;
     }

@@ -79,9 +79,9 @@ def register_routes(app, db):
 
         return jsonify(user=user_data)
 
-    @app.route("/api/entries/<user_id>", methods=['GET'])
-    def get_file_entries(user_id):
-        print("USER ID: " + user_id)
+    @app.route("/api/entries/<user_id>/<filter>", methods=['GET'])
+    def get_file_entries(user_id,filter):
+        print("USER ID: " + user_id + "; Filter: " + filter)
         user_exists = User.query.filter_by(google_id=user_id).first()
         if not user_exists:
             return jsonify(error='User not found')

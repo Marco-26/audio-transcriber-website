@@ -13,7 +13,8 @@ interface HomeProps {
 
 const Home:React.FC<HomeProps> = ({user,setUser}) => {
   const [files, setFiles] = useState<FileEntry[] | undefined>([]);
-
+  const [filter, setFilter] = useState<string>('all');
+  
   useEffect(() => {
     const fetchUser = async () => {
       const response = await UserApi.fetchProfile();
@@ -39,8 +40,8 @@ const Home:React.FC<HomeProps> = ({user,setUser}) => {
     <>
       <Header user={user} setUser={setUser}/>
       <div className="px-6 py-5">
-        <TableHeader user={user} files={files} setFiles={setFiles}/>
-        <TranscriptionsTable user={user} files={files!} setFiles={setFiles}/>
+        <TableHeader user={user} files={files} setFiles={setFiles} setFilter={setFilter}/>
+        <TranscriptionsTable user={user} files={files!} setFiles={setFiles} filter={filter}/>
       </div>
     </>
   )
