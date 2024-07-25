@@ -55,15 +55,13 @@ export const TranscriptionsTable:React.FC<TableProps> = ({user,files,setFiles,fi
   const fetchTranscriptions = async () => {
     if(user){
       const files = await TranscriptionsApi.fetchTranscriptionsEntries(user.id, filter)
-      if(files != null){
-        setFiles(files)
-      }
+      setFiles(files)
     }
   }
 
   useEffect(() => {
     fetchTranscriptions();
-  }, [user]);
+  }, [user, filter]);
 
   return (
     <div className='border rounded'>
@@ -122,7 +120,7 @@ export const TranscriptionsTable:React.FC<TableProps> = ({user,files,setFiles,fi
                       ))
                   ) : (
                       <TableRow>
-                          <TableCell className='p-3'>No file uploaded</TableCell>
+                          <TableCell className='p-3'>No files available</TableCell>
                       </TableRow>
                 )}
             </TableBody>

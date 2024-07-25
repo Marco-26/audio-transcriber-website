@@ -85,7 +85,11 @@ def register_routes(app, db):
         user_exists = User.query.filter_by(google_id=user_id).first()
         if not user_exists:
             return jsonify(error='User not found')
-        files_list = FileEntry.query.filter_by(user_id=user_id).all()
+        
+        if(filter == 'all'):
+            files_list = FileEntry.query.filter_by(user_id=user_id).all()
+        elif(filter == 'done'):
+            files_list = FileEntry.query.filter_by(user_id=user_id, transcribed=True).all()
 
         if not files_list:
             return jsonify(error='No files found for this user')
