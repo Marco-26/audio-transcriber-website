@@ -7,14 +7,13 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { processUpload } from '../api/api-client';
-import { AxiosError } from 'axios';
 import { Dispatch, SetStateAction } from 'react';
 import { FileEntry } from '../Types/FileEntry';
 import { notifyError, updateFiles } from '../utils/utils';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
 import { User } from '../Types/User';
+import UploadApi from '../api/upload';
 
 const formSchema = z.object({
   file: z
@@ -47,24 +46,11 @@ export const UploadFileButton: React.FC<UploadFileButtonProps> = ({ user,files, 
     const user_id = user.id;
     const fileTemp = values.file[0];
 
-    try {
-      await processUpload(
-        user_id,
-        fileTemp,
-        (message: string) => {
-          console.log(message);
-        },
-        (error: AxiosError) => {
-          console.error('Error uploading file:', error);
-          throw error;
-        }
-      ).then(fileInfo => {
-        const fileEntry = JSON.parse(JSON.stringify(fileInfo));
-        setFiles((prevFiles) => updateFiles(prevFiles!, fileEntry));
-      });
-    } catch (error) {
-      notifyError("Error uploading the file...")
-      return;
+    const fileInfo = await UploadApi.processUpload(user_id, fileTemp)
+    
+    if(fileInfo != null){
+      const fileEntry = JSON.parse(JSON.stringify(fileInfo));
+      setFiles((prevFiles) => updateFiles(prevFiles!, fileEntry));
     }
   };
 

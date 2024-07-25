@@ -16,7 +16,20 @@ const Home:React.FC<HomeProps> = ({user,setUser}) => {
 
   useEffect(() => {
     const fetchUser = async () => {
-      UserApi.fetchProfile().then((response) => setUser(response)).catch((error) => console.error(error))
+      const response = await UserApi.fetchProfile();
+
+      if(response!=null){
+        const mappedUser: User = {
+          id: response.id,
+          name: response.name,
+          email: response.email,
+          profileImageURL: response.profileImageURL,
+        };
+
+        console.log(mappedUser.profileImageURL)
+        
+        setUser(mappedUser);
+      }
     };
 
     fetchUser();

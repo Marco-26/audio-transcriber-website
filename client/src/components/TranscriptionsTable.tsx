@@ -1,5 +1,5 @@
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import { fetchTranscriptionFile, getTranscriptionsEntries, processDelete, processTranscription } from '../api/api-client';
+import TranscriptionsApi from '../api/transcriptions';
 import { FileEntry } from '../Types/FileEntry';
 import { generateTXT} from '../utils/utils';
 import { Table,TableBody, TableCell, TableHead, TableHeader, TableRow } from './UI/Table';
@@ -7,7 +7,7 @@ import { Button } from './UI/Button';
 import { Play, Trash, Download } from 'lucide-react';
 import { User } from '../Types/User';
 
-type TableProps = {
+interface TableProps {
   user:User|undefined;
   files:FileEntry[];
   setFiles: Dispatch<SetStateAction<FileEntry[] | undefined>>;
@@ -19,13 +19,8 @@ export const TranscriptionsTable:React.FC<TableProps> = ({user,files,setFiles}):
   const handleTranscription = async (file:FileEntry) => {
     if(user){
       setTranscriptionStatus((prev) => ({ ...prev, [file.file_id]: true }));
-
-      await processTranscription(file.file_id, file.filename,file.user_id,
-        (message) => console.log(message), 
-        (error) => console.error(error))
-      
+      await TranscriptionsApi.processTranscription(file.file_id, file.filename)
       setTranscriptionStatus((prev) => ({ ...prev, [file.file_id]: false }));
-      
       fetchTranscriptions()
     }
   }
@@ -35,13 +30,15 @@ export const TranscriptionsTable:React.FC<TableProps> = ({user,files,setFiles}):
       return
     }
 
-    const transcription = await fetchTranscriptionFile(
+    const transcription = await TranscriptionsApi.fetchTranscriptedFile(
       file.file_id,
       (message) => console.log(message), 
       (error) => console.error(error)
     )
 
-    generateTXT(transcription)
+    if(transcription != null){
+      generateTXT(transcription)
+    }
   };
 
   const handleDelete = async (file:FileEntry) => {
@@ -49,25 +46,18 @@ export const TranscriptionsTable:React.FC<TableProps> = ({user,files,setFiles}):
       return;
     }
 
-    await processDelete(file.file_id, file.user_id, 
-      (message) => {console.log(message)}, 
-      (error) => console.error(error))
+    await TranscriptionsApi.processDelete(file.file_id);
     
-    fetchTranscriptions()
+    fetchTranscriptions();
   } 
   
   const fetchTranscriptions = async () => {
     if(user){
-        const response = await getTranscriptionsEntries(
-        user.id,
-        (message) => console.log(message), 
-        (error) => console.error(error)
-      );
-
-      setFiles(response)
-      return;
-    };
-    setFiles([]);
+      const files = await TranscriptionsApi.fetchTranscriptionsEntries(user.id)
+      if(files != null){
+        setFiles(files)
+      }
+    }
   }
 
   useEffect(() => {
