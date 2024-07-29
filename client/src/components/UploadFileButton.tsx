@@ -18,7 +18,8 @@ import UploadApi from '../api/upload';
 const formSchema = z.object({
   file: z
     .custom<FileList>((val) => val instanceof FileList, "Required")
-    .refine((files) => files.length > 0, `Required`),
+    .refine((files) => files.length > 0, `Required`)
+    .refine((files) => ['audio/mpeg', 'audio/wav', 'audio/ogg'].includes(files[0].type), "Only audio files are allowed")
 });
 
 interface UploadFileButtonProps {
@@ -45,7 +46,7 @@ export const UploadFileButton: React.FC<UploadFileButtonProps> = ({ user,files, 
     
     const user_id = user.id;
     const fileTemp = values.file[0];
-
+    
     const fileInfo = await UploadApi.processUpload(user_id, fileTemp)
     
     if(fileInfo != null){
