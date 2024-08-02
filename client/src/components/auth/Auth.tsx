@@ -28,15 +28,7 @@ const Auth:React.FC<AuthProps> = ({user,setUser}) => {
     flow: "auth-code",
     onSuccess: async (codeResponse) => {
       var loginDetails = await getUserInfo(codeResponse);
-      
-      const mappedUser: User = {
-        id: loginDetails.user.sub,
-        name: loginDetails.user.name,
-        email: loginDetails.user.email,
-        profileImageURL: loginDetails.user.picture,
-      };
-      
-      setUser(mappedUser);
+      setUser(loginDetails.user);
     },
   });
   

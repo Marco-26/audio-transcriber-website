@@ -24,6 +24,14 @@ class User(db.Model, UserMixin):
   
   def get_id(self):
     return self.id
+  
+  def to_dict(self):
+    return {
+        'id': self.google_id,
+        'name': self.name,
+        'email': self.email,
+        'profileImageURL': self.profile_image_url,
+    }
 
 class FileEntry(db.Model):
   __tablename__ = 'files'
@@ -43,3 +51,14 @@ class FileEntry(db.Model):
 
   def __repr__(self):
     return f'<Transcription: {self.id} by User {self.user_id}>'
+  
+  def to_dict(self):
+    return {
+      "file_id": self.id,
+      "user_id":self.user_id,
+      "filename": self.filename,
+      "info": self.info,
+      "date": self.date.isoformat(),
+      "transcribed":self.transcribed
+    }
+    
