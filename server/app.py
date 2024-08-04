@@ -21,11 +21,10 @@ client_secrets_file = os.path.join(pathlib.Path(__file__).parent, "client-secret
 def create_app():
   app = Flask(__name__)
   app.config.from_object(ApplicationConfig)
+  app.config['SESSION_SQLALCHEMY'] = db
 
   if not app.config['SECRET_KEY']:
     raise ValueError("No SECRET_KEY set for Flask application. Set it using environment variable.")
-  
-  app.config['SESSION_SQLALCHEMY'] = db
   
   db.init_app(app)
   Session(app)
@@ -44,9 +43,8 @@ def create_app():
 
   Migrate(app,db)
 
-  # Configurar e iniciar o APScheduler para executar a cada 2 minutos
   scheduler = BackgroundScheduler()
-  scheduler.add_job(func=delete_old_files, trigger="interval", minutes=1, args=[app,db])
+  scheduler.add_job(func=delete_old_files, trigger="interval", days=1, args=[app,db])
   scheduler.start()
 
   return app
