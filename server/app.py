@@ -7,6 +7,8 @@ from openai import OpenAI, OpenAIError
 import os,pathlib
 from flask_cors import CORS
 from db import db
+from apscheduler.schedulers.background import BackgroundScheduler
+from utils import delete_old_files
 from config import ApplicationConfig
 
 data_folder_path = os.path.join(os.path.dirname(__file__), 'data')
@@ -37,14 +39,14 @@ def create_app():
   login_manager = LoginManager()
   login_manager.init_app(app)
 
-  from models import User
-
-  @login_manager.user_loader
-  def load_user(id):
-    return User.query.get(id)
-
   from routes import register_routes
   register_routes(app,db)
 
   Migrate(app,db)
+
+  # Configurar e iniciar o APScheduler para executar a cada 2 minutos
+  scheduler = BackgroundScheduler()
+  scheduler.add_job(func=delete_old_files, trigger="interval", minutes=1, args=[app,db])
+  scheduler.start()
+
   return app
