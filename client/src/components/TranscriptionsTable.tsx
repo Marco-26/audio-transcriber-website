@@ -56,7 +56,9 @@ export const TranscriptionsTable:React.FC<TableProps> = ({user,files,setFiles,fi
     if(user){
       const files = await TranscriptionsApi.fetchTranscriptionsEntries(user.id, filter)
       setFiles(files)
+      return;
     }
+    setFiles(undefined)
   }
 
   useEffect(() => {

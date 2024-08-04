@@ -9,18 +9,15 @@ from app import data_folder_path, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET
 import requests
 from flask_jwt_extended import create_access_token
 from werkzeug.utils import secure_filename
+from functools import wraps
 
-BACKEND_URL = "https://127.0.0.1:5000"
-FRONTEND_URL = "http://localhost:3000" 
-
-def login_required(function):
-    def wrapper(*args, **kwargs):
-        encoded_jwt=request.headers.get("Authorization").split("Bearer ")[1]
-        if encoded_jwt==None:
-            return abort(401)
-        else:
-            return function()
-    return wrapper
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'user_id' not in session:
+            return jsonify({"error": "Unauthorized. Please log in."}), 401
+        return f(*args, **kwargs)
+    return decorated_function
 
 def register_routes(app, db):
     @app.route('/google_login', methods=['POST'])
@@ -40,48 +37,32 @@ def register_routes(app, db):
             'Authorization': f'Bearer {response["access_token"]}'
         }
         user_info = requests.get('https://www.googleapis.com/oauth2/v3/userinfo', headers=headers).json()
-        print(user_info)
+        
         user = User.query.filter_by(email = user_info["email"]).first()
+        
         if not user:
-            print("Added new user to the database")
             user = User(user_info["name"], user_info["email"], user_info["sub"], user_info["picture"])
             db.session.add(user)
             db.session.commit()
 
-        user_data = {
-            'google_id': user.google_id,
-            'name': user.name,
-            'email': user.email,
-            'profileImageURL': user.profile_image_url
-        }
-
-        session["user"] = user_data
-
-        jwt_token = create_access_token(identity=user_info['email'])
-        response = jsonify(user=user_info)
-        response.set_cookie('access_token_cookie', value=jwt_token, secure=True)
+        session["user_id"] = user.google_id
+        response = jsonify(user=user.to_dict())
         
         return response, 200
 
     @app.route("/@me",methods=['GET'])
     def get_current_user():
-        user = session.get("user")
+        user_id = session.get("user_id")
         
-        if not user:
+        if not user_id:
             return jsonify({"error": "Unauthorized"})
-        print(user)
-        user_data = {
-            'id': user["google_id"],
-            'name': user["name"],
-            'email': user["email"],
-            'profileImageURL': user["profileImageURL"],
-        }
 
-        return jsonify(user=user_data)
+        user = User.query.filter_by(google_id=user_id).first()
+        return jsonify(user=user.to_dict())
 
     @app.route("/api/entries/<user_id>/<filter>", methods=['GET'])
+    @login_required
     def get_file_entries(user_id,filter):
-        print("USER ID: " + user_id + "; Filter: " + filter)
         user_exists = User.query.filter_by(google_id=user_id).first()
         if not user_exists:
             return jsonify(error='User not found')
@@ -94,18 +75,12 @@ def register_routes(app, db):
         if not files_list:
             return jsonify(error='No files found for this user')
 
-        files = [{
-            'file_id': t.id,
-            'user_id': t.user_id,
-            'filename': t.filename,
-            'info':t.info,
-            'date':t.date,
-            'transcribed': t.transcribed
-        } for t in files_list]
+        files = [t.to_dict() for t in files_list]
 
         return jsonify(files=files, message="Fetched all files")
 
     @app.route("/api/upload", methods=['POST'])
+    @login_required
     def upload_endpoint():
         if 'file' not in request.files:
             return jsonify(error="No file provided"), 400
@@ -131,18 +106,10 @@ def register_routes(app, db):
         os.makedirs(file_path)
         temp_save_file(file_path, secure_filename(file.filename), file)
         
-        fileEntry = {
-            "file_id": file_entry.id,
-            "user_id":file_entry.user_id,
-            "filename": file_entry.filename,
-            "info": file_entry.info,
-            "date": file_entry.date.isoformat(),
-            "transcribed":file_entry.transcribed
-        }
-        
-        return jsonify(message="File uploaded sucessfuly", fileEntry=fileEntry)
+        return jsonify(message="File uploaded sucessfuly", fileEntry=file_entry.to_dict())
     
     @app.route("/api/transcript/<file_id>/<filename>", methods=['POST'])
+    @login_required
     async def transcript_endpoint(file_id,filename):
         file = FileEntry.query.filter_by(id=file_id).first()
         file_path = os.path.join(data_folder_path, file_id,filename)
@@ -160,6 +127,7 @@ def register_routes(app, db):
         return jsonify(message="Finished Transcribing the audio")
     
     @app.route("/api/transcription/<file_id>", methods=['GET'])
+    @login_required
     async def fetch_transcribed_audio(file_id):
         file = FileEntry.query.filter_by(id=file_id).first()
         file_path = os.path.join(data_folder_path, file_id,"transcript.txt")
@@ -171,6 +139,7 @@ def register_routes(app, db):
         return jsonify(transcription=file_contents, message="Finished fetching transcription...")
     
     @app.route("/api/delete/<id>", methods=['DELETE'])
+    @login_required
     def delete_endpoint(id):
         directory_path = os.path.join(data_folder_path, id)
         try:
@@ -189,5 +158,5 @@ def register_routes(app, db):
     
     @app.route("/logout", methods=["POST"])
     def logout_user():
-        session.pop("user")
+        session.pop("user_id")
         return "200"
