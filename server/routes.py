@@ -111,38 +111,44 @@ def register_routes(app, db):
     
     @app.route("/api/transcript/<user_id>/<file_id>/<filename>", methods=['POST'])
     @login_required
-    async def transcript_endpoint(user_id,file_id,filename):
+    def transcript_endpoint(user_id, file_id, filename):
         file = FileEntry.query.filter_by(id=file_id).first()
         
-        if file.user_id != user_id:
-            return jsonify(message="Unauthorized"), 401
+        # if file.user_id != user_id:
+        #     return jsonify(message="Unauthorized"), 401
         
         file_path = os.path.join(data_folder_path, file_id, filename)
-        
-        transcript = asyncio.run(transcribe_audio(file_path))
-        
-        transcript_file_path = Path(data_folder_path) / file_id / "transcript.txt"
-        with open(transcript_file_path, 'w') as temp_file:
-            temp_file.write(transcript)
 
-        file.transcribed = True
-        db.session.add(file)
-        db.session.commit()
+        async def transcribe_and_save(file_path, file_id):
+            transcript = await transcribe_audio(file_path)
+            
+            transcript_file_path = Path(data_folder_path) / file_id / "transcript.txt"
+            with open(transcript_file_path, 'w') as temp_file:
+                temp_file.write(transcript)
+
+            file.transcribed = True
+            db.session.add(file)
+            db.session.commit()
+
+        asyncio.run(transcribe_and_save(file_path, file_id))
 
         return jsonify(message="Finished Transcribing the audio")
 
     
     @app.route("/api/transcription/<file_id>", methods=['GET'])
     @login_required
-    async def fetch_transcribed_audio(file_id):
+    def fetch_transcribed_audio(file_id):
         file = FileEntry.query.filter_by(id=file_id).first()
         file_path = os.path.join(data_folder_path, file_id,"transcript.txt")
         
         if(os.path.isfile(file_path)):
             with open(file_path, 'r') as file:
                 file_contents = file.read()
+            return jsonify(transcription=file_contents, message="Finished fetching transcription...")
+        else:
+            return jsonify(message="Transcription not found."), 404
 
-        return jsonify(transcription=file_contents, message="Finished fetching transcription...")
+
     
     @app.route("/api/delete/<id>", methods=['DELETE'])
     @login_required

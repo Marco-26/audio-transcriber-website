@@ -34,7 +34,6 @@ def delete_old_files(app,db):
         try:
             # Definir o limite de tempo para 7 dias atrás
             time_limit = datetime.utcnow() - timedelta(days=7)
-            print(time_limit)
             # Buscar ficheiros mais antigos que o limite
             old_files = FileEntry.query.filter(FileEntry.date < time_limit).all()
 
