@@ -10,6 +10,7 @@ import requests
 from flask_jwt_extended import create_access_token
 from werkzeug.utils import secure_filename
 from functools import wraps
+import asyncio
 
 def login_required(f):
     @wraps(f)
@@ -108,15 +109,19 @@ def register_routes(app, db):
         
         return jsonify(message="File uploaded sucessfuly", fileEntry=file_entry.to_dict())
     
-    @app.route("/api/transcript/<file_id>/<filename>", methods=['POST'])
+    @app.route("/api/transcript/<user_id>/<file_id>/<filename>", methods=['POST'])
     @login_required
-    async def transcript_endpoint(file_id,filename):
+    async def transcript_endpoint(user_id,file_id,filename):
         file = FileEntry.query.filter_by(id=file_id).first()
-        file_path = os.path.join(data_folder_path, file_id,filename)
         
-        transcript = await transcribe_audio(file_path)
+        if file.user_id != user_id:
+            return jsonify(message="Unauthorized"), 401
         
-        transcript_file_path = Path(data_folder_path+"/"+file_id) / "transcript.txt"
+        file_path = os.path.join(data_folder_path, file_id, filename)
+        
+        transcript = asyncio.run(transcribe_audio(file_path))
+        
+        transcript_file_path = Path(data_folder_path) / file_id / "transcript.txt"
         with open(transcript_file_path, 'w') as temp_file:
             temp_file.write(transcript)
 
@@ -125,6 +130,7 @@ def register_routes(app, db):
         db.session.commit()
 
         return jsonify(message="Finished Transcribing the audio")
+
     
     @app.route("/api/transcription/<file_id>", methods=['GET'])
     @login_required

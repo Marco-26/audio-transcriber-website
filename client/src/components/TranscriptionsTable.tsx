@@ -20,7 +20,7 @@ export const TranscriptionsTable:React.FC<TableProps> = ({user,files,setFiles,fi
   const handleTranscription = async (file:FileEntry) => {
     if(user){
       setTranscriptionStatus((prev) => ({ ...prev, [file.file_id]: true }));
-      await TranscriptionsApi.processTranscription(file.file_id, file.filename)
+      await TranscriptionsApi.processTranscription(user.id, file.file_id, file.filename)
       setTranscriptionStatus((prev) => ({ ...prev, [file.file_id]: false }));
       fetchTranscriptions()
     }
