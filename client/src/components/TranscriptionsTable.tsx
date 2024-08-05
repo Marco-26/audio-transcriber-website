@@ -4,8 +4,9 @@ import { FileEntry } from '../Types/FileEntry';
 import { generateTXT} from '../utils/utils';
 import { Table,TableBody, TableCell, TableHead, TableHeader, TableRow } from './UI/Table';
 import { Button } from './UI/Button';
-import { Play, Trash, Download } from 'lucide-react';
+import { Play, Trash, Download,CircleCheck } from 'lucide-react';
 import { User } from '../Types/User';
+
 
 interface TableProps {
   user:User|undefined;
@@ -85,7 +86,13 @@ export const TranscriptionsTable:React.FC<TableProps> = ({user,files,setFiles,fi
                             <TableCell>{new Date(file.date).toLocaleDateString()}</TableCell>
                             <TableCell>
                                 {file.transcribed ? (
-                                    "Done"
+                                  <>
+                                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                                    <CircleCheck style={{width:'22px', height:'22px'}}/>
+                                    <b style={{ margin: 0, paddingLeft: '5px' }}>Complete</b>
+                                  </div>
+                                </>
+                                
                                 ) : (
                                     transcriptionStatus[file.file_id] ? (
                                         "Processing..."
