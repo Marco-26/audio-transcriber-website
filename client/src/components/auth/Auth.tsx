@@ -4,7 +4,7 @@ import { User } from "@/src/Types/User";
 import { Button } from "../UI/Button";
 import { CircleUser, UserIcon } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "../UI/Dropdown";
-import { logout } from "../../api/user";
+import { login,logout } from "../../api/user";
 
 async function getUserInfo(codeResponse:any) {
   var response = await fetch("/google_login", {
@@ -23,12 +23,11 @@ interface AuthProps{
 }
 
 const Auth:React.FC<AuthProps> = ({user,setUser}) => {
-  
   const googleLogin = useGoogleLogin({
     flow: "auth-code",
     onSuccess: async (codeResponse) => {
-      var loginDetails = await getUserInfo(codeResponse);
-      setUser(loginDetails.user);
+      const loginDetails = await login(codeResponse);
+      setUser(loginDetails);
     },
   });
   

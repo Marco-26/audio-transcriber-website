@@ -23,6 +23,19 @@ export const notifyError = (error:string) => {
   )
 }
 
+export const notifyWarning = (warning:string) => {
+  toast.warn(warning, {
+    position: "bottom-right",
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    theme: "colored",
+    });
+}
+
 export const generateTXT = (transcription:string) => {
   const blob = new Blob([transcription], { type: 'text/plain' });
   const url = URL.createObjectURL(blob);
