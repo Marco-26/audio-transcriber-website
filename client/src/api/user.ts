@@ -1,16 +1,33 @@
-import { AxiosResponse } from "axios";
+import { AxiosError, AxiosResponse } from "axios";
 import { apiClient } from "./client";
 import { User } from "@/src/Types/User"
+import { notifyError } from "../utils/utils";
 
 async function fetchProfile() {
-  const response: AxiosResponse<{ user: User }> = await apiClient.get("/@me");
-  if(response != null){
-    console.log(response.data.user)
-    return response.data.user;
+  try{
+    const response: AxiosResponse<{ user: User }> = await apiClient.get("/@me");
+    if(response != null){
+      return response.data.user;
+    }
+  }catch(error:any){
+    console.error(error);
   }
 }
 
-export async function logout() {
+export const login = async (authCode:any) => {
+  try {
+    const response = await apiClient.post('/google_login', { code: authCode.code });
+    return response.data.user;
+  }catch (error:any) {
+    if (error.response && error.response.status === 401) {
+        notifyError('Access restricted. This application is currently in testing.');
+    } else {
+      notifyError('An error occurred. Please try again.');
+    }
+}
+}
+
+export const logout = async () => {
   try {
     await apiClient.post('/logout')
   } catch (error) {
@@ -18,6 +35,6 @@ export async function logout() {
   }
 }
 
-const UserApi = {fetchProfile, logout}
+const UserApi = {login,fetchProfile, logout}
 
 export default UserApi;

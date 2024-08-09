@@ -3,11 +3,13 @@ import './styles/globals.css'
 
 import Home from './components/Pages/Home';
 import { User } from './Types/User';
+import { notifyWarning } from './utils/utils';
 
 function App() {
   const [user, setUser] = useState<User | undefined>(undefined);
   
   useEffect(() => {
+    notifyWarning("Access restricted. This application is currently in testing.")
     const handleBeforeUnload = (event:any) => {
       event.preventDefault();
       event.returnValue = '';
