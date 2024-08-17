@@ -1,6 +1,4 @@
-import pytest
-from flask import session
-from src import db, create_app, User, FileEntry
+from src import db, User, FileEntry
 
 def test_get_file_entries_user_not_logged_in(client):
     with client.session_transaction() as sess:
