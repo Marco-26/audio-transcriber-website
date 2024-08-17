@@ -1,9 +1,9 @@
-from transcribe import transcribe
-from pydub import AudioSegment
 import os
-from datetime import datetime,timedelta
-from models import FileEntry
 import shutil
+from datetime import datetime,timedelta
+
+from .transcribe import transcribe
+from .models import FileEntry
 
 def temp_save_file(location, filename, file):
     save_path = os.path.join(location, filename)

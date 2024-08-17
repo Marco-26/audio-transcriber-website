@@ -2,21 +2,23 @@ import json
 from pathlib import Path
 import shutil
 from flask import  abort, jsonify, request,session
-from models import User, FileEntry
 import os
-from utils import temp_save_file, transcribe_audio,get_file_info
-from app import data_folder_path, allowed_users,GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET
 import requests
 from flask_jwt_extended import create_access_token
 from werkzeug.utils import secure_filename
 from functools import wraps
 import asyncio
 
+from .app import data_folder_path, allowed_users,GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET
+from .utils import temp_save_file, transcribe_audio,get_file_info
+from .models import User, FileEntry
+
+
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if 'user_id' not in session:
-            return jsonify(error="Unauthorized. Please log in."), 401
+            return jsonify(error="Unauthorized access."), 401
         return f(*args, **kwargs)
     return decorated_function
 
@@ -65,10 +67,10 @@ def register_routes(app, db):
 
     @app.route("/api/entries/<user_id>/<filter>", methods=['GET'])
     @login_required
-    def get_file_entries(user_id,filter):
+    def fetch_file_entries(user_id,filter):
         user_exists = User.query.filter_by(google_id=user_id).first()
         if not user_exists:
-            return jsonify(error='User not found')
+            return jsonify(error='User not found'), 404
         
         if(filter == 'all'):
             files_list = FileEntry.query.filter_by(user_id=user_id).all()

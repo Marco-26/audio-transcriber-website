@@ -1,15 +1,16 @@
 from flask import Flask
 from flask_migrate import Migrate
 from flask_login import LoginManager
-from flask_bcrypt import Bcrypt
 from flask_session import Session
 from openai import OpenAI, OpenAIError
-import os,pathlib
 from flask_cors import CORS
-from db import db
+
+import os,pathlib
 from apscheduler.schedulers.background import BackgroundScheduler
-from utils import delete_old_files
-from config import ApplicationConfig
+
+from .db import db
+from .utils import delete_old_files
+from .config import ApplicationConfig
 
 data_folder_path = os.path.join(os.path.dirname(__file__), 'data')
 client_secrets_file = os.path.join(pathlib.Path(__file__).parent, "client-secret.json")
@@ -38,7 +39,7 @@ def create_app():
   login_manager = LoginManager()
   login_manager.init_app(app)
 
-  from routes import register_routes
+  from .routes import register_routes
   register_routes(app,db)
 
   Migrate(app,db)

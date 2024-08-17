@@ -6,17 +6,6 @@ import { CircleUser, UserIcon } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "../UI/Dropdown";
 import { login,logout } from "../../api/user";
 
-async function getUserInfo(codeResponse:any) {
-  var response = await fetch("/google_login", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ code: codeResponse.code }),
-  });
-  return await response.json();
-}
-
 interface AuthProps{
   user:User | undefined; 
   setUser: Dispatch<SetStateAction<User | undefined>>;

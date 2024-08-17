@@ -70,12 +70,11 @@ export const TranscriptionsTable:React.FC<TableProps> = ({user,files,setFiles,fi
     <div className='border rounded'>
         <Table>
             <TableHeader>        
-                <TableHead>Name</TableHead>
+                <TableHead>Title</TableHead>
                 <TableHead>Metadata</TableHead>
                 <TableHead>Date</TableHead>
                 <TableHead>Transcription Status</TableHead>
                 <TableHead>Download</TableHead>
-                <TableHead>Action</TableHead>
             </TableHeader>
             <TableBody>
                 {files && files.length > 0 ? (
@@ -88,8 +87,8 @@ export const TranscriptionsTable:React.FC<TableProps> = ({user,files,setFiles,fi
                                 {file.transcribed ? (
                                   <>
                                   <div style={{ display: 'flex', alignItems: 'center' }}>
-                                    <CircleCheck style={{width:'22px', height:'22px'}}/>
-                                    <b style={{ margin: 0, paddingLeft: '5px' }}>Complete</b>
+                                    <CircleCheck style={{width:'15px', height:'15px'}}/>
+                                    <p style={{ margin: 0, paddingLeft: '5px' }}>Complete</p>
                                   </div>
                                 </>
                                 
