@@ -56,4 +56,3 @@ def test_upload_user_not_found(client):
   assert response.status_code == 404
   json_data = response.get_json()
   assert json_data['error'] == 'User not found'
-

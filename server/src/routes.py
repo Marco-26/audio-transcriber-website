@@ -159,7 +159,7 @@ def register_routes(app, db):
                 file_contents = file.read()
             return jsonify(transcription=file_contents, message="Finished fetching transcription..."), 200
         else:
-            return jsonify(message="Transcription not found."), 404
+            return jsonify(error="Transcription not found."), 404
 
     @app.route("/api/delete/<id>", methods=['DELETE'])
     @login_required
