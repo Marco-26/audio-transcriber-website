@@ -36,6 +36,10 @@ def register_routes(app, db):
         }
 
         response = requests.post('https://oauth2.googleapis.com/token', data=data).json()
+       
+        if 'access_token' not in response:
+            return jsonify(error="OAuth token exchange failed"), 401
+
         headers = {
             'Authorization': f'Bearer {response["access_token"]}'
         }
