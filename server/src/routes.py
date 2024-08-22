@@ -2,21 +2,23 @@ import json
 from pathlib import Path
 import shutil
 from flask import  abort, jsonify, request,session
-from models import User, FileEntry
 import os
-from utils import temp_save_file, transcribe_audio,get_file_info
-from app import data_folder_path, allowed_users,GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET
 import requests
 from flask_jwt_extended import create_access_token
 from werkzeug.utils import secure_filename
 from functools import wraps
 import asyncio
 
+from .app import data_folder_path, allowed_users,GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET
+from .utils import temp_save_file, transcribe_audio,get_file_info
+from .models import User, FileEntry
+
+
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if 'user_id' not in session:
-            return jsonify(error="Unauthorized. Please log in."), 401
+            return jsonify(error="Unauthorized access."), 401
         return f(*args, **kwargs)
     return decorated_function
 
@@ -34,6 +36,10 @@ def register_routes(app, db):
         }
 
         response = requests.post('https://oauth2.googleapis.com/token', data=data).json()
+       
+        if 'access_token' not in response:
+            return jsonify(error="OAuth token exchange failed"), 401
+
         headers = {
             'Authorization': f'Bearer {response["access_token"]}'
         }
@@ -65,10 +71,10 @@ def register_routes(app, db):
 
     @app.route("/api/entries/<user_id>/<filter>", methods=['GET'])
     @login_required
-    def get_file_entries(user_id,filter):
+    def fetch_file_entries(user_id,filter):
         user_exists = User.query.filter_by(google_id=user_id).first()
         if not user_exists:
-            return jsonify(error='User not found')
+            return jsonify(error='User not found'), 404
         
         if(filter == 'all'):
             files_list = FileEntry.query.filter_by(user_id=user_id).all()
@@ -127,22 +133,26 @@ def register_routes(app, db):
             try:
                 transcript = await transcribe_audio(file_path)
                 
+                if not transcript:
+                    raise ValueError("Transcription failed, no transcript generated.")
+                
                 transcript_file_path = Path(data_folder_path) / file_id / "transcript.txt"
                 with open(transcript_file_path, 'w') as temp_file:
                     temp_file.write(transcript)
+                    temp_file.flush()
 
                 file.transcribed = True
                 db.session.add(file)
                 db.session.commit()
             except Exception as e:
                 print(f"Error during transcription: {str(e)}")
-                return jsonify(error="Failed to transcribe audio"), 500
+                raise e
 
         try:
             asyncio.run(transcribe_and_save(file_path, file_id))
         except Exception as e:
             print(f"Unexpected error: {str(e)}")
-            return jsonify(error="An unexpected error occurred"), 500
+            return jsonify(error="An unexpected error occurred. Failed to transcribe audio"), 500
 
         return jsonify(message="Finished transcribing the audio"), 200
 
@@ -157,7 +167,7 @@ def register_routes(app, db):
                 file_contents = file.read()
             return jsonify(transcription=file_contents, message="Finished fetching transcription..."), 200
         else:
-            return jsonify(message="Transcription not found."), 404
+            return jsonify(error="Transcription not found."), 404
 
     @app.route("/api/delete/<id>", methods=['DELETE'])
     @login_required

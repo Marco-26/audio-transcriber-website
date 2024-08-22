@@ -1,9 +1,9 @@
-from transcribe import transcribe
-from pydub import AudioSegment
 import os
-from datetime import datetime,timedelta
-from models import FileEntry
 import shutil
+from datetime import datetime,timedelta
+
+from .transcribe import transcribe
+from .models import FileEntry
 
 def temp_save_file(location, filename, file):
     save_path = os.path.join(location, filename)
@@ -24,7 +24,6 @@ def get_file_size(audio_file_path):
     audio_file_path.seek(0)
     return round((size / (1024 * 1024)),2)
 
-    
 def get_file_info(audio_file_path):
     return str(get_file_size(audio_file_path)) + " MB"
 
