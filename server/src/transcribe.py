@@ -3,6 +3,8 @@ from openai import OpenAI
 from pydub import AudioSegment
 from pydub.exceptions import CouldntDecodeError
 import shutil
+import sys
+
 
 MAX_CHUNK_LENGTH_IN_MS = 10 * 60 * 1000
 OUTPUT_CHUNKS_FOLDER_PATH = "output_chunks"
@@ -114,4 +116,6 @@ if __name__ == "__main__":
         sys.exit(1)
 
     transcript = transcribe(audio_file_path=audio_file_path, transcribed_file_name=transcribed_file_name)
-    save_transcript(transcript, transcribed_file_name+".txt")
+    
+    if transcribe is not None:
+        save_transcript(transcript, transcribed_file_name+".txt")

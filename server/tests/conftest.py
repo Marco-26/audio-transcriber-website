@@ -1,6 +1,6 @@
 import pytest
 
-from src import db, create_app, User, FileEntry,transcribe
+from server.src import db, create_app, User, FileEntry,transcribe
 
 @pytest.fixture(autouse=True, scope="session")
 def app_dict():

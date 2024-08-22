@@ -133,22 +133,26 @@ def register_routes(app, db):
             try:
                 transcript = await transcribe_audio(file_path)
                 
+                if not transcript:
+                    raise ValueError("Transcription failed, no transcript generated.")
+                
                 transcript_file_path = Path(data_folder_path) / file_id / "transcript.txt"
                 with open(transcript_file_path, 'w') as temp_file:
                     temp_file.write(transcript)
+                    temp_file.flush()
 
                 file.transcribed = True
                 db.session.add(file)
                 db.session.commit()
             except Exception as e:
                 print(f"Error during transcription: {str(e)}")
-                return jsonify(error="Failed to transcribe audio"), 500
+                raise e
 
         try:
             asyncio.run(transcribe_and_save(file_path, file_id))
         except Exception as e:
             print(f"Unexpected error: {str(e)}")
-            return jsonify(error="An unexpected error occurred"), 500
+            return jsonify(error="An unexpected error occurred. Failed to transcribe audio"), 500
 
         return jsonify(message="Finished transcribing the audio"), 200
 
