@@ -4,6 +4,8 @@ import './styles/globals.css'
 import Home from './components/Pages/Home';
 import { User } from './Types/User';
 import { notifyWarning } from './utils/utils';
+import { Header } from './components/Header';
+import LandingPage from './components/LandingPage';
 
 function App() {
   const [user, setUser] = useState<User | undefined>(undefined);
@@ -23,7 +25,11 @@ function App() {
   }, []);
 
   return (
-      <Home user={user} setUser={setUser}/>
+    <>
+      <Header user={user} setUser={setUser}/>
+      <LandingPage/>
+      {/* <Home user={user} setUser={setUser}/> */}
+    </>
   );
 }
 

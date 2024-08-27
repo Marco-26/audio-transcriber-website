@@ -14,7 +14,6 @@ def transcribe_audio_file(openai_client, audio_file_path):
         transcript_obj = openai_client.audio.transcriptions.create(
             model="whisper-1",
             file=audio_to_transcribe,
-
         )
 
     return transcript_obj.text

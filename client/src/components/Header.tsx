@@ -6,6 +6,7 @@ import { User } from '../Types/User';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import Auth from './auth/Auth';
 import { Dispatch, SetStateAction } from 'react';
+import { Link } from 'react-router-dom'
 
 interface HeaderProps {
   user:User | undefined;
