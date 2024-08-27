@@ -1,22 +1,13 @@
 import {
-  Package2,
   FileVolume
 } from "lucide-react"
 import { User } from '../Types/User';
-import { GoogleOAuthProvider } from '@react-oauth/google';
-import Auth from './auth/Auth';
 import { Dispatch, SetStateAction } from 'react';
-import { Link } from 'react-router-dom'
+import { LoginButton } from "./LoginButton";
 
 interface HeaderProps {
   user:User | undefined;
   setUser: Dispatch<SetStateAction<User | undefined>>;
-}
-
-const id:string | undefined = process.env.REACT_APP_GOOGLE_CLIENT_ID;
-
-if (!id) {
-  throw new Error('REACT_APP_GOOGLE_CLIENT_ID is not set');
 }
 
 export const Header:React.FC<HeaderProps> = ({user,setUser}):JSX.Element => {
@@ -41,10 +32,8 @@ export const Header:React.FC<HeaderProps> = ({user,setUser}):JSX.Element => {
           </Link> */}
       </div>
       <div className="ml-auto">
-            <GoogleOAuthProvider clientId={id}>
-              <Auth user={user} setUser={setUser}/>
-            </GoogleOAuthProvider>
-        </div>
+        <LoginButton user={user} setUser={setUser}/>
+      </div>
     </header>
   )
 }

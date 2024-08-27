@@ -27,8 +27,10 @@ function App() {
   return (
     <>
       <Header user={user} setUser={setUser}/>
-      <LandingPage/>
-      {/* <Home user={user} setUser={setUser}/> */}
+      <div className="px-6 py-5">
+        <LandingPage user={user} setUser={setUser}/>
+        {/* <Home user={user} setUser={setUser}/> */}
+      </div>
     </>
   );
 }

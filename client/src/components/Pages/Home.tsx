@@ -38,11 +38,8 @@ const Home:React.FC<HomeProps> = ({user,setUser}) => {
 
   return (
     <>
-      <Header user={user} setUser={setUser}/>
-      <div className="px-6 py-5">
-        <TableHeader user={user} files={files} setFiles={setFiles} setFilter={setFilter}/>
-        <TranscriptionsTable user={user} files={files!} setFiles={setFiles} filter={filter}/>
-      </div>
+      <TableHeader user={user} files={files} setFiles={setFiles} setFilter={setFilter}/>
+      <TranscriptionsTable user={user} files={files!} setFiles={setFiles} filter={filter}/>
     </>
   )
 }

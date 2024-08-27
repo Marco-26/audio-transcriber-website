@@ -28,7 +28,7 @@ const Auth:React.FC<AuthProps> = ({user,setUser}) => {
   return (
     <>
       {!user ? (
-        <Button onClick={() => googleLogin()}>
+        <Button onClick={() => googleLogin()} className="text-white">
           <UserIcon className='mr-2'/>
           Login
         </Button>
