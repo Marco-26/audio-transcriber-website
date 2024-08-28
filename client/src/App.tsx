@@ -24,7 +24,6 @@ function App() {
       window.removeEventListener('beforeunload', handleBeforeUnload);
     };
   }, []);
-
   
   const router = createBrowserRouter([
     {
@@ -33,7 +32,7 @@ function App() {
       children: [
         {
           index: true,
-          element: <LandingPage user={user} setUser={setUser} />,
+          element: <LandingPage />,
         },
         {
           path: 'dashboard',
