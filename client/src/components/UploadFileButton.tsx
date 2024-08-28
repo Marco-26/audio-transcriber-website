@@ -60,7 +60,7 @@ export const UploadFileButton: React.FC<UploadFileButtonProps> = ({ user,files, 
       <ToastContainer />
       <Dialog>
         <DialogTrigger asChild>
-          <Button disabled={!user}>
+          <Button disabled={!user} className='text-white'>
             <PlusCircle className="mr-2" />
             New Transcription
           </Button>

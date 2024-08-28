@@ -4,6 +4,7 @@ import {
 import { User } from '../Types/User';
 import { Dispatch, SetStateAction } from 'react';
 import { LoginButton } from "./LoginButton";
+import { Link } from "react-router-dom";
 
 interface HeaderProps {
   user:User | undefined;
@@ -17,19 +18,18 @@ export const Header:React.FC<HeaderProps> = ({user,setUser}):JSX.Element => {
           <div className="flex items-center gap-2 text-lg font-semibold md:text-base">
             <FileVolume />
           </div>
-          <h1>AudioTranscriberAI</h1>
-          {/* <Link
+          <Link
             to="/"
+            className="text-foreground transition-colors hover:text-foreground"
+          >
+            AudioTranscriberAI
+          </Link>
+          <Link
+            to="/dashboard"
             className="text-foreground transition-colors hover:text-foreground"
           >
             Dashboard
           </Link>
-          <Link
-            to="about"
-            className="text-muted-foreground transition-colors hover:text-foreground"
-          >
-            About
-          </Link> */}
       </div>
       <div className="ml-auto">
         <LoginButton user={user} setUser={setUser}/>
