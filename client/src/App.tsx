@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import './styles/globals.css'
 
-import Home from './components/Pages/Home';
+import Dashboard from './components/Pages/Dashboard';
 import { User } from './Types/User';
 import { notifyWarning } from './utils/utils';
+import LandingPage from './components/LandingPage';
+import {createBrowserRouter, RouterProvider} from 'react-router-dom';
+import Layout from './components/Layout';
 
 function App() {
   const [user, setUser] = useState<User | undefined>(undefined);
@@ -21,9 +24,26 @@ function App() {
       window.removeEventListener('beforeunload', handleBeforeUnload);
     };
   }, []);
+  
+  const router = createBrowserRouter([
+    {
+      path: '/',
+      element: <Layout user={user} setUser={setUser} />,
+      children: [
+        {
+          index: true,
+          element: <LandingPage />,
+        },
+        {
+          path: 'dashboard',
+          element: <Dashboard user={user} setUser={setUser} />,
+        },
+      ],
+    },
+  ]);
 
   return (
-      <Home user={user} setUser={setUser}/>
+    <RouterProvider router={router}/>
   );
 }
 

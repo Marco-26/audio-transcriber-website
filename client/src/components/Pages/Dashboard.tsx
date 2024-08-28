@@ -6,12 +6,12 @@ import { User } from '@/src/Types/User';
 import { Header } from '../Header';
 import UserApi from "../../api/user"
 
-interface HomeProps {
+interface DashboardProps {
   user:User | undefined; 
   setUser: Dispatch<SetStateAction<User | undefined>>;
 }
 
-const Home:React.FC<HomeProps> = ({user,setUser}) => {
+const Dashboard:React.FC<DashboardProps> = ({user,setUser}) => {
   const [files, setFiles] = useState<FileEntry[] | undefined>([]);
   const [filter, setFilter] = useState<string>('all');
   
@@ -37,14 +37,11 @@ const Home:React.FC<HomeProps> = ({user,setUser}) => {
   }, [setUser]);
 
   return (
-    <>
-      <Header user={user} setUser={setUser}/>
-      <div className="px-6 py-5">
-        <TableHeader user={user} files={files} setFiles={setFiles} setFilter={setFilter}/>
-        <TranscriptionsTable user={user} files={files!} setFiles={setFiles} filter={filter}/>
-      </div>
-    </>
+    <div className='mx-7 my-7'>
+      <TableHeader user={user} files={files} setFiles={setFiles} setFilter={setFilter}/>
+      <TranscriptionsTable user={user} files={files!} setFiles={setFiles} filter={filter}/>
+    </div>
   )
 }
 
-export default Home;
+export default Dashboard;

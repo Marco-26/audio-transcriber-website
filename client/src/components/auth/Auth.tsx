@@ -2,9 +2,10 @@ import React, { Dispatch, SetStateAction } from "react";
 import { useGoogleLogin } from "@react-oauth/google";
 import { User } from "@/src/Types/User";
 import { Button } from "../UI/Button";
-import { CircleUser, UserIcon } from "lucide-react";
+import { UserIcon } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "../UI/Dropdown";
 import { login,logout } from "../../api/user";
+import { useNavigate } from "react-router-dom";
 
 interface AuthProps{
   user:User | undefined; 
@@ -12,12 +13,15 @@ interface AuthProps{
 }
 
 const Auth:React.FC<AuthProps> = ({user,setUser}) => {
+  const navigate = useNavigate();
+
   const googleLogin = useGoogleLogin({
     flow: "auth-code",
     onSuccess: async (codeResponse) => {
       const loginDetails = await login(codeResponse);
       setUser(loginDetails);
-    },
+      navigate('/dashboard');
+    }
   });
   
   const handleLogout = () => {
@@ -28,7 +32,7 @@ const Auth:React.FC<AuthProps> = ({user,setUser}) => {
   return (
     <>
       {!user ? (
-        <Button onClick={() => googleLogin()}>
+        <Button onClick={() => googleLogin()} className="text-white">
           <UserIcon className='mr-2'/>
           Login
         </Button>

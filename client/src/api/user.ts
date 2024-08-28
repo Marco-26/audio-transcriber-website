@@ -1,9 +1,9 @@
-import { AxiosError, AxiosResponse } from "axios";
+import { AxiosResponse } from "axios";
 import { apiClient } from "./client";
 import { User } from "@/src/Types/User"
 import { notifyError } from "../utils/utils";
 
-async function fetchProfile() {
+export const fetchProfile = async () => {
   try{
     const response: AxiosResponse<{ user: User }> = await apiClient.get("/@me");
     if(response != null){
@@ -35,6 +35,16 @@ export const logout = async () => {
   }
 }
 
-const UserApi = {login,fetchProfile, logout}
+export const fetchRegisteredUsers =  async () => {
+  try {
+    const response = await apiClient.get('/api/fetchRegisteredUsers');
+    return response.data.registered_users;
+  } catch (error) {
+    console.error(error)
+    return 0;
+  }
+}
+
+const UserApi = {login,fetchProfile, logout, fetchRegisteredUsers}
 
 export default UserApi;

@@ -82,7 +82,7 @@ def register_routes(app, db):
             files_list = FileEntry.query.filter_by(user_id=user_id, transcribed=True).all()
 
         if not files_list:
-            return jsonify(error='No files found for this user'), 404
+            return jsonify(error='No files found for this user')
 
         files = [t.to_dict() for t in files_list]
 
@@ -186,6 +186,11 @@ def register_routes(app, db):
             return jsonify(error="There was an error deleting the file or directory."), 500
 
         return jsonify(message=f"Successfully deleted the file or directory with id: {id}"), 200
+    
+    @app.route("/api/fetchRegisteredUsers",methods=['GET'])
+    def fetch_registered_users():
+        registered_users = User.query.count()
+        return jsonify(registered_users=registered_users), 200
     
     @app.route("/logout", methods=["POST"])
     def logout_user():
