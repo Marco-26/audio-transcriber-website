@@ -1,10 +1,9 @@
 import os
+import shutil
+
 from openai import OpenAI
 from pydub import AudioSegment
 from pydub.exceptions import CouldntDecodeError
-import shutil
-import sys
-
 
 MAX_CHUNK_LENGTH_IN_MS = 10 * 60 * 1000
 OUTPUT_CHUNKS_FOLDER_PATH = "output_chunks"

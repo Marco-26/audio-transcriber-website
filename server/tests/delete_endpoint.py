@@ -1,7 +1,7 @@
 import os
-import shutil
-import pytest
+
 from src import db, User, FileEntry
+
 
 def test_delete_directory_success(client):
   # 1. Create a user and file entry in the database

@@ -8,3 +8,4 @@ server/output_chunks
 server/src/__pycache__
 server/tests/__pycache__
 server/tests/.pytest_cache
+server/.idea

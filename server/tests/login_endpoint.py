@@ -1,7 +1,6 @@
 import pytest
 from unittest.mock import patch, MagicMock
 from src import db, User
-from flask import session
 
 # Sample allowed users list
 allowed_users = ["alloweduser@example.com"]
