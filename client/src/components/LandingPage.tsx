@@ -15,7 +15,7 @@ const LandingPage = () => {
   },[])
 
   return (
-    <div className="flex items-center justify-center " style={{ minHeight: 'calc(100vh - 7rem)' }}>
+    <div className="flex items-center justify-center" style={{ minHeight: 'calc(100vh - 7rem)' }}>
       <div className="max-w-screen-2xl">
         <div className='flex'>
           <div className='mr-5'>

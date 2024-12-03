@@ -3,8 +3,9 @@ import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import TableHeader from '../TableHeader';
 import { TranscriptionsTable } from '../TranscriptionsTable';
 import { User } from '@/src/Types/User';
-import { Header } from '../Header';
 import UserApi from "../../api/user"
+import { useNavigate } from "react-router-dom";
+import { notifyError } from '../../utils/utils';
 
 interface DashboardProps {
   user:User | undefined; 
@@ -14,7 +15,8 @@ interface DashboardProps {
 const Dashboard:React.FC<DashboardProps> = ({user,setUser}) => {
   const [files, setFiles] = useState<FileEntry[] | undefined>([]);
   const [filter, setFilter] = useState<string>('all');
-  
+  const navigate = useNavigate();
+
   useEffect(() => {
     const fetchUser = async () => {
       const response = await UserApi.fetchProfile();
@@ -35,6 +37,10 @@ const Dashboard:React.FC<DashboardProps> = ({user,setUser}) => {
 
     fetchUser();
   }, [setUser]);
+
+  if(user == null){
+    navigate("/");
+  }
 
   return (
     <div className='mx-7 my-7'>
