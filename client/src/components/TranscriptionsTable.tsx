@@ -7,7 +7,6 @@ import { Button } from './UI/Button';
 import { Play, Trash, Download,CircleCheck } from 'lucide-react';
 import { User } from '../Types/User';
 
-
 interface TableProps {
   user:User|undefined;
   files:FileEntry[];

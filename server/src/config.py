@@ -6,7 +6,8 @@ class ApplicationConfig:
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_ECHO = True
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///database.db'
+    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:marco2003@localhost:33061/transcriptionsdb'
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     SESSION_TYPE = 'sqlalchemy'
     SESSION_PERMANENT = True
