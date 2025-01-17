@@ -59,19 +59,21 @@ export const UploadFileButton: React.FC<UploadFileButtonProps> = ({ user,files, 
     <>
       <ToastContainer />
       <Dialog>
+        
         <DialogTrigger asChild>
           <Button disabled={!user} className='text-white'>
             <PlusCircle className="mr-2" />
             New Transcription
           </Button>
         </DialogTrigger>
+
         <DialogContent>
           <DialogHeader>
             <DialogTitle className="mb-3">Upload your File(s)</DialogTitle>
           </DialogHeader>
 
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8" encType="multipart/form-data">
               <FormField
                   control={form.control}
                   name="file"

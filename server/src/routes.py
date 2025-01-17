@@ -73,14 +73,14 @@ def register_routes(app, db):
     @app.route("/api/entries/<user_id>/<filter>", methods=['GET'])
     @login_required
     def fetch_file_entries(user_id,filter):
-        user_exists = User.query.filter_by(google_id=user_id).first()
-        if not user_exists:
+        user = User.query.filter_by(google_id=user_id).first()
+        if not user:
             return jsonify(error='User not found'), 404
         
         if(filter == 'all'):
-            files_list = FileEntry.query.filter_by(user_id=user_id).all()
+            files_list = FileEntry.query.filter_by(user_id=user.id).all()
         elif(filter == 'done'):
-            files_list = FileEntry.query.filter_by(user_id=user_id, transcribed=True).all()
+            files_list = FileEntry.query.filter_by(user_id=user.id, transcribed=True).all()
 
         if not files_list:
             return jsonify(error='No files found for this user')
@@ -99,14 +99,13 @@ def register_routes(app, db):
         
         user_id = request.form["user_id"]
         file = request.files['file']
-        user_exists = User.query.filter_by(google_id=user_id).first()
+        user = User.query.filter_by(google_id=user_id).first()
         
-        if not user_exists:
+        if not user:
             return jsonify(error='User not found'), 404
         
         file_info = get_file_info(file)
-
-        file_entry = FileEntry(user_id=user_id, filename=secure_filename(file.filename), file_info=file_info)
+        file_entry = FileEntry(user_id=user.id, filename=secure_filename(file.filename), info=file_info)
         db.session.add(file_entry)
         db.session.commit()
 
@@ -132,7 +131,9 @@ def register_routes(app, db):
 
         async def transcribe_and_save(file_path, file_id):
             try:
-                transcript = await transcribe_audio(file_path)
+                print("HELLO FROM TRANSCRIBE_AND_SAVE")
+                transcript = await asyncio.to_thread(transcribe_audio, file_path)
+                print("HELLO FROM TRANSCRIBE_AND_SAVE 2")
                 
                 if not transcript:
                     raise ValueError("Transcription failed, no transcript generated.")
@@ -150,6 +151,7 @@ def register_routes(app, db):
                 raise e
 
         try:
+            print("IM HEREEE")
             asyncio.run(transcribe_and_save(file_path, file_id))
         except Exception as e:
             print(f"Unexpected error: {str(e)}")
@@ -175,13 +177,12 @@ def register_routes(app, db):
     def delete_endpoint(id):
         directory_path = os.path.join(data_folder_path, id)
         try:
-            if os.path.isdir(directory_path):
-                file_entry = FileEntry.query.filter_by(id=id).first()
+            file_entry = FileEntry.query.filter_by(id=id).first()
+            if file_entry:
                 db.session.delete(file_entry)
                 db.session.commit()
+            if os.path.isdir(directory_path):
                 shutil.rmtree(directory_path)
-            else:
-                os.remove(directory_path)
         except Exception as e:
             print(f"Error: {e}")
             return jsonify(error="There was an error deleting the file or directory."), 500
