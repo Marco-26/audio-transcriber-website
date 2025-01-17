@@ -18,7 +18,7 @@ const LandingPage = () => {
     <div className="flex items-center justify-center" style={{ minHeight: 'calc(100vh - 7rem)' }}>
       <div className="max-w-screen-2xl">
         <div className='flex'>
-          <div className='mr-5'>
+          <div className='mr-5 '>
             <h1 className="text-6xl font-bold text-left">
               Effortlessly Transcribe Audio <br /> with Just a Click
             </h1>
@@ -31,7 +31,7 @@ const LandingPage = () => {
         
         <div className="mt-10 text-center">
           <p className="text-lg">
-            Join the <span className="text-primary">{registeredUsers}</span> registered users and start transcribing your audios.
+            Join the <b>{registeredUsers}</b> registered users and start transcribing your audios.
           </p>
           <p className="text-2xl font-bold mt-4">Like seriously, it's THIS easy</p>
         </div>
