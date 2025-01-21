@@ -5,14 +5,13 @@ import os
 import shutil
 from functools import wraps
 from pathlib import Path
-
 import requests
 from flask import jsonify, request, session
 from werkzeug.utils import secure_filename
 
 from .app import data_folder_path, allowed_users, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET
 from .models import User, FileEntry
-from .utils import temp_save_file, transcribe_audio, get_file_info
+from .utils import save_file, transcribe_audio, get_file_info, convert_to_wav_and_save, generate_unique_filename
 
 
 def login_required(f):
@@ -98,47 +97,43 @@ def register_routes(app, db):
             return jsonify(error="No user_id provided"), 400
         
         user_id = request.form["user_id"]
-        file = request.files['file']
+        received_file = request.files['file']
+
         user = User.query.filter_by(google_id=user_id).first()
         
         if not user:
             return jsonify(error='User not found'), 404
         
-        file_info = get_file_info(file)
-        file_entry = FileEntry(user_id=user.id, filename=secure_filename(file.filename), info=file_info)
+        unique_filename = generate_unique_filename(received_file)
+        path = convert_to_wav_and_save(received_file, unique_filename)
+        file_info = get_file_info(path)
+        
+        file_entry = FileEntry(user_id=user.id, filename=secure_filename(received_file.filename), unique_filename=unique_filename, info=file_info)
         db.session.add(file_entry)
         db.session.commit()
-
-        file_id = file_entry.id
-        file_path=f"{data_folder_path}/{file_id}"
-        
-        os.makedirs(file_path)
-        temp_save_file(file_path, secure_filename(file.filename), file)
         
         return jsonify(message="File uploaded sucessfuly", fileEntry=file_entry.to_dict()), 200
     
-    @app.route("/api/transcript/<user_id>/<file_id>/<filename>", methods=['POST'])
+    @app.route("/api/transcript/<user_id>/<file_id>", methods=['POST'])
     @login_required
-    def transcript_endpoint(user_id, file_id, filename):
+    def transcript_endpoint(user_id, file_id):
         file = FileEntry.query.filter_by(id=file_id).first()
         if not file:
             return jsonify(error='File not found'), 404
 
-        file_path = os.path.join(data_folder_path, file_id, filename)
-        
+        file_path = os.path.join(data_folder_path, file.unique_filename)
+
         if not os.path.exists(file_path):
             return jsonify(error='Audio file not found'), 404
 
         async def transcribe_and_save(file_path, file_id):
             try:
-                print("HELLO FROM TRANSCRIBE_AND_SAVE")
                 transcript = await asyncio.to_thread(transcribe_audio, file_path)
-                print("HELLO FROM TRANSCRIBE_AND_SAVE 2")
                 
                 if not transcript:
                     raise ValueError("Transcription failed, no transcript generated.")
                 
-                transcript_file_path = Path(data_folder_path) / file_id / "transcript.txt"
+                transcript_file_path = file_path + "-transcribed.txt"
                 with open(transcript_file_path, 'w') as temp_file:
                     temp_file.write(transcript)
                     temp_file.flush()
@@ -151,7 +146,6 @@ def register_routes(app, db):
                 raise e
 
         try:
-            print("IM HEREEE")
             asyncio.run(transcribe_and_save(file_path, file_id))
         except Exception as e:
             print(f"Unexpected error: {str(e)}")

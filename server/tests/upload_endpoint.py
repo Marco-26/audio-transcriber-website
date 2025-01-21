@@ -1,4 +1,4 @@
-from src import db, User, FileEntry
+from app import db, User, FileEntry
 import io
 
 def test_upload_file_success(client):
