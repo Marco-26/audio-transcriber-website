@@ -21,9 +21,9 @@ async function fetchTranscriptionsEntries(user_id: string, filter:string) {
   }
 }
 
-export async function processTranscription(userID: string,fileID: number,filename:string) {
+export async function processTranscription(userID: string,fileID: number) {
   try{
-    await apiClient.post('api/transcript/'+userID+'/'+fileID+"/"+filename);
+    await apiClient.post('api/transcript/'+userID+'/'+fileID);
   }
   catch(error:any){
     console.error(error)

@@ -1,7 +1,7 @@
 import os
 from unittest.mock import patch, AsyncMock
 import pytest
-from server.src import db, FileEntry, User
+from server.app import db, FileEntry, User
 
 
 # Assuming you have some helper functions/fixtures to set up users and files

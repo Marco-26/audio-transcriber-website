@@ -71,8 +71,8 @@ def delete_chunks():
 def transcribe(audio_file_path, transcribed_file_name):
     openai_client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
     try:
-        audio = AudioSegment.from_mp3(audio_file_path)
-    except CouldntDecodeError as e:
+        audio = AudioSegment.from_file(audio_file_path)
+    except Exception as e:
         print(f"Could not decode file {audio_file_path}: {e}")
         return None
 
