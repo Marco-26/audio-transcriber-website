@@ -106,6 +106,7 @@ def register_routes(app, db):
         
         unique_filename = generate_unique_filename(received_file)
         path = convert_to_wav_and_save(received_file, unique_filename)
+        
         file_info = get_file_info(path)
         
         file_entry = FileEntry(user_id=user.id, filename=secure_filename(received_file.filename), unique_filename=unique_filename, info=file_info)
@@ -157,7 +158,10 @@ def register_routes(app, db):
     @login_required
     def fetch_transcribed_audio(file_id):
         file = FileEntry.query.filter_by(id=file_id).first()
-        file_path = os.path.join(data_folder_path, file_id,"transcript.txt")
+        if not file:
+            return jsonify(error='File not found'), 404
+        transcription_file_name = file.unique_filename + '-transcribed.txt'
+        file_path = os.path.join(data_folder_path, transcription_file_name)
         
         if(os.path.isfile(file_path)):
             with open(file_path, 'r') as file:

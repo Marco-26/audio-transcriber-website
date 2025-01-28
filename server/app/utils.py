@@ -75,9 +75,25 @@ def transcribe_and_save(file_path, file_id, file,db, data_folder_path):
         raise e
 
 def convert_to_wav_and_save(file, unique_filename):
-    audio = AudioSegment.from_file(file, format="mp3")
     output_path = f"data/{unique_filename}"
-    audio.export(output_path, format="wav")
+    try:
+        subprocess.run(
+            [
+                "ffmpeg",
+                "-i", "pipe:0",           # Input from standard input
+                "-f", "wav",              # Output format as WAV
+                output_path               # Save directly to the specified path
+            ],
+            input=file.read(),            # Read file data directly from FileStorage
+            stdout=subprocess.PIPE,      # Capture standard output (optional)
+            stderr=subprocess.PIPE,      # Capture standard error (for debugging)
+            check=True                   # Raise exception on errors
+        )
+    except subprocess.CalledProcessError as e:
+        print(f"FFmpeg error: {e.stderr.decode()}")
+        return None
+    
+    # Return the path to the saved file
     return output_path
 
 def generate_unique_filename(file):
