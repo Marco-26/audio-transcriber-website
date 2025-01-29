@@ -1,8 +1,8 @@
-import { FileEntry } from '@/src/Types/FileEntry';
+import { FileEntry } from '@/src/types/FileEntry';
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import TableHeader from '../TableHeader';
 import { TranscriptionsTable } from '../TranscriptionsTable';
-import { User } from '@/src/Types/User';
+import { User } from '@/src/types/User';
 import UserApi from "../../api/user"
 import { useNavigate } from "react-router-dom";
 import { notifyError } from '../../utils/utils';

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './styles/globals.css'
 
 import Dashboard from './components/Pages/Dashboard';
-import { User } from './Types/User';
+import { User } from './types/User';
 import { notifyWarning } from './utils/utils';
 import LandingPage from './components/LandingPage';
 import {createBrowserRouter, RouterProvider} from 'react-router-dom';

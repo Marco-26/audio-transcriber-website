@@ -1,6 +1,6 @@
 import React, { Dispatch, SetStateAction } from "react";
 import { useGoogleLogin } from "@react-oauth/google";
-import { User } from "@/src/Types/User";
+import { User } from "@/src/types/User";
 import { Button } from "../UI/Button";
 import { UserIcon } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "../UI/Dropdown";

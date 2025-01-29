@@ -1,7 +1,7 @@
 import {
   FileVolume
 } from "lucide-react"
-import { User } from '../Types/User';
+import { User } from '../types/User';
 import { Dispatch, SetStateAction } from 'react';
 import { LoginButton } from "./LoginButton";
 import { Link } from "react-router-dom";

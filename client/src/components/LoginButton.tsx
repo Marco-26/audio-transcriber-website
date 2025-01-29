@@ -1,6 +1,6 @@
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import Auth from './auth/Auth';
-import { User } from '../Types/User';
+import { User } from '../types/User';
 import { Dispatch, SetStateAction } from 'react';
 
 interface LoginButtonProps {

@@ -13,6 +13,8 @@ from werkzeug.datastructures import FileStorage
 from .transcribe import transcribe
 from .models import FileEntry
 
+MAX_FILES_USER = 10
+
 def save_file(path, filename, file):
     save_path = os.path.join(path, filename)
     file.save(save_path)

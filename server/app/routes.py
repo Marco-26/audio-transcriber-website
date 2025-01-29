@@ -11,7 +11,7 @@ from werkzeug.utils import secure_filename
 
 from .app import data_folder_path, allowed_users, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET
 from .models import User, FileEntry
-from .utils import save_file, transcribe_audio, get_file_info, convert_to_wav_and_save, generate_unique_filename
+from .utils import MAX_FILES_USER, save_file, transcribe_audio, get_file_info, convert_to_wav_and_save, generate_unique_filename
 
 
 def login_required(f):
@@ -104,6 +104,10 @@ def register_routes(app, db):
         if not user:
             return jsonify(error='User not found'), 404
         
+        files = user.files.all()
+        if len(files) >= MAX_FILES_USER:
+            return jsonify(error='User reached the maximum file limit.'), 400
+
         unique_filename = generate_unique_filename(received_file)
         path = convert_to_wav_and_save(received_file, unique_filename)
         

@@ -1,5 +1,7 @@
 import { toast } from 'react-toastify';
-import { FileEntry } from '../Types/FileEntry';
+import { FileEntry } from '../types/FileEntry';
+
+export const MAX_FILES_USER = 10
 
 export const updateFiles = (prevFiles:FileEntry[], newFile:FileEntry) => {
   if (!prevFiles) {

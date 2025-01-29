@@ -1,11 +1,11 @@
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import TranscriptionsApi from '../api/transcriptions';
-import { FileEntry } from '../Types/FileEntry';
+import { FileEntry } from '../types/FileEntry';
 import { generateTXT} from '../utils/utils';
 import { Table,TableBody, TableCell, TableHead, TableHeader, TableRow } from './UI/Table';
 import { Button } from './UI/Button';
 import { Play, Trash, Download,CircleCheck } from 'lucide-react';
-import { User } from '../Types/User';
+import { User } from '../types/User';
 
 interface TableProps {
   user:User|undefined;

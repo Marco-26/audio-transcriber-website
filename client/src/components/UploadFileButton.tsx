@@ -8,11 +8,11 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { Dispatch, SetStateAction } from 'react';
-import { FileEntry } from '../Types/FileEntry';
-import { notifyError, updateFiles } from '../utils/utils';
+import { FileEntry } from '../types/FileEntry';
+import { MAX_FILES_USER, notifyError, updateFiles } from '../utils/utils';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
-import { User } from '../Types/User';
+import { User } from '../types/User';
 import UploadApi from '../api/upload';
 
 const formSchema = z.object({
@@ -41,6 +41,11 @@ export const UploadFileButton: React.FC<UploadFileButtonProps> = ({ user,files, 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     if(!user){
       notifyError("Please login to proceed...")
+      return;
+    }
+
+    if(files != null && files.length >= MAX_FILES_USER){
+      notifyError("You’ve reached the maximum file limit. Please remove some files before adding more.");
       return;
     }
     

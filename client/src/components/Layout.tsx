@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction } from "react";
-import { User } from "../Types/User";
+import { User } from "../types/User";
 import { Header } from "./Header"
 import { Outlet } from "react-router-dom";
 

@@ -1,5 +1,5 @@
 import { AxiosResponse } from "axios";
-import { FileEntry } from "../Types/FileEntry";
+import { FileEntry } from "../types/FileEntry";
 import { apiClient } from "./client";
 import { notifyError } from "../utils/utils";
 

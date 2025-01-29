@@ -1,6 +1,6 @@
 import { AxiosResponse } from "axios";
 import { apiClient } from "./client";
-import { User } from "@/src/Types/User"
+import { User } from "@/src/types/User"
 import { notifyError } from "../utils/utils";
 
 export const fetchProfile = async () => {
