@@ -116,18 +116,26 @@ def register_routes(app, db):
         return jsonify(message="File uploaded sucessfuly", fileEntry=file_entry.to_dict()), 200
     
     @app.route("/api/transcript/<user_id>/<file_id>", methods=['POST'])
-    @login_required
+    @login_required 
     def transcript_endpoint(user_id, file_id):
         file = FileEntry.query.filter_by(id=file_id).first()
         if not file:
             return jsonify(error='File not found'), 404
+        print("File owner id: " + str(file.user_id))
+
+        user = User.query.filter_by(google_id = user_id).first()
+        if not user:
+            return jsonify(error='User not found'), 404
+        
+        if file.user_id != user.id:
+            return jsonify(error="Unauthorized: The uploaded file does not belong to this user."), 401
 
         file_path = os.path.join(data_folder_path, file.unique_filename)
 
         if not os.path.exists(file_path):
             return jsonify(error='Audio file not found'), 404
 
-        async def transcribe_and_save(file_path, file_id):
+        async def transcribe_and_save(file_path):
             try:
                 transcript = await asyncio.to_thread(transcribe_audio, file_path)
                 
@@ -147,7 +155,7 @@ def register_routes(app, db):
                 raise e
 
         try:
-            asyncio.run(transcribe_and_save(file_path, file_id))
+            asyncio.run(transcribe_and_save(file_path))
         except Exception as e:
             print(f"Unexpected error: {str(e)}")
             return jsonify(error="An unexpected error occurred. Failed to transcribe audio"), 500
