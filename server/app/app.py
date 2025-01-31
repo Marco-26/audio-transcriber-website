@@ -12,11 +12,12 @@ from .db import db
 from .utils import delete_old_files
 from .config import ApplicationConfig
 
+
+
 data_folder_path = 'data'
 client_secrets_file = os.path.join(pathlib.Path(__file__).parent, "client-secret.json")
 
 allowed_users = ['markcostah@gmail.com','marcosimoescosta@gmail.com','alloweduser@example.com'] # list of allowed emails to login
-
 GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
 GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
 
@@ -40,8 +41,13 @@ def create_app():
   login_manager = LoginManager()
   login_manager.init_app(app)
 
-  from .routes import register_routes
-  register_routes(app,db)
+  from .controllers.AuthController import auth_bp
+  from .controllers.TranscriptionController import transcription_bp
+  from .controllers.UserController import user_bp
+  
+  app.register_blueprint(auth_bp)
+  app.register_blueprint(user_bp)
+  app.register_blueprint(transcription_bp)
 
   Migrate(app,db)
 
