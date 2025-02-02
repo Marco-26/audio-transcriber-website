@@ -6,12 +6,18 @@ import { notifyError } from '../utils/utils';
 export type SuccessCallback = (message: string) => void
 export type ErrorCallback = (error: AxiosError) => void
 
+const BASE_URL = "files/"
+
 async function fetchTranscriptionsEntries(user_id: string, filter:string) {
   try{
-    const response: AxiosResponse<{ files: FileEntry[] }> = await apiClient.get('api/entries/'+user_id+'/'+filter);
+    const response: AxiosResponse<{ files: FileEntry[] }> = await apiClient.get(`${BASE_URL}${user_id}`,{
+      params:{ filter }
+    });
+
     if(response != null){
       return response.data.files;
     }
+
     return []
   }
   catch(error:any){
@@ -23,7 +29,7 @@ async function fetchTranscriptionsEntries(user_id: string, filter:string) {
 
 export async function processTranscription(userID: string,fileID: number) {
   try{
-    await apiClient.post('api/transcript/'+userID+'/'+fileID);
+    await apiClient.post(`${BASE_URL}${userID}/${fileID}/transcribe`);
   }
   catch(error:any){
     console.error(error)
@@ -33,17 +39,18 @@ export async function processTranscription(userID: string,fileID: number) {
 
 export async function processDelete(fileID: number) {
   try{
-    await apiClient.delete('api/delete/' + fileID);
+    await apiClient.delete(BASE_URL + fileID);
   }
   catch(error:any){
     console.error(error)
-    notifyError("Error while deleting transcription entrie...")
+    notifyError("Error while deleting transcription entry...")
   }
 }
 
-export async function fetchTranscriptedFile(fileID: number, onSuccess: SuccessCallback, onError: ErrorCallback) {
+export async function fetchTranscriptedFile(userID: string, fileID: number, onSuccess: SuccessCallback, onError: ErrorCallback) {
   try {
-    const response: AxiosResponse<{ message: string; transcription: string }> = await apiClient.get('api/transcription/'+fileID);
+    const response: AxiosResponse<{ message: string; transcription: string }> = await apiClient.get(`${BASE_URL}${userID}/${fileID}/transcription`);
+    console.log(response)
     onSuccess(response.data.message);
     return response.data.transcription; 
   } catch (error) {

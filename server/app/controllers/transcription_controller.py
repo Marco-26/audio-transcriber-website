@@ -12,6 +12,7 @@ from werkzeug.utils import secure_filename
 from ..app import data_folder_path, allowed_users, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET
 from ..models import User, FileEntry
 from ..utils import MAX_FILES_USER, save_file, transcribe_audio, get_file_info, convert_to_wav_and_save, generate_unique_filename
+from ..db import db
 
 transcription_bp = Blueprint('transcription_bp', __name__)
 
@@ -23,13 +24,15 @@ def login_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
-@transcription_bp.route("/files/<user_id>?filter=<filter>", methods=['GET'])
+@transcription_bp.route("/files/<user_id>", methods=['GET'])
 @login_required
-def fetch_file_entries(user_id,filter):
+def fetch_file_entries(user_id):
     user = User.query.filter_by(google_id=user_id).first()
     if not user:
         return jsonify(error='User not found'), 404
-    
+
+    filter = request.args.get("filter", "all")
+
     if(filter == 'all'):
         files_list = FileEntry.query.filter_by(user_id=user.id).all()
     elif(filter == 'done'):
@@ -79,7 +82,6 @@ def transcript_endpoint(user_id, file_id):
     file = FileEntry.query.filter_by(id=file_id).first()
     if not file:
         return jsonify(error='File not found'), 404
-    print("File owner id: " + str(file.user_id))
 
     user = User.query.filter_by(google_id = user_id).first()
     if not user:
@@ -105,6 +107,8 @@ def transcript_endpoint(user_id, file_id):
                 temp_file.write(transcript)
                 temp_file.flush()
 
+            os.remove(file_path)
+
             file.transcribed = True
             db.session.add(file)
             db.session.commit()
@@ -120,15 +124,22 @@ def transcript_endpoint(user_id, file_id):
 
     return jsonify(message="Finished transcribing the audio"), 200
 
-@transcription_bp.route("/files/<file_id>/transcription", methods=['GET'])
+@transcription_bp.route("/files/<user_id>/<file_id>/transcription", methods=['GET'])
 @login_required
-def fetch_transcribed_audio(file_id):
+def fetch_transcribed_audio(user_id,file_id):
+    user = User.query.filter_by(google_id=user_id).first()
+    if not user:
+        return jsonify(error="User not found"), 404
+
     file = FileEntry.query.filter_by(id=file_id).first()
     if not file:
         return jsonify(error='File not found'), 404
+    
+    if file.user_id != user.id:
+        return jsonify(error='The file doesn´t belong to this user'), 403
+
     transcription_file_name = file.unique_filename + '-transcribed.txt'
     file_path = os.path.join(data_folder_path, transcription_file_name)
-    
     if(os.path.isfile(file_path)):
         with open(file_path, 'r') as file:
             file_contents = file.read()
@@ -139,14 +150,20 @@ def fetch_transcribed_audio(file_id):
 @transcription_bp.route("/files/<id>", methods=['DELETE'])
 @login_required
 def delete_endpoint(id):
-    directory_path = os.path.join(data_folder_path, id)
+    file = FileEntry.query.filter_by(id=id).first()
+    
+    if not file:
+        return jsonify(error=f"File with id {id} not found."), 404
+
+    transcription_file_name = data_folder_path+'/'+file.unique_filename + '-transcribed.txt'
     try:
-        file_entry = FileEntry.query.filter_by(id=id).first()
-        if file_entry:
-            db.session.delete(file_entry)
-            db.session.commit()
-        if os.path.isdir(directory_path):
-            shutil.rmtree(directory_path)
+        db.session.delete(file)
+        db.session.commit()
+
+        if os.path.exists(file.unique_filename):
+            os.remove(file.unique_filename)
+        if os.path.exists(transcription_file_name):
+            os.remove(transcription_file_name)
     except Exception as e:
         print(f"Error: {e}")
         return jsonify(error="There was an error deleting the file or directory."), 500

@@ -41,9 +41,9 @@ def create_app():
   login_manager = LoginManager()
   login_manager.init_app(app)
 
-  from .controllers.AuthController import auth_bp
-  from .controllers.TranscriptionController import transcription_bp
-  from .controllers.UserController import user_bp
+  from .controllers.auth_controller import auth_bp
+  from .controllers.transcription_controller import transcription_bp
+  from .controllers.user_controller import user_bp
   
   app.register_blueprint(auth_bp)
   app.register_blueprint(user_bp)

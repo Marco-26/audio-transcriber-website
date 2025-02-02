@@ -1,3 +1,3 @@
-from .AuthController import auth_bp
-from .TranscriptionController import transcription_bp
-from .UserController import user_bp
+from .auth_controller import auth_bp
+from .transcription_controller import transcription_bp
+from .user_controller import user_bp
