@@ -7,12 +7,12 @@ from functools import wraps
 from pathlib import Path
 import requests
 from flask import Blueprint, jsonify, request, session
-from werkzeug.utils import secure_filename
 
 from ..app import data_folder_path, allowed_users, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET
 from ..models import User, FileEntry
 from ..utils import MAX_FILES_USER, save_file, transcribe_audio, get_file_info, convert_to_wav_and_save, generate_unique_filename
 from ..db import db
+from ..services import auth_service, transcription_service, user_service
 
 transcription_bp = Blueprint('transcription_bp', __name__)
 
@@ -27,17 +27,13 @@ def login_required(f):
 @transcription_bp.route("/files/<user_id>", methods=['GET'])
 @login_required
 def fetch_file_entries(user_id):
-    user = User.query.filter_by(google_id=user_id).first()
+    user = user_service.get_user_by_id(user_id)
     if not user:
         return jsonify(error='User not found'), 404
 
     filter = request.args.get("filter", "all")
 
-    if(filter == 'all'):
-        files_list = FileEntry.query.filter_by(user_id=user.id).all()
-    elif(filter == 'done'):
-        files_list = FileEntry.query.filter_by(user_id=user.id, transcribed=True).all()
-
+    files_list = transcription_service.get_files_list(filter, user.id)
     if not files_list:
         return jsonify(error='No files found for this user')
 
@@ -56,8 +52,7 @@ def upload_endpoint():
     user_id = request.form["user_id"]
     received_file = request.files['file']
 
-    user = User.query.filter_by(google_id=user_id).first()
-    
+    user = user_service.get_user_by_id(user_id)
     if not user:
         return jsonify(error='User not found'), 404
     
@@ -70,54 +65,26 @@ def upload_endpoint():
     
     file_info = get_file_info(path)
     
-    file_entry = FileEntry(user_id=user.id, filename=secure_filename(received_file.filename), unique_filename=unique_filename, info=file_info)
-    db.session.add(file_entry)
-    db.session.commit()
+    file_entry = transcription_service.create_file_entry(user.id, received_file.filename, unique_filename, file_info)
     
     return jsonify(message="File uploaded sucessfuly", fileEntry=file_entry.to_dict()), 200
 
 @transcription_bp.route("/files/<user_id>/<file_id>/transcribe", methods=['POST'])
 @login_required 
 def transcript_endpoint(user_id, file_id):
-    file = FileEntry.query.filter_by(id=file_id).first()
-    if not file:
-        return jsonify(error='File not found'), 404
-
-    user = User.query.filter_by(google_id = user_id).first()
-    if not user:
-        return jsonify(error='User not found'), 404
+    error_response, status_code, user, file = transcription_service.validate_user_and_file(user_id, file_id)
+    if error_response:
+        return error_response, status_code
     
-    if file.user_id != user.id:
-        return jsonify(error="Unauthorized: The uploaded file does not belong to this user."), 401
-
     file_path = os.path.join(data_folder_path, file.unique_filename)
 
     if not os.path.exists(file_path):
         return jsonify(error='Audio file not found'), 404
 
-    async def transcribe_and_save(file_path):
-        try:
-            transcript = await asyncio.to_thread(transcribe_audio, file_path)
-            
-            if not transcript:
-                raise ValueError("Transcription failed, no transcript generated.")
-            
-            transcript_file_path = file_path + "-transcribed.txt"
-            with open(transcript_file_path, 'w') as temp_file:
-                temp_file.write(transcript)
-                temp_file.flush()
-
-            os.remove(file_path)
-
-            file.transcribed = True
-            db.session.add(file)
-            db.session.commit()
-        except Exception as e:
-            print(f"Error during transcription: {str(e)}")
-            raise e
-
     try:
-        asyncio.run(transcribe_and_save(file_path))
+        asyncio.run(transcription_service.transcribe_and_save(file, data_folder_path))
+    except FileNotFoundError:
+        return jsonify(error='Audio file not found'), 404
     except Exception as e:
         print(f"Unexpected error: {str(e)}")
         return jsonify(error="An unexpected error occurred. Failed to transcribe audio"), 500
@@ -127,19 +94,13 @@ def transcript_endpoint(user_id, file_id):
 @transcription_bp.route("/files/<user_id>/<file_id>/transcription", methods=['GET'])
 @login_required
 def fetch_transcribed_audio(user_id,file_id):
-    user = User.query.filter_by(google_id=user_id).first()
-    if not user:
-        return jsonify(error="User not found"), 404
-
-    file = FileEntry.query.filter_by(id=file_id).first()
-    if not file:
-        return jsonify(error='File not found'), 404
-    
-    if file.user_id != user.id:
-        return jsonify(error='The file doesn´t belong to this user'), 403
+    error_response, status_code, user, file = transcription_service.validate_user_and_file(user_id, file_id)
+    if error_response:
+        return error_response, status_code
 
     transcription_file_name = file.unique_filename + '-transcribed.txt'
     file_path = os.path.join(data_folder_path, transcription_file_name)
+
     if(os.path.isfile(file_path)):
         with open(file_path, 'r') as file:
             file_contents = file.read()
@@ -150,15 +111,13 @@ def fetch_transcribed_audio(user_id,file_id):
 @transcription_bp.route("/files/<id>", methods=['DELETE'])
 @login_required
 def delete_endpoint(id):
-    file = FileEntry.query.filter_by(id=id).first()
-    
+    file = transcription_service.get_file_by_id(id)
     if not file:
         return jsonify(error=f"File with id {id} not found."), 404
 
     transcription_file_name = data_folder_path+'/'+file.unique_filename + '-transcribed.txt'
     try:
-        db.session.delete(file)
-        db.session.commit()
+        transcription_service.delete_file(file)
 
         if os.path.exists(file.unique_filename):
             os.remove(file.unique_filename)

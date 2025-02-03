@@ -12,8 +12,6 @@ from .db import db
 from .utils import delete_old_files
 from .config import ApplicationConfig
 
-
-
 data_folder_path = 'data'
 client_secrets_file = os.path.join(pathlib.Path(__file__).parent, "client-secret.json")
 
