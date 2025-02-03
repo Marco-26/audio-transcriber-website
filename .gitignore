@@ -5,7 +5,9 @@ server/instance/
 server/client-secret.json
 server/data/
 server/output_chunks
-server/src/__pycache__
+server/app/__pycache__
 server/tests/__pycache__
 server/tests/.pytest_cache
 server/.idea
+server/app/controllers/__pycache__
+server/app/models/__pycache__

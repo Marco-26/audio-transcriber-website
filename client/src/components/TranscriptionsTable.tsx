@@ -32,6 +32,7 @@ export const TranscriptionsTable:React.FC<TableProps> = ({user,files,setFiles,fi
     }
 
     const transcription = await TranscriptionsApi.fetchTranscriptedFile(
+      user!.id,
       file.file_id,
       (message) => console.log(message), 
       (error) => console.error(error)
