@@ -13,7 +13,6 @@ from ..models import User, FileEntry
 from ..utils import MAX_FILES_USER, save_file, transcribe_audio, get_file_info, convert_to_wav_and_save, generate_unique_filename
 from ..db import db
 from ..services import auth_service, transcription_service, user_service
-
 transcription_bp = Blueprint('transcription_bp', __name__)
 
 def login_required(f):
@@ -29,7 +28,15 @@ def login_required(f):
 def fetch_file_entries(user_id):
     user = user_service.get_user_by_id(user_id)
     if not user:
-        return jsonify(error='User not found'), 404
+        return
+        # return generate_error_response(
+        #     404, 
+        #     "USER_NOT_FOUND",
+        #     None, 
+        #     "User not found.", 
+        #     "The requested user does not exist in the system.", 
+        #     "Check if the provided user ID or email is correct."
+        # )   
 
     filter = request.args.get("filter", "all")
 

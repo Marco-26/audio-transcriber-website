@@ -9,7 +9,7 @@ import uuid
 from pathlib import Path
 from datetime import datetime,timedelta
 from werkzeug.datastructures import FileStorage
-
+from flask import jsonify
 from .transcribe import transcribe
 from .models import FileEntry
 
@@ -102,3 +102,4 @@ def generate_unique_filename(file):
     filename = file.filename.split('.')[0]
     unique_filename = f"{uuid.uuid4().hex}_{filename}.wav"
     return unique_filename
+ 
