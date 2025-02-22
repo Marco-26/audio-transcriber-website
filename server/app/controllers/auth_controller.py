@@ -19,7 +19,7 @@ def login():
     
     user_info = auth_service.get_user_info_by_token(token)
     if user_info["email"] not in allowed_users:
-        return jsonify(error="Access denied. This application is currently in a restricted testing phase."), 403 
+        return jsonify(success=False, error="Access denied. This application is currently in a restricted testing phase."), 403 
 
     user = user_service.get_user_by_email(user_info["email"])
     

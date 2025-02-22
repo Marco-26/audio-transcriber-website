@@ -8,7 +8,8 @@ export const login = async (authCode: any) => {
     const response = await apiClient.post(BASE_URL + '/login', { code: authCode.code });
     return response.data;
   } catch (error: any) {
-    notifyError(error.response.data.message);
+    notifyError(error.response.data.error);
+    return null
   }
 }
 

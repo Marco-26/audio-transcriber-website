@@ -6,7 +6,8 @@ import { UserIcon } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "../UI/Dropdown";
 import { login, logout } from "../../api/auth";
 import { useNavigate } from "react-router-dom";
-
+import { notifyError } from "../../utils/utils";
+import { ToastContainer } from "react-toastify";
 interface AuthProps {
   user: User | undefined;
   setUser: Dispatch<SetStateAction<User | undefined>>;
@@ -19,12 +20,12 @@ const Auth: React.FC<AuthProps> = ({ user, setUser }) => {
     flow: "auth-code",
     onSuccess: async (codeResponse) => {
       const loginDetails = await login(codeResponse);
-      console.log("Detalhes login: " + loginDetails)
-      setUser(loginDetails);
+      
+      if(loginDetails !== null)
+        setUser(loginDetails);
       navigate('/dashboard');
     }
   });
-
   const handleLogout = () => {
     logout();
     setUser(undefined);
@@ -58,6 +59,18 @@ const Auth: React.FC<AuthProps> = ({ user, setUser }) => {
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
+          <ToastContainer
+            position="top-right"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick={false}
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="light"
+            />
         </>
         // <UserAvatar userName={user.name} onClick={handleLogout}></UserAvatar>
       )}
