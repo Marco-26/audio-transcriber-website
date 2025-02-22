@@ -11,11 +11,11 @@ def login():
     auth_code = request.get_json()['code']
 
     if not auth_code:
-        return jsonify(success=False, message="An error ocurred, please try again later."), 400
+        return jsonify(success=False, error="An error ocurred, please try again later."), 400
     
     token = auth_service.auth_code_for_token(auth_code)
     if not token:
-        return jsonify(success=False, message="An error ocurred, please try again later."), 401
+        return jsonify(success=False, error="An error ocurred, please try again later."), 401
     
     user_info = auth_service.get_user_info_by_token(token)
     if user_info["email"] not in allowed_users:

@@ -10,12 +10,12 @@ const BASE_URL = "files/"
 
 async function fetchTranscriptionsEntries(user_id: string, filter:string) {
   try{
-    const response: AxiosResponse<{ files: FileEntry[] }> = await apiClient.get(`${BASE_URL}${user_id}`,{
+    const response: AxiosResponse<{ data: FileEntry[] }> = await apiClient.get(`${BASE_URL}${user_id}`,{
       params:{ filter }
     });
 
     if(response != null){
-      return response.data.files;
+      return response.data.data;
     }
 
     return []
