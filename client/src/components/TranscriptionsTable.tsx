@@ -33,9 +33,7 @@ export const TranscriptionsTable:React.FC<TableProps> = ({user,files,setFiles,fi
 
     const transcription = await TranscriptionsApi.fetchTranscriptedFile(
       user!.id,
-      file.file_id,
-      (message) => console.log(message), 
-      (error) => console.error(error)
+      file.file_id
     )
 
     if(transcription != null){
@@ -64,7 +62,7 @@ export const TranscriptionsTable:React.FC<TableProps> = ({user,files,setFiles,fi
 
   useEffect(() => {
     fetchTranscriptions();
-  }, [user, filter]);
+  }, []);
 
   return (
     <div className='border rounded'>

@@ -10,12 +10,12 @@ const BASE_URL = "files/"
 
 async function fetchTranscriptionsEntries(user_id: string, filter:string) {
   try{
-    const response: AxiosResponse<{ files: FileEntry[] }> = await apiClient.get(`${BASE_URL}${user_id}`,{
+    const response: AxiosResponse<{ payload: FileEntry[] }> = await apiClient.get(`${BASE_URL}${user_id}`,{
       params:{ filter }
     });
-
+    console.log(response)
     if(response != null){
-      return response.data.files;
+      return response.data.payload;
     }
 
     return []
@@ -47,14 +47,11 @@ export async function processDelete(fileID: number) {
   }
 }
 
-export async function fetchTranscriptedFile(userID: string, fileID: number, onSuccess: SuccessCallback, onError: ErrorCallback) {
+export async function fetchTranscriptedFile(userID: string, fileID: number) {
   try {
-    const response: AxiosResponse<{ message: string; transcription: string }> = await apiClient.get(`${BASE_URL}${userID}/${fileID}/transcription`);
-    console.log(response)
-    onSuccess(response.data.message);
-    return response.data.transcription; 
+    const response: AxiosResponse<{ message: string; payload: string }> = await apiClient.get(`${BASE_URL}${userID}/${fileID}/transcription`);
+    return response.data.payload; 
   } catch (error) {
-    onError(error as AxiosError);
     notifyError("Error while downloading transcripted file...")
     return null; 
   }

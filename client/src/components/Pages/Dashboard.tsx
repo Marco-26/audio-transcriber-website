@@ -8,11 +8,11 @@ import { useNavigate } from "react-router-dom";
 import { notifyError } from '../../utils/utils';
 
 interface DashboardProps {
-  user:User | undefined; 
+  user: User | undefined;
   setUser: Dispatch<SetStateAction<User | undefined>>;
 }
 
-const Dashboard:React.FC<DashboardProps> = ({user,setUser}) => {
+const Dashboard: React.FC<DashboardProps> = ({ user, setUser }) => {
   const [files, setFiles] = useState<FileEntry[] | undefined>([]);
   const [filter, setFilter] = useState<string>('all');
   const navigate = useNavigate();
@@ -21,7 +21,7 @@ const Dashboard:React.FC<DashboardProps> = ({user,setUser}) => {
     const fetchUser = async () => {
       const response = await UserApi.fetchProfile();
 
-      if(response!=null){
+      if (response != null) {
         const mappedUser: User = {
           id: response.id,
           name: response.name,
@@ -29,8 +29,6 @@ const Dashboard:React.FC<DashboardProps> = ({user,setUser}) => {
           profileImageURL: response.profileImageURL,
         };
 
-        console.log(mappedUser.profileImageURL)
-        
         setUser(mappedUser);
       }
     };
@@ -38,14 +36,14 @@ const Dashboard:React.FC<DashboardProps> = ({user,setUser}) => {
     fetchUser();
   }, [setUser]);
 
-  if(user == null){
+  if (user == null) {
     navigate("/");
   }
 
   return (
     <div className='mx-7 my-7'>
-      <TableHeader user={user} files={files} setFiles={setFiles} setFilter={setFilter}/>
-      <TranscriptionsTable user={user} files={files!} setFiles={setFiles} filter={filter}/>
+      <TableHeader user={user} files={files} setFiles={setFiles} setFilter={setFilter} />
+      <TranscriptionsTable user={user} files={files!} setFiles={setFiles} filter={filter} />
     </div>
   )
 }

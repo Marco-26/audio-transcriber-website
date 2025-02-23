@@ -36,7 +36,7 @@ export const notifyWarning = (warning:string) => {
     progress: undefined,
     theme: "colored",
     });
-}
+} 
 
 export const generateTXT = (transcription:string) => {
   const blob = new Blob([transcription], { type: 'text/plain' });

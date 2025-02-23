@@ -7,6 +7,7 @@ import { notifyWarning } from './utils/utils';
 import LandingPage from './components/LandingPage';
 import {createBrowserRouter, RouterProvider} from 'react-router-dom';
 import Layout from './components/Layout';
+import { ToastContainer } from 'react-toastify';
 
 function App() {
   const [user, setUser] = useState<User | undefined>(undefined);
@@ -43,7 +44,10 @@ function App() {
   ]);
 
   return (
-    <RouterProvider router={router}/>
+    <>
+      <RouterProvider router={router}/>
+      <ToastContainer/>
+    </>
   );
 }
 

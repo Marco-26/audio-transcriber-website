@@ -11,8 +11,8 @@ async function processUpload(user_id:string,file: File) {
   formData.append("user_id", user_id);
 
   try {
-    const response: AxiosResponse<{ message: string; fileEntry: FileEntry }> = await apiClient.post(`${BASE_URL}/upload`, formData);
-    return response.data.fileEntry; 
+    const response: AxiosResponse<{ message: string; payload: FileEntry }> = await apiClient.post(`${BASE_URL}/upload`, formData);
+    return response.data.payload; 
   } catch (error:any) {
     console.error(error);
     notifyError("Error uploading the file...")
