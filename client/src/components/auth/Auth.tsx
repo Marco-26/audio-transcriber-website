@@ -21,11 +21,12 @@ const Auth: React.FC<AuthProps> = ({ user, setUser }) => {
     onSuccess: async (codeResponse) => {
       const loginDetails = await login(codeResponse);
       
-      if(loginDetails !== null)
+      if(loginDetails != null){
         setUser(loginDetails);
-      navigate('/dashboard');
+        navigate('/dashboard');
+      }
     }
-  });
+  }); 
   const handleLogout = () => {
     logout();
     setUser(undefined);

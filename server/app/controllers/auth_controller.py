@@ -3,7 +3,6 @@ from flask import Blueprint, jsonify, request, session
 from ..app import allowed_users, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET
 from ..models.user import User
 from ..services import auth_service, user_service
-
 auth_bp = Blueprint('auth_bp', __name__)
 
 @auth_bp.route('/auth/login', methods=['POST'])
@@ -28,7 +27,7 @@ def login():
 
     session["user_id"] = user.google_id
     
-    return jsonify(success=True, message="User logged in successfully.", data=user.to_dict())
+    return jsonify(success=True, message="User logged in successfully.", payload=user.to_dict())
 
 
 @auth_bp.route("/auth/logout", methods=["POST"])

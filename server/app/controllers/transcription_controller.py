@@ -33,12 +33,10 @@ def fetch_file_entries(user_id):
     filter = request.args.get("filter", "all")
 
     files_list = transcription_service.get_files_list(filter, user.id)
-    if not files_list:
-        return jsonify(success=False, error='No files found for this user'), 404
 
-    files = [t.to_dict() for t in files_list]
+    files = [t.to_dict() for t in files_list] if files_list else []
 
-    return jsonify(success=True, message="Fetched all files", data=files), 200
+    return jsonify(success=True, message="Fetched all files", payload=files), 200
 
 @transcription_bp.route("/files/upload", methods=['POST'])
 @login_required
@@ -61,12 +59,11 @@ def upload_endpoint():
 
     unique_filename = generate_unique_filename(received_file)
     path = convert_to_wav_and_save(received_file, unique_filename)
-    
     file_info = get_file_info(path)
     
     file_entry = transcription_service.create_file_entry(user.id, received_file.filename, unique_filename, file_info)
     
-    return jsonify(success=True, message="File uploaded sucessfuly", data=file_entry.to_dict()), 200
+    return jsonify(success=True, message="File uploaded sucessfuly", payload=file_entry.to_dict()), 200
 
 @transcription_bp.route("/files/<user_id>/<file_id>/transcribe", methods=['POST'])
 @login_required 
@@ -103,7 +100,7 @@ def fetch_transcribed_audio(user_id,file_id):
     if(os.path.isfile(file_path)):
         with open(file_path, 'r') as file:
             file_contents = file.read()
-        return jsonify(success=True, message="Finished fetching transcription...", data=file_contents,), 200
+        return jsonify(success=True, message="Finished fetching transcription...", payload=file_contents,), 200
     else:
         return jsonify(success=False, error="Transcription not found."), 404
 
@@ -124,6 +121,6 @@ def delete_endpoint(id):
             os.remove(transcription_file_name)
     except Exception as e:
         print(f"Error: {e}")
-        return jsonify(success=False, error="There was an error deleting the file or directory."), 500
+        return jsonify(success=False, error="There was an error deleting the file."), 500
 
     return jsonify(success=True, message=f"Successfully deleted the file or directory with id: {id}"), 200
