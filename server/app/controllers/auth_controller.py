@@ -25,7 +25,7 @@ def login():
     if not user:
         user_service.create_user(user_info=user_info)
 
-    session["user_id"] = user.google_id
+    session["user_id"] = user.id
     
     return jsonify(success=True, message="User logged in successfully.", payload=user.to_dict())
 

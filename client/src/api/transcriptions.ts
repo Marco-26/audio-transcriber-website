@@ -9,11 +9,11 @@ export type ErrorCallback = (error: AxiosError) => void
 const BASE_URL = "files/"
 
 async function fetchTranscriptionsEntries(user_id: string, filter:string) {
+  console.log("HOAJSJ " + filter)
   try{
     const response: AxiosResponse<{ payload: FileEntry[] }> = await apiClient.get(`${BASE_URL}${user_id}`,{
       params:{ filter }
     });
-    console.log(response)
     if(response != null){
       return response.data.payload;
     }

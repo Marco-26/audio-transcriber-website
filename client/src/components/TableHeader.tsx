@@ -3,15 +3,15 @@ import { Tabs, TabsList, TabsTrigger } from './UI/Tabs';
 import { UploadFileButton } from './UploadFileButton';
 import { FileEntry } from '../types/FileEntry';
 import { User } from '../types/User';
-  
-interface TableHeaderProps{
-  user:User | undefined; 
+
+interface TableHeaderProps {
+  user: User | undefined;
   files: FileEntry[] | undefined;
   setFiles: Dispatch<SetStateAction<FileEntry[] | undefined>>;
   setFilter: Dispatch<SetStateAction<string>>;
 }
 
-const TableHeader:React.FC<TableHeaderProps> = ({user,files,setFiles,setFilter}) =>  {
+const TableHeader: React.FC<TableHeaderProps> = ({ user, files, setFiles, setFilter }) => {
   return (
     <div>
       <div className='mb-7'>
@@ -19,7 +19,7 @@ const TableHeader:React.FC<TableHeaderProps> = ({user,files,setFiles,setFilter})
         <p>All your transcriptions in one place</p>
       </div>
       <div className='flex items-center justify-between mb-5'>
-        <Tabs defaultValue="all" onValueChange={(value) => setFilter(value)}>
+        <Tabs defaultValue="all" onValueChange={(value) => { setFilter(value); console.log("HELLO " + value) }}>
           <div className="flex items-center">
             <TabsList>
               <TabsTrigger value="all">All</TabsTrigger>
@@ -27,7 +27,7 @@ const TableHeader:React.FC<TableHeaderProps> = ({user,files,setFiles,setFilter})
             </TabsList>
           </div>
         </Tabs>
-        <UploadFileButton user={user} files={files} setFiles={setFiles}  />
+        <UploadFileButton user={user} files={files} setFiles={setFiles} />
       </div>
     </div>
   )
