@@ -9,7 +9,9 @@ export type ErrorCallback = (error: AxiosError) => void
 const BASE_URL = "files/"
 
 async function fetchTranscriptionsEntries(user_id: string, filter:string) {
-  console.log("HOAJSJ " + filter)
+  if(!user_id)
+    return [];
+
   try{
     const response: AxiosResponse<{ payload: FileEntry[] }> = await apiClient.get(`${BASE_URL}${user_id}`,{
       params:{ filter }
@@ -22,7 +24,7 @@ async function fetchTranscriptionsEntries(user_id: string, filter:string) {
   }
   catch(error:any){
     console.error(error)
-    notifyError("Error while fetching transcriptions entries...")
+    notifyError("Error fetching transcriptions entries...")
     return []
   }
 }

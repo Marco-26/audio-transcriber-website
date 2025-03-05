@@ -19,7 +19,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({ user, files, setFiles, setFil
         <p>All your transcriptions in one place</p>
       </div>
       <div className='flex items-center justify-between mb-5'>
-        <Tabs defaultValue="all" onValueChange={(value) => { setFilter(value); console.log("HELLO " + value) }}>
+        <Tabs defaultValue="all" onValueChange={(value) => { setFilter(value) }}>
           <div className="flex items-center">
             <TabsList>
               <TabsTrigger value="all">All</TabsTrigger>

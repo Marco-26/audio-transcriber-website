@@ -18,7 +18,6 @@ export const fetchProfile = async () => {
 export const fetchRegisteredUsers =  async () => {
   try {
     const response: AxiosResponse<{ payload: number }> = await apiClient.get(BASE_URL+'count');
-    console.log(response)
     return response.data.payload;
   } catch (error) {
     console.error(error)

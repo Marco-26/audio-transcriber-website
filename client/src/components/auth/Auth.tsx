@@ -20,16 +20,18 @@ const Auth: React.FC<AuthProps> = ({ user, setUser }) => {
     flow: "auth-code",
     onSuccess: async (codeResponse) => {
       const loginDetails = await login(codeResponse);
-      
-      if(loginDetails != null){
+
+      if (loginDetails != null) {
         setUser(loginDetails);
         navigate('/dashboard');
       }
     }
-  }); 
+  });
+
   const handleLogout = () => {
     logout();
     setUser(undefined);
+    navigate('/')
   };
 
   return (
@@ -47,7 +49,6 @@ const Auth: React.FC<AuthProps> = ({ user, setUser }) => {
                 <div className='flex items-center'>
                   <p className="mr-4">{user!.name}</p>
                   <Button variant="secondary" size="icon" className="rounded-full mr-3">
-                    {/* <CircleUser className="h-5 w-5" /> */}
                     <img src={user.profileImageURL} alt='profile' className="rounded-full border-2 border-black" />
                     <span className="sr-only">Toggle user menu</span>
                   </Button>
@@ -60,18 +61,6 @@ const Auth: React.FC<AuthProps> = ({ user, setUser }) => {
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
-          <ToastContainer
-            position="top-right"
-            autoClose={5000}
-            hideProgressBar={false}
-            newestOnTop={false}
-            closeOnClick={false}
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-            theme="light"
-            />
         </>
         // <UserAvatar userName={user.name} onClick={handleLogout}></UserAvatar>
       )}

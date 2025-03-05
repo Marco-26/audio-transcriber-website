@@ -61,7 +61,9 @@ export const TranscriptionsTable: React.FC<TableProps> = ({ user, files, setFile
   }
 
   useEffect(() => {
-    fetchTranscriptions();
+    if (user || user!.id != null) {
+      fetchTranscriptions();
+    }
   }, [user, filter]);
 
   return (
