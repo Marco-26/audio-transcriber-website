@@ -6,9 +6,9 @@ class FileEntry(db.Model):
     __tablename__ = 'files'
     
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    filename = db.Column(String(255), nullable=False)  # Limit filename length for indexing
-    unique_filename = db.Column(String(255), nullable=False)
+    user_id = db.Column(db.String(36), db.ForeignKey('users.id'), nullable=False)
+    filename = db.Column(db.String(255), nullable=False)  # Limit filename length for indexing
+    unique_filename = db.Column(db.String(255), nullable=False)
     info = db.Column(db.Text, nullable=False)  # Retain TEXT for longer fields without indexing
     date = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
     transcribed = db.Column(db.Boolean, default=False, nullable=False)

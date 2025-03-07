@@ -29,7 +29,7 @@ def create_app():
   
   db.init_app(app)
   Session(app)
-  
+
   client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
   if client.api_key is None:
     raise OpenAIError("OpenAI API key is missing. Set it using OPENAI_API_KEY environment variable.")
