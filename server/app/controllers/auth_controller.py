@@ -23,7 +23,7 @@ def login():
     user = user_service.get_user_by_email(user_info["email"])
     
     if not user:
-        user_service.create_user(user_info=user_info)
+        user = user_service.create_user(user_info=user_info)
 
     session["user_id"] = user.id
     

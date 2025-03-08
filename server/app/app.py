@@ -15,7 +15,7 @@ from .config import ApplicationConfig
 data_folder_path = 'data'
 client_secrets_file = os.path.join(pathlib.Path(__file__).parent, "client-secret.json")
 
-allowed_users = ['markcostah@gmail.com','alloweduser@example.com'] # list of allowed emails to login
+allowed_users = ['markcostah@gmail.com', 'marcosimoescosta@gmail.com','alloweduser@example.com'] # list of allowed emails to login
 GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
 GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
 
@@ -29,7 +29,7 @@ def create_app():
   
   db.init_app(app)
   Session(app)
-  
+
   client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
   if client.api_key is None:
     raise OpenAIError("OpenAI API key is missing. Set it using OPENAI_API_KEY environment variable.")

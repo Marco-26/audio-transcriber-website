@@ -6,7 +6,8 @@ class ApplicationConfig:
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_ECHO = True
-    SQLALCHEMY_DATABASE_URI = f"mysql+pymysql://{os.getenv('DB_USERNAME')}:Marco%25%252003@{os.getenv('DB_HOST')}:{os.getenv('DB_PORT')}/{os.getenv('DB_NAME')}"
+    # SQLALCHEMY_DATABASE_URI = f"mysql+pymysql://{os.getenv('DB_USERNAME')}:Marco%25%252003@{os.getenv('DB_HOST')}:{os.getenv('DB_PORT')}/{os.getenv('DB_NAME')}"
+    SQLALCHEMY_DATABASE_URI = f"postgresql+psycopg2://{os.getenv('RENDER_DB_URL')}"
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     SESSION_TYPE = 'sqlalchemy'
