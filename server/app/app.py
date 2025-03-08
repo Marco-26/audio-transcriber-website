@@ -15,7 +15,7 @@ from .config import ApplicationConfig
 data_folder_path = 'data'
 client_secrets_file = os.path.join(pathlib.Path(__file__).parent, "client-secret.json")
 
-allowed_users = ['markcostah@gmail.com','alloweduser@example.com'] # list of allowed emails to login
+allowed_users = ['markcostah@gmail.com', 'marcosimoescosta@gmail.com','alloweduser@example.com'] # list of allowed emails to login
 GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
 GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
 

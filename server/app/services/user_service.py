@@ -14,3 +14,4 @@ def create_user(user_info):
   user = User(user_info["sub"], user_info["name"], user_info["email"],  user_info["picture"])
   db.session.add(user)
   db.session.commit()
+  return user
