@@ -58,12 +58,16 @@ def upload_endpoint():
         return jsonify(success=False, error='User reached the maximum file limit.'), 400
 
     unique_filename = generate_unique_filename(received_file)
-    path = convert_to_wav_and_save(received_file, unique_filename)
-    file_info = get_file_info(path)
+    file_path = os.path.join(data_folder_path, unique_filename)
+
+    # ath = convert_to_wav_and_save(received_file, unique_filename)
+
+    received_file.save(file_path)
+    file_info = get_file_info(file_path)
     
-    file_entry = transcription_service.create_file_entry(user.id, received_file.filename, unique_filename, file_info)
+    file_entry = transcription_service.create_file_entry(user.id, received_file.filename, unique_filename, file_info, file_path)
     
-    return jsonify(success=True, message="File uploaded sucessfuly", payload=file_entry.to_dict()), 200
+    return jsonify(success=True, message="File uploaded sucessfuly", payload=file_entry.to_dict()), 200 
 
 @transcription_bp.route("/files/<user_id>/<file_id>/transcribe", methods=['POST'])
 @login_required 

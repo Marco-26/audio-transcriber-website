@@ -11,3 +11,4 @@ server/tests/.pytest_cache
 server/.idea
 server/app/controllers/__pycache__
 server/app/models/__pycache__
+server/app/upload_files

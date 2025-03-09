@@ -6,18 +6,21 @@ from flask_cors import CORS
 from openai import OpenAI, OpenAIError
 
 import os,pathlib
+import boto3
 from apscheduler.schedulers.background import BackgroundScheduler
 
 from .db import db
 from .utils import delete_old_files
 from .config import ApplicationConfig
 
-data_folder_path = 'data'
 client_secrets_file = os.path.join(pathlib.Path(__file__).parent, "client-secret.json")
 
+data_folder_path = "app/upload_files"
 allowed_users = ['markcostah@gmail.com', 'marcosimoescosta@gmail.com','alloweduser@example.com'] # list of allowed emails to login
 GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
 GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
+
+s3 = boto3.client('s3')
 
 def create_app():
   app = Flask(__name__)

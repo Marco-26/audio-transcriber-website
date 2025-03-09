@@ -5,6 +5,7 @@ from ..utils import transcribe_audio
 from ..models import FileEntry
 from ..db import db
 from ..services import user_service
+from ..services import s3_service
 from werkzeug.utils import secure_filename
 from flask import jsonify
 
@@ -18,7 +19,8 @@ def get_files_list(filter, user_id):
 def get_file_by_id(file_id):
    return FileEntry.query.filter_by(id=file_id).first()
 
-def create_file_entry(user_id, filename, unique_filename, file_info):
+def create_file_entry(user_id, filename, unique_filename, file_info, file_path):
+  s3_service.upload(file_path, "audio-transcriber-files", unique_filename)
   file_entry = FileEntry(user_id=user_id, filename=secure_filename(filename), unique_filename=unique_filename, info=file_info)
   db.session.add(file_entry)
   db.session.commit()
