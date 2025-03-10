@@ -1,4 +1,5 @@
 import boto3
+from ..app import data_folder_path
 
 def upload(file_name, bucket, object_name):
   s3_client = boto3.client('s3')
@@ -7,7 +8,7 @@ def upload(file_name, bucket, object_name):
 
 def download(file_name, bucket):
   s3 = boto3.resource('s3')
-  output = f"download_files/{file_name}"
+  output = f"{data_folder_path}/{file_name}"
   s3.Bucket(bucket).download_file(file_name, output)
   return output
 

@@ -4,6 +4,7 @@ import os
 from ..utils import transcribe_audio
 from ..models import FileEntry
 from ..db import db
+from ..app import data_folder_path
 from ..services import user_service
 from ..services import s3_service
 from werkzeug.utils import secure_filename
@@ -30,7 +31,7 @@ def delete_file(file):
   db.session.delete(file)
   db.session.commit()
 
-async def transcribe_and_save(file, data_folder_path):
+async def transcribe_and_save(file):
   file_path = os.path.join(data_folder_path, file.unique_filename)
 
   if not os.path.exists(file_path):
@@ -59,15 +60,18 @@ async def transcribe_and_save(file, data_folder_path):
       raise e
 
 def validate_user_and_file(user_id, file_id):
-  user = user_service.get_user_by_id(user_id)
-  if not user:
-      return jsonify(error="User not found"), 404, None, None
+    user = user_service.get_user_by_id(user_id)
+    if not user:
+        return jsonify(error="User not found"), 404, None, None
 
-  file = get_file_by_id(file_id)
-  if not file:
-      return jsonify(error="File not found"), 404, None, None
+    file_entry = get_file_by_id(file_id)
+    if not file_entry:
+        return jsonify(error="File entry not found in the database"), 404, None, None
 
-  if file.user_id != user.id:
-      return jsonify(error="The file doesn't belong to this user"), 403, None, None
+    if file_entry.user_id != user.id:
+        return jsonify(error="The file doesn't belong to this user"), 403, None, None
 
-  return None, None, user, file
+    file = s3_service.download(file_entry.unique_filename, "audio-transcriber-files")
+    if not file:
+       return jsonify(error="File not found"), 404, None, None
+    return None, None, user, file

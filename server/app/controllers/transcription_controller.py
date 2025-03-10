@@ -60,13 +60,14 @@ def upload_endpoint():
     unique_filename = generate_unique_filename(received_file)
     file_path = os.path.join(data_folder_path, unique_filename)
 
-    # ath = convert_to_wav_and_save(received_file, unique_filename)
-
+    #guardar temporariamente
     received_file.save(file_path)
     file_info = get_file_info(file_path)
     
     file_entry = transcription_service.create_file_entry(user.id, received_file.filename, unique_filename, file_info, file_path)
-    
+
+    os.remove(file_path) #remove ficheiro do servidor porque vai ser guardado no bucket s3
+
     return jsonify(success=True, message="File uploaded sucessfuly", payload=file_entry.to_dict()), 200 
 
 @transcription_bp.route("/files/<user_id>/<file_id>/transcribe", methods=['POST'])
@@ -76,13 +77,8 @@ def transcript_endpoint(user_id, file_id):
     if error_response:
         return error_response, status_code
     
-    file_path = os.path.join(data_folder_path, file.unique_filename)
-
-    if not os.path.exists(file_path):
-        return jsonify(success=False, error='Audio file not found'), 404
-
     try:
-        asyncio.run(transcription_service.transcribe_and_save(file, data_folder_path))
+        asyncio.run(transcription_service.transcribe_and_save(file))
     except FileNotFoundError:
         return jsonify(success=False, error='Audio file not found'), 404
     except Exception as e:
