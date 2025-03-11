@@ -1,20 +1,21 @@
 import boto3
 from ..app import data_folder_path
 
-def upload(file_name, bucket, object_name):
+BUCKET_NAME = "audio-transcriber-files"
+
+def upload(file_name, object_name):
   s3_client = boto3.client('s3')
-  response = s3_client.upload_file(file_name, bucket, object_name)
+  response = s3_client.upload_file(file_name, BUCKET_NAME, object_name)
   return response
 
-def download(file_name, bucket):
+def download(file_name):
   s3 = boto3.resource('s3')
   output = f"{data_folder_path}/{file_name}"
-  s3.Bucket(bucket).download_file(file_name, output)
+  s3.Bucket(BUCKET_NAME).download_file(file_name, output)
   return output
 
-def list_all_files(bucket):
-  s3 = boto3.client('s3')
-  contents = []
-  for item in s3.list_objects(Bucket=bucket)['Contents']:
-      contents.append(item)
-  return contents
+def delete_file(file_name):
+  """Delete a file from S3."""
+  s3_client = boto3.client('s3')
+  s3_client.delete_object(Bucket=BUCKET_NAME, Key=file_name)
+  print(f"Deleted: s3://{BUCKET_NAME}/{file_name}")

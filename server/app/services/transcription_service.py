@@ -21,7 +21,7 @@ def get_file_by_id(file_id):
    return FileEntry.query.filter_by(id=file_id).first()
 
 def create_file_entry(user_id, filename, unique_filename, file_info, file_path):
-  s3_service.upload(file_path, "audio-transcriber-files", unique_filename)
+  s3_service.upload(file_path, unique_filename)
   file_entry = FileEntry(user_id=user_id, filename=secure_filename(filename), unique_filename=unique_filename, info=file_info)
   db.session.add(file_entry)
   db.session.commit()
@@ -31,9 +31,7 @@ def delete_file(file):
   db.session.delete(file)
   db.session.commit()
 
-async def transcribe_and_save(file):
-  file_path = os.path.join(data_folder_path, file.unique_filename)
-
+async def transcribe_and_save(file_path:str, file_entry:FileEntry):
   if not os.path.exists(file_path):
       raise FileNotFoundError("Audio file not found")
 
@@ -42,19 +40,22 @@ async def transcribe_and_save(file):
 
       if not transcript:
           raise ValueError("Transcription failed, no transcript generated.")
-
-      transcript_file_path = file_path + "-transcribed.txt"
+      
+      transcription_file_name = file_entry.unique_filename+"-transcribed.txt"
+      transcript_file_path = file_path + transcription_file_name
       with open(transcript_file_path, 'w') as temp_file:
           temp_file.write(transcript)
           temp_file.flush()
-
+      
+      s3_service.upload(transcript_file_path,transcription_file_name)
+      s3_service.delete_file(file_entry.unique_filename)
       os.remove(file_path)
-
-      file.transcribed = True
-      db.session.add(file)
+      os.remove(transcript_file_path)
+      
+      file_entry.transcribed = True
+      db.session.add(file_entry)
       db.session.commit()
 
-      return transcript_file_path
   except Exception as e:
       print(f"Error during transcription: {str(e)}")
       raise e
@@ -62,16 +63,17 @@ async def transcribe_and_save(file):
 def validate_user_and_file(user_id, file_id):
     user = user_service.get_user_by_id(user_id)
     if not user:
-        return jsonify(error="User not found"), 404, None, None
+        return jsonify(error="User not found"), 404, None, None, None
 
     file_entry = get_file_by_id(file_id)
     if not file_entry:
-        return jsonify(error="File entry not found in the database"), 404, None, None
+        return jsonify(error="File entry not found in the database"), 404, None, None, None
 
     if file_entry.user_id != user.id:
-        return jsonify(error="The file doesn't belong to this user"), 403, None, None
+        return jsonify(error="The file doesn't belong to this user"), 403, None, None, None
 
-    file = s3_service.download(file_entry.unique_filename, "audio-transcriber-files")
-    if not file:
-       return jsonify(error="File not found"), 404, None, None
-    return None, None, user, file
+    file_path = s3_service.download(file_entry.unique_filename)
+    print(file_path)
+    if not file_path:
+       return jsonify(error="File not found"), 404, None, None, None
+    return None, None, user, file_path, file_entry

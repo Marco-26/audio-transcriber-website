@@ -5,14 +5,14 @@ import os
 import shutil
 from functools import wraps
 from pathlib import Path
-import requests
+import io
 from flask import Blueprint, jsonify, request, session
 
 from ..app import data_folder_path, allowed_users, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET
 from ..models import User, FileEntry
 from ..utils import MAX_FILES_USER, save_file, transcribe_audio, get_file_info, convert_to_wav_and_save, generate_unique_filename
 from ..db import db
-from ..services import auth_service, transcription_service, user_service
+from ..services import auth_service, transcription_service, user_service, s3_service
 transcription_bp = Blueprint('transcription_bp', __name__)
 
 def login_required(f):
@@ -73,12 +73,11 @@ def upload_endpoint():
 @transcription_bp.route("/files/<user_id>/<file_id>/transcribe", methods=['POST'])
 @login_required 
 def transcript_endpoint(user_id, file_id):
-    error_response, status_code, user, file = transcription_service.validate_user_and_file(user_id, file_id)
+    error_response, status_code, user, file_path, file_entry = transcription_service.validate_user_and_file(user_id, file_id)
     if error_response:
         return error_response, status_code
-    
     try:
-        asyncio.run(transcription_service.transcribe_and_save(file))
+        asyncio.run(transcription_service.transcribe_and_save(file_path, file_entry))
     except FileNotFoundError:
         return jsonify(success=False, error='Audio file not found'), 404
     except Exception as e:
