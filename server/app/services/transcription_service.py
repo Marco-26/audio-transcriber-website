@@ -1,14 +1,13 @@
 import asyncio
 import os
 
+from ..exceptions.api_error import APIAuthError, APINotFoundError
 from ..utils import transcribe_audio
 from ..models import FileEntry
 from ..db import db
-from ..app import data_folder_path
 from ..services import user_service
 from ..services import s3_service
 from werkzeug.utils import secure_filename
-from flask import jsonify
 
 def get_files_list(filter, user_id):
   if(filter == 'all'):
@@ -69,20 +68,20 @@ async def transcribe_and_save(file_path:str, file_entry:FileEntry):
 def validate_user_and_file(user_id, file_id):
   user = user_service.get_user_by_id(user_id)
   if not user:
-      return jsonify(error="User not found"), 404, None, None, None
+    raise APINotFoundError("User not found")
 
   file_entry = get_file_by_id(file_id)
   if not file_entry:
-      return jsonify(error="File entry not found in the database"), 404, None, None, None
+    raise APINotFoundError("File entry not found in the database")
 
   if file_entry.user_id != user.id:
-      return jsonify(error="The file doesn't belong to this user"), 403, None, None, None
-
+    raise APIAuthError("The file doesn't belong to this user")
+  
   file_path = s3_service.download(file_entry.unique_filename)
-  print(file_path)
   if not file_path:
-      return jsonify(error="File not found"), 404, None, None, None
-  return None, None, user, file_path, file_entry
+    raise APINotFoundError("File entry not found in storage")
+
+  return file_entry, file_path
 
 def get_transcribed_audio(transcribed_filename:str):
   return s3_service.download(transcribed_filename)

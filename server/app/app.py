@@ -11,7 +11,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from .db import db
 from .utils import delete_old_files
 from .config import ApplicationConfig
-
+from .exceptions.api_error import register_error_handlers
 client_secrets_file = os.path.join(pathlib.Path(__file__).parent, "client-secret.json")
 
 data_folder_path = "data"
@@ -46,7 +46,9 @@ def create_app():
   app.register_blueprint(auth_bp)
   app.register_blueprint(user_bp)
   app.register_blueprint(transcription_bp)
-
+  
+  register_error_handlers(app)
+  
   Migrate(app,db)
 
   scheduler = BackgroundScheduler()

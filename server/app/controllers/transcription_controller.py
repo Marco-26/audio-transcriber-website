@@ -7,7 +7,9 @@ from functools import wraps
 from pathlib import Path
 import io
 from flask import Blueprint, jsonify, request, session
+from openai import APIError
 
+from ..exceptions.api_error import APINotFoundError
 from ..app import data_folder_path, allowed_users, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET
 from ..models import User, FileEntry
 from ..utils import MAX_FILES_USER, save_file, transcribe_audio, get_file_info, convert_to_wav_and_save, generate_unique_filename
@@ -71,20 +73,14 @@ def upload_endpoint():
     return jsonify(success=True, message="File uploaded sucessfuly", payload=file_entry.to_dict()), 200 
 
 @transcription_bp.route("/files/<user_id>/<file_id>/transcribe", methods=['POST'])
-@login_required 
+# @login_required 
 def transcript_endpoint(user_id, file_id):
-    error_response, status_code, user, file_path, file_entry = transcription_service.validate_user_and_file(user_id, file_id)
-    if error_response:
-        return error_response, status_code
-    try:
-        asyncio.run(transcription_service.transcribe_and_save(file_path, file_entry))
-    except FileNotFoundError:
-        return jsonify(success=False, error='Audio file not found'), 404
-    except Exception as e:
-        print(f"Unexpected error: {str(e)}")
-        return jsonify(success=False, error="An unexpected error occurred. Failed to transcribe audio"), 500
-
+  try:
+    file_path, file_entry = transcription_service.validate_user_and_file(user_id, file_id)
+    asyncio.run(transcription_service.transcribe_and_save(file_path, file_entry))
     return jsonify(success=True, message="Finished transcribing the audio"), 200
+  except APIError as e:
+    return jsonify(error=e.description, message=str(e)), e.code
 
 @transcription_bp.route("/files/<user_id>/<file_id>/transcription", methods=['GET'])
 @login_required
