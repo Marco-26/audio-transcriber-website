@@ -11,11 +11,11 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from .db import db
 from .utils import delete_old_files
 from .config import ApplicationConfig
-
-data_folder_path = 'data'
+from .exceptions.api_error import register_error_handlers
 client_secrets_file = os.path.join(pathlib.Path(__file__).parent, "client-secret.json")
 
-allowed_users = ['markcostah@gmail.com', 'marcosimoescosta@gmail.com','alloweduser@example.com'] # list of allowed emails to login
+data_folder_path = "data"
+allowed_users = ['markcostah@gmail.com', 'marcosimoescosta@gmail.com','alloweduser@example.com'] # list of allowed emails to login, simulating beta testing
 GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
 GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
 
@@ -46,7 +46,9 @@ def create_app():
   app.register_blueprint(auth_bp)
   app.register_blueprint(user_bp)
   app.register_blueprint(transcription_bp)
-
+  
+  register_error_handlers(app)
+  
   Migrate(app,db)
 
   scheduler = BackgroundScheduler()
