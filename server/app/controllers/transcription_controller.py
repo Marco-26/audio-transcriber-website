@@ -89,12 +89,14 @@ def transcript_endpoint(user_id, file_id):
 @transcription_bp.route("/files/<user_id>/<file_id>/transcription", methods=['GET'])
 @login_required
 def fetch_transcribed_audio(user_id,file_id):
-    error_response, status_code, user, file = transcription_service.validate_user_and_file(user_id, file_id)
-    if error_response:
-        return error_response, status_code
+    file = transcription_service.get_file_by_id(file_id)
+    # error_response, status_code, user, file_path, file_entry = transcription_service.validate_user_and_file(user_id, file_id)
+    # if error_response:
+    #     return error_response, status_code
 
-    transcription_file_name = file.unique_filename + '-transcribed.txt'
-    file_path = os.path.join(data_folder_path, transcription_file_name)
+    transcribed_filename = file.unique_filename + '-transcribed.txt'
+    print("Ficheiro a ser descarregado: " + transcribed_filename)
+    file_path = transcription_service.get_transcribed_audio(transcribed_filename)
 
     if(os.path.isfile(file_path)):
         with open(file_path, 'r') as file:

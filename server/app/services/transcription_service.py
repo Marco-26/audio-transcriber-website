@@ -83,3 +83,6 @@ def validate_user_and_file(user_id, file_id):
   if not file_path:
       return jsonify(error="File not found"), 404, None, None, None
   return None, None, user, file_path, file_entry
+
+def get_transcribed_audio(transcribed_filename:str):
+  return s3_service.download(transcribed_filename)

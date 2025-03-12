@@ -15,7 +15,6 @@ def download(file_name):
   return output
 
 def delete_file(file_name):
-  """Delete a file from S3."""
   s3_client = boto3.client('s3')
   s3_client.delete_object(Bucket=BUCKET_NAME, Key=file_name)
   print(f"Deleted: s3://{BUCKET_NAME}/{file_name}")
