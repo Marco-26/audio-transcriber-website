@@ -38,13 +38,13 @@ def delete_file(file:FileEntry):
 
 async def transcribe_and_save(file_path:str, file_entry:FileEntry):
   if not os.path.exists(file_path):
-    raise FileNotFoundError("Audio file not found")
+    raise APINotFoundError("Audio file not found")
 
   try:
     transcript = await asyncio.to_thread(transcribe_audio, file_path)
 
     if not transcript:
-        raise ValueError("Transcription failed, no transcript generated.")
+      raise ValueError("Transcription failed, no transcript generated.")
     
     transcription_file_name = file_entry.unique_filename+"-transcribed.txt"
     transcript_file_path = file_path + transcription_file_name

@@ -31,8 +31,8 @@ def login():
 
 @auth_bp.route("/auth/logout", methods=["POST"])
 def logout_user():
-  if "user_id" not in session:
-    raise APIAuthError("Unauthorized logout attempt. No active session found.")
+    if "user_id" not in session:
+      raise APIAuthError("Unauthorized logout attempt. No active session found.")
 
-  session.pop("user_id")
-  return jsonify(success=True, message="User logged out successfully."), 200
+    session.pop("user_id")
+    return jsonify(success=True, message="User logged out successfully."), 200

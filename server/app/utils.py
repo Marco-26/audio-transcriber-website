@@ -23,8 +23,8 @@ def transcribe_audio(file_path):
     transcript = transcribe(file_path, "transcription")
     
     if not transcript:
-        print("Error transcribing file...")
-        raise ValueError("Transcription failed, no transcript generated.")
+      print("Error transcribing file...")
+      raise ValueError("Transcription failed, no transcript generated.")
     
     return transcript
 
