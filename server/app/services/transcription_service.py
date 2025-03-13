@@ -65,23 +65,5 @@ async def transcribe_and_save(file_path:str, file_entry:FileEntry):
     print(f"Error during transcription: {str(e)}")
     raise e
 
-def validate_user_and_file(user_id, file_id):
-  user = user_service.get_user_by_id(user_id)
-  if not user:
-    raise APINotFoundError("User not found")
-
-  file_entry = get_file_by_id(file_id)
-  if not file_entry:
-    raise APINotFoundError("File entry not found in the database")
-
-  if file_entry.user_id != user.id:
-    raise APIAuthError("The file doesn't belong to this user")
-  
-  file_path = s3_service.download(file_entry.unique_filename)
-  if not file_path:
-    raise APINotFoundError("File entry not found in storage")
-
-  return file_entry, file_path
-
 def get_transcribed_audio(transcribed_filename:str):
   return s3_service.download(transcribed_filename)

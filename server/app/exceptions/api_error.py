@@ -2,6 +2,7 @@ import traceback
 from flask import jsonify
 
 class APIError(Exception):
+  success=False
   pass
 
 class APIAuthError(APIError):

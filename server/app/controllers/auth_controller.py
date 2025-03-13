@@ -26,7 +26,7 @@ def login():
         user = user_service.create_user(user_info=user_info)
 
     session["user_id"] = user.id
-    
+    print("User id: " + str(user.id))
     return jsonify(success=True, message="User logged in successfully.", payload=user.to_dict())
 
 
