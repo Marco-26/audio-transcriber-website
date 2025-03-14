@@ -11,13 +11,13 @@ from werkzeug.utils import secure_filename
 
 def get_files_list(filter, user_id):
   if(filter == 'all'):
-      files_list = FileEntry.query.filter_by(user_id=user_id).all()
+    files_list = FileEntry.query.filter_by(user_id=user_id).all()
   elif(filter == 'done'):
-      files_list = FileEntry.query.filter_by(user_id=user_id, transcribed=True).all()
+    files_list = FileEntry.query.filter_by(user_id=user_id, transcribed=True).all()
   return files_list
 
 def get_file_by_id(file_id):
-   return FileEntry.query.filter_by(id=file_id).first()
+  return FileEntry.query.filter_by(id=file_id).first()
 
 def create_file_entry(user_id, filename, unique_filename, file_info, file_path):
   s3_service.upload(file_path, unique_filename)
@@ -38,50 +38,21 @@ def delete_file(file:FileEntry):
 
 async def transcribe_and_save(file_path:str, file_entry:FileEntry):
   if not os.path.exists(file_path):
-    raise FileNotFoundError("Audio file not found")
+    raise APINotFoundError("Audio file not found")
 
-  try:
-    transcript = await asyncio.to_thread(transcribe_audio, file_path)
+  transcript = await asyncio.to_thread(transcribe_audio, file_path)
 
-    if not transcript:
-        raise ValueError("Transcription failed, no transcript generated.")
-    
-    transcription_file_name = file_entry.unique_filename+"-transcribed.txt"
-    transcript_file_path = file_path + transcription_file_name
-    with open(transcript_file_path, 'w') as temp_file:
-        temp_file.write(transcript)
-        temp_file.flush()
-    
-    s3_service.upload(transcript_file_path,transcription_file_name)
-    s3_service.delete_file(file_entry.unique_filename)
-    os.remove(file_path)
-    os.remove(transcript_file_path)
-    
-    file_entry.transcribed = True
-    db.session.add(file_entry)
-    db.session.commit()
+  transcription_file_name = file_entry.unique_filename+"-transcribed.txt"
+  transcript_file_path = file_path + transcription_file_name
+  with open(transcript_file_path, 'w') as temp_file:
+    temp_file.write(transcript)
+    temp_file.flush()
 
-  except Exception as e:
-    print(f"Error during transcription: {str(e)}")
-    raise e
-
-def validate_user_and_file(user_id, file_id):
-  user = user_service.get_user_by_id(user_id)
-  if not user:
-    raise APINotFoundError("User not found")
-
-  file_entry = get_file_by_id(file_id)
-  if not file_entry:
-    raise APINotFoundError("File entry not found in the database")
-
-  if file_entry.user_id != user.id:
-    raise APIAuthError("The file doesn't belong to this user")
+  s3_service.upload(transcript_file_path,transcription_file_name)
+  s3_service.delete_file(file_entry.unique_filename)
+  os.remove(file_path)
+  os.remove(transcript_file_path)
   
-  file_path = s3_service.download(file_entry.unique_filename)
-  if not file_path:
-    raise APINotFoundError("File entry not found in storage")
-
-  return file_entry, file_path
-
-def get_transcribed_audio(transcribed_filename:str):
-  return s3_service.download(transcribed_filename)
+  file_entry.transcribed = True
+  db.session.add(file_entry)
+  db.session.commit()
