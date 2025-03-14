@@ -3,7 +3,6 @@ import './styles/globals.css'
 
 import Dashboard from './components/Pages/Dashboard';
 import { User } from './types/User';
-import { notifyWarning } from './utils/utils';
 import LandingPage from './components/LandingPage';
 import {createBrowserRouter, RouterProvider} from 'react-router-dom';
 import Layout from './components/Layout';
@@ -13,7 +12,6 @@ function App() {
   const [user, setUser] = useState<User | undefined>(undefined);
   
   useEffect(() => {
-    notifyWarning("Access restricted. This application is currently in testing.")
     const handleBeforeUnload = (event:any) => {
       event.preventDefault();
       event.returnValue = '';
