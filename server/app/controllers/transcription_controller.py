@@ -14,14 +14,14 @@ from ..services import auth_service, transcription_service, user_service, s3_ser
 transcription_bp = Blueprint('transcription_bp', __name__)
 
 def login_required(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        if 'user_id' not in session:
-            raise APIAuthError("Unauthorized Access")
-        if 'user_id' in kwargs and kwargs['user_id'] != str(session['user_id']):
-            raise APIAuthError("Access denied to another user's data")
-        return f(*args, **kwargs)
-    return decorated_function
+  @wraps(f)
+  def decorated_function(*args, **kwargs):
+    if 'user_id' not in session:
+      raise APIAuthError("Unauthorized Access")
+    if 'user_id' in kwargs and kwargs['user_id'] != str(session['user_id']):
+      raise APIAuthError("Access denied to another user's data")
+    return f(*args, **kwargs)
+  return decorated_function
 
 @transcription_bp.route("/files/<user_id>", methods=['GET'])
 @login_required
@@ -103,13 +103,11 @@ def fetch_transcribed_audio(user_id,file_id):
   if not file_entry:
     raise APINotFoundError("File entry not found in the database")
   
-  file_path = s3_service.download(file_entry.unique_filename)
+  transcribed_filename = file_entry.unique_filename+"-transcribed.txt"
+  file_path = s3_service.download(transcribed_filename)
   if not file_path:
     raise APINotFoundError("File entry not found in storage")
   
-  transcribed_filename = file.unique_filename + '-transcribed.txt'
-  file_path = transcription_service.get_transcribed_audio(transcribed_filename)
-
   if(os.path.isfile(file_path)):
     with open(file_path, 'r') as file:
       file_contents = file.read()

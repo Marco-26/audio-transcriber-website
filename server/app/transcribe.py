@@ -88,6 +88,7 @@ def transcribe(audio_file_path, transcribed_file_name):
     except Exception as e:
         print(f"An error occurred during transcription: {e}")
         sys.exit(1)
+        return None
 
     return transcript
 
