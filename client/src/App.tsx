@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import './styles/globals.css'
 
-import Dashboard from './components/Pages/Dashboard';
+import Dashboard from './components/pages/Dashboard';
 import { User } from './types/User';
-import LandingPage from './components/LandingPage';
+import LandingPage from './components/pages/LandingPage';
 import {createBrowserRouter, RouterProvider} from 'react-router-dom';
 import Layout from './components/Layout';
 import { ToastContainer } from 'react-toastify';

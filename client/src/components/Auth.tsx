@@ -1,13 +1,12 @@
 import React, { Dispatch, SetStateAction } from "react";
 import { useGoogleLogin } from "@react-oauth/google";
 import { User } from "@/src/types/User";
-import { Button } from "../UI/Button";
+import { Button } from "./ui/Button";
 import { UserIcon } from "lucide-react";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "../UI/Dropdown";
-import { login, logout } from "../../api/auth";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "./ui/Dropdown";
+import { login, logout } from "../api/auth";
 import { useNavigate } from "react-router-dom";
-import { notifyError } from "../../utils/utils";
-import { ToastContainer } from "react-toastify";
+
 interface AuthProps {
   user: User | undefined;
   setUser: Dispatch<SetStateAction<User | undefined>>;
@@ -62,7 +61,6 @@ const Auth: React.FC<AuthProps> = ({ user, setUser }) => {
             </DropdownMenu>
           </div>
         </>
-        // <UserAvatar userName={user.name} onClick={handleLogout}></UserAvatar>
       )}
     </>
   );

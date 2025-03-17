@@ -1,5 +1,5 @@
 import { GoogleOAuthProvider } from '@react-oauth/google';
-import Auth from './auth/Auth';
+import Auth from './Auth';
 import { User } from '../types/User';
 import { Dispatch, SetStateAction } from 'react';
 

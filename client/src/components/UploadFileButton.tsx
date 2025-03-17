@@ -1,9 +1,9 @@
 import React from 'react';
 import { Loader2, PlusCircle} from 'lucide-react';
-import { Button } from './UI/Button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from './UI/Dialog';
-import { Input } from './UI/Input';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from './UI/Form';
+import { Button } from './ui/Button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from './ui/Dialog';
+import { Input } from './ui/Input';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from './ui/Form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';

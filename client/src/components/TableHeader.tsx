@@ -1,5 +1,5 @@
 import React, { Dispatch, SetStateAction } from 'react'
-import { Tabs, TabsList, TabsTrigger } from './UI/Tabs';
+import { Tabs, TabsList, TabsTrigger } from './ui/Tabs';
 import { UploadFileButton } from './UploadFileButton';
 import { FileEntry } from '../types/FileEntry';
 import { User } from '../types/User';

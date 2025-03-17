@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import LandingPageGraphic from './graphics/LandingPageGraphic';
-import UserApi from '../api/user';
+import LandingPageGraphic from '../../assets/LandingPageGraphic';
+import UserApi from '../../api/user';
 
 const LandingPage = () => {
   const [registeredUsers, setRegisteredUsers] = useState<number>(0);

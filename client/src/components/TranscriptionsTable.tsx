@@ -2,8 +2,8 @@ import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import TranscriptionsApi from '../api/transcriptions';
 import { FileEntry } from '../types/FileEntry';
 import { generateTXT } from '../utils/utils';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './UI/Table';
-import { Button } from './UI/Button';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './ui/Table';
+import { Button } from './ui/Button';
 import { Play, Trash, Download, CircleCheck } from 'lucide-react';
 import { User } from '../types/User';
 
