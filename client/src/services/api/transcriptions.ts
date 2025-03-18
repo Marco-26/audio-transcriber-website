@@ -1,7 +1,7 @@
  import { AxiosResponse, AxiosError } from 'axios';
-import { FileEntry } from '../types/FileEntry';
+import { FileEntry } from '../../types/FileEntry';
 import { apiClient } from './client';
-import { notifyError } from '../utils/utils';
+import { notifyError } from '../../utils/utils';
 
 export type SuccessCallback = (message: string) => void
 export type ErrorCallback = (error: AxiosError) => void

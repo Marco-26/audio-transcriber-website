@@ -1,7 +1,7 @@
 import { AxiosResponse } from "axios";
-import { FileEntry } from "../types/FileEntry";
+import { FileEntry } from "../../types/FileEntry";
 import { apiClient } from "./client";
-import { notifyError } from "../utils/utils";
+import { notifyError } from "../../utils/utils";
 
 const BASE_URL = "/files/"
 

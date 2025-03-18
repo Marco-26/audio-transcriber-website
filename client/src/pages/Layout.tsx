@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction } from "react";
 import { User } from "../types/User";
-import { Header } from "./Header"
+import { Header } from "../components/Header"
 import { Outlet } from "react-router-dom";
 
 interface LayoutProps{

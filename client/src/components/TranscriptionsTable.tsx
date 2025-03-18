@@ -1,5 +1,5 @@
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import TranscriptionsApi from '../api/transcriptions';
+import TranscriptionsApi from '../services/api/transcriptions';
 import { FileEntry } from '../types/FileEntry';
 import { generateTXT } from '../utils/utils';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './ui/Table';

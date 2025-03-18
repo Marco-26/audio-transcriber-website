@@ -13,7 +13,7 @@ import { MAX_FILES_USER, notifyError, updateFiles } from '../utils/utils';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
 import { User } from '../types/User';
-import UploadApi from '../api/upload';
+import UploadApi from '../services/api/upload';
 
 const formSchema = z.object({
   file: z

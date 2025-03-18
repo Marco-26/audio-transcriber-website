@@ -4,7 +4,7 @@ import { User } from "@/src/types/User";
 import { Button } from "./ui/Button";
 import { UserIcon } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "./ui/Dropdown";
-import { login, logout } from "../api/auth";
+import { login, logout } from "../services/api/auth";
 import { useNavigate } from "react-router-dom";
 
 interface AuthProps {

@@ -1,4 +1,4 @@
-import { notifyError } from "../utils/utils";
+import { notifyError } from "../../utils/utils";
 import { apiClient } from "./client";
 
 const BASE_URL = "/auth"
