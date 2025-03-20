@@ -4,6 +4,8 @@ from flask_login import LoginManager
 from flask_session import Session
 from flask_cors import CORS
 from openai import OpenAI, OpenAIError
+# from transcriber import Transcriber
+from .transcriber import Transcriber
 
 import os,pathlib
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -12,12 +14,14 @@ from .db import db
 from .utils import delete_old_files
 from .config import ApplicationConfig
 from .exceptions.api_error import register_error_handlers
-client_secrets_file = os.path.join(pathlib.Path(__file__).parent, "client-secret.json")
 
+client_secrets_file = os.path.join(pathlib.Path(__file__).parent, "client-secret.json")
 data_folder_path = "data"
 allowed_users = ['markcostah@gmail.com', 'marcosimoescosta@gmail.com','alloweduser@example.com'] # list of allowed emails to login, simulating beta testing
 GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
 GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
+
+transcriber = Transcriber(os.getenv("OPENAI_API_KEY"))
 
 def create_app():
   app = Flask(__name__)
@@ -29,10 +33,6 @@ def create_app():
   
   db.init_app(app)
   Session(app)
-
-  client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-  if client.api_key is None:
-    raise OpenAIError("OpenAI API key is missing. Set it using OPENAI_API_KEY environment variable.")
 
   CORS(app, origins='http://localhost:3000')
 

@@ -1,6 +1,7 @@
 from asyncio import sleep
 from io import BytesIO
 import os
+import pathlib
 import shutil
 import subprocess
 from pydub import AudioSegment
@@ -10,7 +11,7 @@ from pathlib import Path
 from datetime import datetime,timedelta
 from werkzeug.datastructures import FileStorage
 from flask import jsonify
-from .transcribe import transcribe
+# from .transcribe import transcribe
 from .models import FileEntry
 from .exceptions.api_error import APIBadRequestError
 MAX_FILES_USER = 10
@@ -18,14 +19,6 @@ MAX_FILES_USER = 10
 def save_file(path, filename, file):
   save_path = os.path.join(path, filename)
   file.save(save_path)
-
-def transcribe_audio(file_path):
-  transcript = transcribe(file_path, "transcription")
-  
-  if not transcript:
-    raise APIBadRequestError("Transcription failed, no transcript generated.")
-  
-  return transcript
 
 def get_file_size(audio_file_path):
   size = os.path.getsize(audio_file_path)
@@ -85,4 +78,11 @@ def generate_unique_filename(file):
   filename = file.filename.split('.')[0]
   unique_filename = f"{uuid.uuid4().hex}_{filename}.wav"
   return unique_filename
- 
+
+def valid_file_type(filename:str):
+  accepted_types = ['.mp3', '.mp4', '.wav']
+  file_extension = pathlib.Path(filename).suffix.lower()
+  if file_extension in accepted_types:
+    return True
+  else:
+    return False

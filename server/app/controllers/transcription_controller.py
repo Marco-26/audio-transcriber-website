@@ -8,7 +8,7 @@ from flask import Blueprint, jsonify, request, session
 from ..exceptions.api_error import APIAuthError, APIBadRequestError, APINotFoundError
 from ..app import data_folder_path, allowed_users, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET
 from ..models import User, FileEntry
-from ..utils import MAX_FILES_USER, save_file, transcribe_audio, get_file_info, convert_to_wav_and_save, generate_unique_filename
+from ..utils import MAX_FILES_USER, save_file, get_file_info, convert_to_wav_and_save, generate_unique_filename
 from ..db import db
 from ..services import auth_service, transcription_service, user_service, s3_service
 transcription_bp = Blueprint('transcription_bp', __name__)

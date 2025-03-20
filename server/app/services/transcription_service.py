@@ -2,11 +2,11 @@ import asyncio
 import os
 
 from ..exceptions.api_error import APIAuthError, APINotFoundError
-from ..utils import transcribe_audio
 from ..models import FileEntry
 from ..db import db
 from ..services import user_service
 from ..services import s3_service
+from ..app import transcriber
 from werkzeug.utils import secure_filename
 
 def get_files_list(filter, user_id):
@@ -40,7 +40,7 @@ async def transcribe_and_save(file_path:str, file_entry:FileEntry):
   if not os.path.exists(file_path):
     raise APINotFoundError("Audio file not found")
 
-  transcript = await asyncio.to_thread(transcribe_audio, file_path)
+  transcript = transcriber.transcribe(file_path)
 
   transcription_file_name = file_entry.unique_filename+"-transcribed.txt"
   transcript_file_path = file_path + transcription_file_name
