@@ -8,7 +8,7 @@ from flask import Blueprint, jsonify, request, session
 from ..exceptions.api_error import APIAuthError, APIBadRequestError, APINotFoundError
 from ..app import data_folder_path, allowed_users, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET
 from ..models import User, FileEntry
-from ..utils import MAX_FILES_USER, save_file, get_file_info, convert_to_wav_and_save, generate_unique_filename
+from ..utils import MAX_FILES_USER, save_file, get_file_info, convert_to_wav_and_save, generate_unique_filename, valid_file_type
 from ..db import db
 from ..services import auth_service, transcription_service, user_service, s3_service
 transcription_bp = Blueprint('transcription_bp', __name__)
@@ -44,8 +44,11 @@ def upload_endpoint():
     if 'file' not in request.files:
       raise APIBadRequestError("No file provided")
 
-    user_id = session["user_id"]
     received_file = request.files['file']
+    if not valid_file_type(received_file.filename):
+      raise APIBadRequestError("File type is not accepted. Only .mp3, .mp4, .wav are allowed.")
+    
+    user_id = session["user_id"]
 
     user = user_service.get_user_by_id(user_id)
     if not user:
