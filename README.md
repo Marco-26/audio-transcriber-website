@@ -16,24 +16,16 @@ Streamline your audio transcription tasks with our intuitive website. Convert yo
 4. Download the transcribed text once processing is complete.
 
 ## Prerequisites
-- **Frontend**: `React`
-- **Backend**: `Python`
 - Environment variables required:
   - `OPENAI_API_KEY` (OpenAI API key)
   - `GOOGLE_CLIENT_ID` (Google Client ID)
   - `GOOGLE_CLIENT_SECRET` (Google Client Secret)
   - `FLASK_SECRET_KEY` (Flask Secret Key)
 
-To install all backend dependencies, run:
-
-```bash
-pip install -r requirements.txt
-```
-
 ## Installation
 1. Clone this repository:
 ```bash
-  git clone https://github.com/your-username/audio-transcription-website.git
+  git clone https://github.com/Marco-26/audio-transcription-website.git
 ```
 2.Navigate to the project directory:
 
@@ -46,6 +38,7 @@ cd audio-transcriber-website
 cd server
 python3 -m venv venv
 source venv/bin/activate
+pip install -r requirements.txt
 python -m src.run
 ```
 

@@ -1,5 +1,6 @@
 import asyncio
 import os
+import pathlib
 
 from ..exceptions.api_error import APIAuthError, APINotFoundError
 from ..models import FileEntry
@@ -37,19 +38,22 @@ def delete_file(file:FileEntry):
   db.session.commit()
 
 async def transcribe_and_save(file_path:str, file_entry:FileEntry):
+  file_path = pathlib.Path(file_path)
+  
   if not os.path.exists(file_path):
     raise APINotFoundError("Audio file not found")
 
   transcript = transcriber.transcribe(file_path)
 
   transcription_file_name = file_entry.unique_filename+"-transcribed.txt"
-  transcript_file_path = file_path + transcription_file_name
+  transcript_file_path = file_path.with_name(transcription_file_name)
+  
   with open(transcript_file_path, 'w') as temp_file:
     temp_file.write(transcript)
-    temp_file.flush()
 
   s3_service.upload(transcript_file_path,transcription_file_name)
   s3_service.delete_file(file_entry.unique_filename)
+  
   os.remove(file_path)
   os.remove(transcript_file_path)
   
